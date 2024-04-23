@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { ReactComponent as SignInImage } from "./Assets/SignInImage.svg";
-import { ReactComponent as MailIcon } from "./Assets/Mail.svg";
-import { ReactComponent as PWIcon } from "./Assets/PW.svg";
-import { ReactComponent as GoogleIcon } from "./Assets/Google.svg";
+import { ReactComponent as SignInImage } from "../../Assets/SignInImage.svg";
+import { ReactComponent as MailIcon } from "../../Assets/Mail.svg";
+import { ReactComponent as PWIcon } from "../../Assets/PW.svg";
+import { ReactComponent as GoogleIcon } from "../../Assets/Google.svg";
 
 function SignIn() {
   return (
@@ -22,7 +22,7 @@ function SignIn() {
 
             <TextInputBox>
               <PWIcon />
-              <TextInput type="text" placeholder="비밀번호" />
+              <TextInput type="password" placeholder="비밀번호" />
             </TextInputBox>
 
           </LoginForm>

@@ -12,6 +12,8 @@ export const theme = {
     subTitle2: "14px",
     bodyText1: "22px",
     bodyText2: "16px",
+    menuRegular: "14px",
+    menuBold: "14px",
   },
   colors: {
     primary_normal: "#15521D",
