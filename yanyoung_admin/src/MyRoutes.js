@@ -1,7 +1,8 @@
-import { Routes, Route } from "react-router-dom";
-import SignIn from "./pages/SignIn/SignInPage";
+import { Route, Routes } from "react-router-dom";
 import Layout from "./Layout";
 import ThemeExample from "./style/ThemeExample";
+import SignIn from "./pages/SignIn/SignInPage";
+import Attendance from "./pages/Attendance/AttendancePage";
 
 function MyRoutes() {
   return (
@@ -10,6 +11,7 @@ function MyRoutes() {
         <Route element={<Layout />}>
           <Route path="/" element={<SignIn />} />
           <Route path="theme" element={<ThemeExample />} />
+          <Route path="attendance" element={<Attendance />} />
         </Route>
       </Routes>
     </>

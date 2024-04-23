@@ -1,20 +1,31 @@
-import styled from "styled-components";
-import { ReactComponent as Logo } from "../Assets/Logo.svg";
+import { useNavigate } from "react-router-dom";
+import styled, { ThemeProvider } from "styled-components";
 import { theme } from "../style/theme";
-import { ThemeProvider } from "styled-components";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
+  const movePage = (page) => {
+    navigate("/" + page);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Header>
-        <StyledLogo />
-        <NavbarContainer>
-          <MenuButton style={{ "margin-left": "195px" }}>출결 관리</MenuButton>
-          <MenuButton>수업 관리</MenuButton>
-          <MenuButton>학생 관리</MenuButton>
-          <MenuButton>분반 관리</MenuButton>
-        </NavbarContainer>
+        {/* <StyledLogo /> */}
+        <Title>양영학원 고등부 영어과</Title>
       </Header>
+      <NavbarContainer>
+        <MenuButton
+          onClick={() => movePage("attendance")}
+          style={{ "padding-left": "195px" }}
+        >
+          출결 관리
+        </MenuButton>
+        <MenuButton onClick={() => movePage("lectrue")}>수업 관리</MenuButton>
+        <MenuButton onClick={() => movePage("student")}>학생 관리</MenuButton>
+        <MenuButton onClick={() => movePage("section")}>분반 관리</MenuButton>
+      </NavbarContainer>
     </ThemeProvider>
   );
 };
@@ -22,13 +33,14 @@ const Navbar = () => {
 const Header = styled.header`
   height: 81px;
   line-height: 81px;
+  background-color: ${(props) => props.theme.colors.primary_normal};
 `;
 
-const StyledLogo = styled(Logo)`
-  margin-left: 17.43%;
-  @media screen and (max-width: 1250px) {
-    margin-left: 5%;
-  }
+const Title = styled.div`
+  font-size: ${(props) => props.theme.fontSizes.Header};
+  font-weight: 550;
+  color: ${(props) => props.theme.colors.white};
+  padding-left: 195px;
 `;
 
 const NavbarContainer = styled.div`
