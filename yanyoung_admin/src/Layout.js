@@ -7,8 +7,19 @@ const Layout = () => {
     <div>
       {/* 넷바 */}
       <Header>
-        <StyledLogo />
-        {/* <NavLink to={`/`}>프로필</NavLink> */}
+        {/* 헤더바 1 */}
+        <div>
+          <StyledLogo />
+          <div>로그아웃</div>
+        </div>
+
+        {/* 헤더바 2 */}
+        <div>
+          <NavLink to={`/`}>출결 관리</NavLink>
+          <NavLink to={`/`}>학생 관리</NavLink>
+          <NavLink to={`/`}>수업 관리</NavLink>
+          <NavLink to={`/`}>분반 관리</NavLink>
+        </div>
       </Header>
 
       {/* 컨텐츠 */}
@@ -31,6 +42,8 @@ const Layout = () => {
 };
 
 const Header = styled.header`
+  display: flex;
+  flex-direction: column;
   height: 81px;
   line-height: 81px;
 `;

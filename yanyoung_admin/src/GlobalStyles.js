@@ -20,6 +20,14 @@ input {
 div {
     all: unset; 
 }
+
+/* :link {
+    all: unset;
+} */
+
+:any-link {
+    all: unset;
+}
 `;
 
 export default GlobalStyles;
