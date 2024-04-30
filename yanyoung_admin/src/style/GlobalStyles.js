@@ -15,6 +15,7 @@ body {
 
 input {
     all: unset;
+    caret-color: #15521D;
 }
 
 div {
