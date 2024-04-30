@@ -1,6 +1,6 @@
-import { Outlet, NavLink } from "react-router-dom";
-import styled from "styled-components";
-import { ReactComponent as Logo } from "./Assets/Logo.svg";
+import { Outlet } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 const Layout = () => {
   return (
@@ -28,15 +28,7 @@ const Layout = () => {
       </main>
 
       {/* 푸터 */}
-      <Footer>
-        <FooterPadding>
-          <BoldText>양영학원</BoldText>
-          <Texts>
-            <div>주소 : 대전 서구 둔산로 136</div>
-            <div>번호 : 042-486-4245 </div>
-          </Texts>
-        </FooterPadding>
-      </Footer>
+      <Footer />
     </div>
   );
 };
