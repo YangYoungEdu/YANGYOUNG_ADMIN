@@ -1,14 +1,33 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { ReactComponent as SignInImage } from "../../Assets/SignInImage.svg";
 import { ReactComponent as MailIcon } from "../../Assets/Mail.svg";
 import { ReactComponent as PWIcon } from "../../Assets/PW.svg";
 import { ReactComponent as GoogleIcon } from "../../Assets/Google.svg";
+import { useRecoilState} from "recoil";
+import { loginCheck } from "../../Atom";
 
 function SignIn() {
+
+  const [loginState, setLoginState] = useRecoilState(loginCheck);
+
   // 텍스트 필드 포커스 상태 관리
   const [isMailFocused, setIsMailFocused] = useState(false);
   const [isPWFocused, setIsPWFocused] = useState(false);
+
+  const navigate = useNavigate();
+
+  // signup 페이지로 이동시 로그아웃
+  useEffect(() => {
+    setLoginState(false);
+  },[]);
+
+  // 로그인 버튼 클릭 시 페이지 이동 및 로그인 상태 변수 관리
+  const handleLoginClick = () => {
+    setLoginState(true);
+    navigate("/attendance");
+  };
 
   return (
     <>
@@ -47,7 +66,7 @@ function SignIn() {
 
           {/* buttons */}
           <LoginForm>
-            <LoginButton background={"#15521D"} color={"white"}>
+            <LoginButton background={"#15521D"} color={"white"} onClick={handleLoginClick}>
               Login
             </LoginButton>
             <LoginButton background={"#EFEFEF"}>

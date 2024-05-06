@@ -1,14 +1,28 @@
 import { Outlet, NavLink } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import { ReactComponent as Logo } from "./Assets/Logo.svg";
 import { theme } from "./style/theme";
+import { useRecoilState } from "recoil";
+import { loginCheck } from "./Atom";
 import Navbar from "./components/Navbar";
 // import Footer from "./components/Footer";
 
 const Layout = () => {
-  const [showLogoutButton, setShowLogoutButton] = useState(false);
-  const [showSecondHeader, setShowSecondHeader] = useState(false);
+  const [loginState, setLoginState] = useRecoilState(loginCheck);
+  
+  const [showLogoutButton, setShowLogoutButton] = useState(true);
+  const [showSecondHeader, setShowSecondHeader] = useState(true);
+  const [showFooter, setShowFooter] = useState(true);
+
+  //로그인 상태에 따라 로그아웃 버튼, 헤더바2, 푸터 표시 여부 변경
+  useEffect (() => {
+    console.log(loginState);
+    setShowLogoutButton(loginState);
+    setShowSecondHeader(loginState);
+    setShowFooter(!loginState);
+  }, [loginState]);
+
   return (
     <div>
       <ThemeProvider theme={theme}>
@@ -36,13 +50,15 @@ const Layout = () => {
         </main>
 
         {/* 푸터 */}
-        <Footer>
-          <FooterPadding>
-            <BoldText>양영학원</BoldText>
-            <Texts>주소 : 대전 서구 둔산로 136</Texts>
-            <Texts>번호 : 042-486-4245 </Texts>
-          </FooterPadding>
-        </Footer>
+        {showFooter && (
+          <Footer>
+            <FooterPadding>
+              <BoldText>양영학원</BoldText>
+              <Texts>주소 : 대전 서구 둔산로 136</Texts>
+              <Texts>번호 : 042-486-4245 </Texts>
+            </FooterPadding>
+          </Footer>
+        )}
       </ThemeProvider>
     </div>
   );
