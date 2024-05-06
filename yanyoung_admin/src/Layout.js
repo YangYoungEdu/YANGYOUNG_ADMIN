@@ -24,7 +24,7 @@ const Layout = () => {
   }, [loginState]);
 
   const activeStyle = {
-    color: "${(props) => props.theme.colors.primary_normal}",
+    color: "#15521D",
     fontWeight: "bold"
   };
 
@@ -42,9 +42,9 @@ const Layout = () => {
           {/* 헤더바 2 */}
           {showSecondHeader && (
             <SecondHeader>
-              <NavLink to={`/attendance`} style={({ isActive }) => (isActive ? activeStyle : 'inherit')}>출결 관리</NavLink>
-              <NavLink to={`/`} style={({ isActive }) => (isActive ? activeStyle : 'inherit')}>학생 관리</NavLink>
-              <NavLink to={`/`} style={({ isActive }) => (isActive ? activeStyle : 'inherit')}>수업 관리</NavLink>
+              <NavLink to={`/attendance`} style={({ isActive }) => (isActive ? activeStyle : undefined)}>출결 관리</NavLink>
+              <NavLink to={`/`} style={({ isActive }) => (isActive ? activeStyle : undefined)}>학생 관리</NavLink>
+              <NavLink to={`/`} style={({ isActive }) => (isActive ? activeStyle : undefined)}>수업 관리</NavLink>
             </SecondHeader>
           )}
         </Header>
@@ -95,7 +95,7 @@ const SecondHeader = styled.div`
   line-height: 49px;
   background: ${(props) => props.theme.colors.gray_002};
   color: ${(props) => props.theme.colors.gray_006};
-  font-size: ${(props) => props.theme.fontSizes.MenuRegular};
+  font-size: ${(props) => props.theme.fontSizes.MenuBold};
   padding-left: 13.54%;
   white-space: nowrap;
   gap: 25px;
