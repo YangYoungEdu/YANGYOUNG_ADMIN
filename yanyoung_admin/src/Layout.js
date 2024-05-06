@@ -1,27 +1,32 @@
 import { Outlet, NavLink } from "react-router-dom";
 import { useState, useEffect } from "react";
 import styled, { ThemeProvider } from "styled-components";
-import { ReactComponent as Logo } from "./Assets/Logo.svg";
 import { theme } from "./style/theme";
 import { useRecoilState } from "recoil";
 import { loginCheck } from "./Atom";
 import Navbar from "./components/Navbar";
+import { act } from "react";
 // import Footer from "./components/Footer";
 
 const Layout = () => {
   const [loginState, setLoginState] = useRecoilState(loginCheck);
-  
+
   const [showLogoutButton, setShowLogoutButton] = useState(true);
   const [showSecondHeader, setShowSecondHeader] = useState(true);
   const [showFooter, setShowFooter] = useState(true);
 
   //로그인 상태에 따라 로그아웃 버튼, 헤더바2, 푸터 표시 여부 변경
-  useEffect (() => {
+  useEffect(() => {
     console.log(loginState);
     setShowLogoutButton(loginState);
     setShowSecondHeader(loginState);
     setShowFooter(!loginState);
   }, [loginState]);
+
+  const activeStyle = {
+    color: "${(props) => props.theme.colors.primary_normal}",
+    fontWeight: "bold"
+  };
 
   return (
     <div>
@@ -29,17 +34,17 @@ const Layout = () => {
         {/* 넷바 */}
         <Header>
           {/* 헤더바 1 */}
-          <FirstHeader>
-            <StyledLogo />
-            {showLogoutButton && <div>로그아웃</div>}
+          <FirstHeader isLoggedIn={loginState}>
+            <Logo isLoggedIn={loginState}>양영학원 고등부 영어과</Logo>
+            {showLogoutButton && <LogOut>로그아웃</LogOut>}
           </FirstHeader>
 
           {/* 헤더바 2 */}
           {showSecondHeader && (
             <SecondHeader>
-              <NavLink to={`/attendance`}>출결 관리</NavLink>
-              <NavLink to={`/`}>학생 관리</NavLink>
-              <NavLink to={`/`}>수업 관리</NavLink>
+              <NavLink to={`/attendance`} style={({ isActive }) => (isActive ? activeStyle : 'inherit')}>출결 관리</NavLink>
+              <NavLink to={`/`} style={({ isActive }) => (isActive ? activeStyle : 'inherit')}>학생 관리</NavLink>
+              <NavLink to={`/`} style={({ isActive }) => (isActive ? activeStyle : 'inherit')}>수업 관리</NavLink>
             </SecondHeader>
           )}
         </Header>
@@ -67,30 +72,53 @@ const Layout = () => {
 const Header = styled.header`
   display: flex;
   flex-direction: column;
-  height: 81px;
-  line-height: 81px;
 `;
 
 const FirstHeader = styled.div`
-  padding-left: 17.43%;
+  display: flex;
+  flex-direction: row;
+  height: 69px;
+  line-height: 69px;
+  padding-left: 13.54%;
+  padding-right: 13.54%;
+  justify-content: space-between;
+  background-color: ${(props) => (props.isLoggedIn ? "#15521D" : "#fff")};
   @media screen and (max-width: 1250px) {
     padding-left: 5%;
   }
 `;
 
 const SecondHeader = styled.div`
+  display: flex;
+  flex-direction: row;
+  height: 49px;
+  line-height: 49px;
   background: ${(props) => props.theme.colors.gray_002};
-  font-size: ${(props) => props.theme.fontSizes.MenuBold};
-  padding-left: 17.43%;
+  color: ${(props) => props.theme.colors.gray_006};
+  font-size: ${(props) => props.theme.fontSizes.MenuRegular};
+  padding-left: 13.54%;
+  white-space: nowrap;
+  gap: 25px;
   @media screen and (max-width: 1250px) {
     padding-left: 5%;
   }
+  a {
+    cursor: pointer;
+  }
+
 `;
-const StyledLogo = styled(Logo)`
-  /* margin-left: 17.43%;
-  @media screen and (max-width: 1250px) {
-    margin-left: 5%;
-  } */
+
+const Logo = styled.div`
+  white-space: nowrap;
+  color: ${(props) => (props.isLoggedIn ? "#fff" : "#000")};
+  font-size: ${(props) => props.theme.fontSizes.Header};
+  font-weight: 500;
+  cursor: pointer;
+`;
+
+const LogOut = styled.div`
+  color: white;
+  cursor: pointer;
 `;
 
 const Footer = styled.footer`
