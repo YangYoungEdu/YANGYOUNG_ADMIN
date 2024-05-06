@@ -23,6 +23,7 @@ const Layout = () => {
     setShowFooter(!loginState);
   }, [loginState]);
 
+  // 특정 페이지가 활성화될 경우 메뉴의 스타일
   const activeStyle = {
     color: "#15521D",
     fontWeight: "bold"
@@ -43,7 +44,7 @@ const Layout = () => {
           {showSecondHeader && (
             <SecondHeader>
               <NavLink to={`/attendance`} style={({ isActive }) => (isActive ? activeStyle : undefined)}>출결 관리</NavLink>
-              <NavLink to={`/`} style={({ isActive }) => (isActive ? activeStyle : undefined)}>학생 관리</NavLink>
+              <NavLink to={`/student`} style={({ isActive }) => (isActive ? activeStyle : undefined)}>학생 관리</NavLink>
               <NavLink to={`/`} style={({ isActive }) => (isActive ? activeStyle : undefined)}>수업 관리</NavLink>
             </SecondHeader>
           )}
