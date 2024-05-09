@@ -76,7 +76,7 @@ const StudentTable = () => {
           <PaginationComponent
             pageCount={totalPages}
             currentPage={currentPage}
-            onPageChange={handlePageChange}
+            setCurrentPage={setCurrentPage}
           />
         </PaginationContainer>
       </Container>

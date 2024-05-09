@@ -2,7 +2,7 @@ import React from 'react';
 import Pagination from 'react-js-pagination';
 import styled from 'styled-components';
 
-const PaginationComponent = ({ pageCount, currentPage, onPageChange }) => {
+const PaginationComponent = ({ pageCount, currentPage, setCurrentPage }) => {
   return (
     <PaginationContainer>
       <Pagination
@@ -10,7 +10,7 @@ const PaginationComponent = ({ pageCount, currentPage, onPageChange }) => {
         itemsCountPerPage={10}
         totalItemsCount={pageCount * 10}
         pageRangeDisplayed={5}
-        onChange={onPageChange}
+        onChange={setCurrentPage}
         prevPageText={'<'}
         nextPageText={'>'}
         firstPageText={'<<'}
