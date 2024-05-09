@@ -30,9 +30,9 @@ div {
     all: unset;
 }
 
-table, tr, th, td {
+/* table, tr, th, td {
     all: unset;
-}
+} */
 
 .react-calendar { 
  width: 400px;

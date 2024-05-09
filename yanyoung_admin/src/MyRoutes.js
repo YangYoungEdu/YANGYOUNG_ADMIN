@@ -4,7 +4,6 @@ import ThemeExample from "./style/ThemeExample";
 import SignIn from "./pages/SignIn/SignInPage";
 import Attendance from "./pages/Attendance/AttendancePage";
 import Student from "./pages/Student/StudentPage";
-import DropdownExample from "./pages/Student/Dropdown"; 
 
 function MyRoutes() {
   return (
@@ -15,7 +14,6 @@ function MyRoutes() {
           <Route path="theme" element={<ThemeExample />} />
           <Route path="attendance" element={<Attendance />} />
           <Route path="student" element={<Student />} />
-          {/* <Route path = "student" element={<DropdownExample />} /> */}
         </Route>
       </Routes>
     </>
