@@ -1,49 +1,44 @@
-import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { getAllLectureByMonthAPI } from "../../API/LectureAPI";
 import { ReactComponent as LeftArrow } from "../../Assets/LeftArrow.svg";
 import { ReactComponent as Plus } from "../../Assets/Plus.svg";
 import { ReactComponent as RightArrow } from "../../Assets/RightArrow.svg";
 import SelectArrow from "../../Assets/SelectArrow.svg";
 
-const LectrueHeader = ({
-  mode,
-  setMode,
-  currentDate,
-  setCurrentDate,
-  setLectures,
-}) => {
-  const [month, setMonth] = useState(currentDate.getMonth());
-  const [year, setYear] = useState(currentDate.getFullYear());
-  
-  useEffect(() => {
-    getAllLectureByMonthAPI(year, month).then((response) => {
-      setLectures(response);
-    });
-  }, [year, month]);
+const LectrueHeader = ({ mode, setMode, currentDate, setCurrentDate }) => {
 
-  const prevMonth = () => {
-    setMonth((prevMonth) => prevMonth - 1);
-
+  // 모드(달,주,일)에 따라서 날짜 변경 함수
+  const changeDate = (amount, mode) => {
     const newDate = new Date(currentDate);
-    newDate.setMonth(newDate.getMonth() - 1);
+    switch (mode) {
+      case "month":
+        newDate.setMonth(newDate.getMonth() + amount);
+        break;
+      case "week":
+        newDate.setDate(newDate.getDate() + amount * 7);
+        break;
+      case "day":
+        newDate.setDate(newDate.getDate() + amount);
+        break;
+      default:
+        break;
+    }
     setCurrentDate(newDate);
   };
 
-  const nextMonth = () => {
-    setMonth((prevMonth) => prevMonth + 1);
+  const prev = () => {
+    changeDate(-1, mode);
+  };
 
-    const newDate = new Date(currentDate);
-    newDate.setMonth(newDate.getMonth() + 1);
-    setCurrentDate(newDate);
+  const next = () => {
+    changeDate(1, mode);
   };
 
   return (
     <>
       <CalendarHeader>
         <TodayButton>오늘</TodayButton>
-        <ArrowLeft onClick={prevMonth} />
-        <ArrowRight onClick={nextMonth} />
+        <ArrowLeft onClick={prev} />
+        <ArrowRight onClick={next} />
         <DateTitle>
           {currentDate.toLocaleString("default", {
             month: "long",
