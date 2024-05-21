@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { MainDiv } from "../../style/CommonStyle";
 
-const Calendar = ({ currentDate, lectures }) => {
-  const dayOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
+const MonthCalendar = ({ currentDate, lectures }) => {
   const [days, setDays] = useState([]);
   const [filteredLectures, setFilteredLectures] = useState([]);
 
@@ -96,4 +95,4 @@ const DayCell = styled.div`
   align-items: center;
 `;
 
-export default Calendar;
+export default MonthCalendar;

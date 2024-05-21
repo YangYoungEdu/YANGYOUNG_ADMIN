@@ -1,21 +1,38 @@
+import { useState, useEffect } from "react";
 import styled from "styled-components";
+import { getAllLectureByMonthAPI } from "../../API/LectureAPI";
 import { ReactComponent as LeftArrow } from "../../Assets/LeftArrow.svg";
 import { ReactComponent as Plus } from "../../Assets/Plus.svg";
 import { ReactComponent as RightArrow } from "../../Assets/RightArrow.svg";
 import SelectArrow from "../../Assets/SelectArrow.svg";
 
-const LectrueHeader = ({ currentDate, setCurrentDate, setMonth }) => {
-  const prevMonth = () => {
-    setMonth(prevMonth => prevMonth - 1);
+const LectrueHeader = ({
+  mode,
+  setMode,
+  currentDate,
+  setCurrentDate,
+  setLectures,
+}) => {
+  const [month, setMonth] = useState(currentDate.getMonth());
+  const [year, setYear] = useState(currentDate.getFullYear());
   
+  useEffect(() => {
+    getAllLectureByMonthAPI(year, month).then((response) => {
+      setLectures(response);
+    });
+  }, [year, month]);
+
+  const prevMonth = () => {
+    setMonth((prevMonth) => prevMonth - 1);
+
     const newDate = new Date(currentDate);
     newDate.setMonth(newDate.getMonth() - 1);
     setCurrentDate(newDate);
   };
-  
+
   const nextMonth = () => {
-    setMonth(prevMonth => prevMonth + 1);
-  
+    setMonth((prevMonth) => prevMonth + 1);
+
     const newDate = new Date(currentDate);
     newDate.setMonth(newDate.getMonth() + 1);
     setCurrentDate(newDate);
@@ -33,7 +50,7 @@ const LectrueHeader = ({ currentDate, setCurrentDate, setMonth }) => {
             year: "numeric",
           })}
         </DateTitle>
-        <Select>
+        <Select value={mode} onChange={(e) => setMode(e.target.value)}>
           <option value="month">월</option>
           <option value="week">주</option>
           <option value="day">일</option>

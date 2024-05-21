@@ -17,7 +17,7 @@ function MyRoutes() {
           <Route path="attendance" element={<Attendance />} />
           <Route path="student" element={<Student />} />
           <Route path="/student/:id" element={<StudentDetail />} />
-          <Route path="/lecture" element={<Lecture />} />
+          <Route path="lecture" element={<Lecture />} />
         </Route>
       </Routes>
     </>
