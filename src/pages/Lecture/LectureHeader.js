@@ -1,11 +1,11 @@
 import styled from "styled-components";
+import { RowDiv } from "../../style/CommonStyle";
 import { ReactComponent as LeftArrow } from "../../Assets/LeftArrow.svg";
 import { ReactComponent as Plus } from "../../Assets/Plus.svg";
 import { ReactComponent as RightArrow } from "../../Assets/RightArrow.svg";
 import SelectArrow from "../../Assets/SelectArrow.svg";
 
 const LectrueHeader = ({ mode, setMode, currentDate, setCurrentDate }) => {
-
   // 모드(달,주,일)에 따라서 날짜 변경 함수
   const changeDate = (amount, mode) => {
     const newDate = new Date(currentDate);
@@ -46,9 +46,9 @@ const LectrueHeader = ({ mode, setMode, currentDate, setCurrentDate }) => {
           })}
         </DateTitle>
         <Select value={mode} onChange={(e) => setMode(e.target.value)}>
-          <option value="month">월</option>
-          <option value="week">주</option>
-          <option value="day">일</option>
+          <option value="month">&nbsp;&nbsp;&nbsp;월</option>
+          <option value="week">&nbsp;&nbsp;&nbsp;주</option>
+          <option value="day">&nbsp;&nbsp;&nbsp;일</option>
         </Select>
         <UploadButton>
           <PlusIcon />
@@ -59,10 +59,10 @@ const LectrueHeader = ({ mode, setMode, currentDate, setCurrentDate }) => {
   );
 };
 
-const CalendarHeader = styled.div`
-  display: flex;
-  flex-direction: row;
-  /* margin: 0px 0px 10px -750px; */
+const CalendarHeader = styled(RowDiv)`
+  width: 90%;
+  justify-content: flex-start;
+  padding: 0px 0px 17px 0px;
 `;
 
 const TodayButton = styled.button`
@@ -71,7 +71,24 @@ const TodayButton = styled.button`
   border-radius: 5px;
   border: 1px solid ${(props) => props.theme.colors.gray_004};
   background-color: #ffffff;
+  text-align: center;
   cursor: pointer;
+`;
+
+const ArrowLeft = styled(LeftArrow)`
+  cursor: pointer;
+  padding: 5px 12px 0px 20px;
+`;
+
+const ArrowRight = styled(RightArrow)`
+  cursor: pointer;
+  padding: 5px 26px 0px 0px;
+`;
+
+const DateTitle = styled.div`
+  font-size: 20px;
+  font-weight: 500;
+  padding: 2px 20px 0px 0px;
 `;
 
 const Select = styled.select`
@@ -79,10 +96,13 @@ const Select = styled.select`
   height: 31px;
   border-radius: 5px;
   border: 1px solid ${(props) => props.theme.colors.gray_004};
-  background-color: #ffffff;
   appearance: none;
-  background: url(${SelectArrow}) no-repeat right 13px center;
-  padding-left: 12.5px;
+  background: url(${SelectArrow}) no-repeat right 17.5px center;
+  /* text-align-last: center;
+  text-align: center; */
+  padding-right: 5px;
+  line-height: 31px;
+  cursor: pointer;
 `;
 
 const UploadButton = styled.button`
@@ -92,27 +112,12 @@ const UploadButton = styled.button`
   border: 1px solid ${(props) => props.theme.colors.gray_004};
   background-color: #ffffff;
   cursor: pointer;
+  margin-left: auto;
+  padding-right: 5px;
 `;
 
 const PlusIcon = styled(Plus)`
-  margin: 0px 7.5px 0px 1px;
-`;
-
-const DateTitle = styled.div`
-  font-size: 20px;
-  font-weight: 500;
-`;
-
-const ArrowLeft = styled(LeftArrow)`
-  cursor: pointer;
-  margin: 4px 0px 0px 0px;
-  /* margin: 4px 0px 0px 20px; */
-`;
-
-const ArrowRight = styled(RightArrow)`
-  cursor: pointer;
-  margin: 4px 0px 0px 0px;
-  /* margin: 4px 12px 0px 0px; */
+  padding: 0px 2px 1.5px 8px;
 `;
 
 export default LectrueHeader;

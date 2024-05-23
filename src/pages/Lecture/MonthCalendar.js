@@ -58,7 +58,7 @@ const MonthCalendar = ({ currentDate, lectures }) => {
   };
 
   return (
-    <MainDiv>
+    <MonthCalendarWrapper>
       <CalendarBody>
         {days.map((day, index) => {
           if (filteredLectures[day] !== undefined) {
@@ -75,24 +75,30 @@ const MonthCalendar = ({ currentDate, lectures }) => {
           }
         })}
       </CalendarBody>
-    </MainDiv>
+    </MonthCalendarWrapper>
   );
 };
 
+const MonthCalendarWrapper = styled(MainDiv)`
+  width: 90%;
+  align-items: flex-start;
+`;
+
 const CalendarBody = styled.div`
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
-  width: 1120px;
-  height: 720px;
 `;
 
 const DayCell = styled.div`
-  width: calc(100% / 8);
-  height: calc(100% / 5);
+  width: calc(100% / 7);
+  height: 0;
+  padding-bottom: calc(100% / 7);
   border: 1px solid #ddd;
   display: flex;
   justify-content: center;
   align-items: center;
+  box-sizing: border-box;
 `;
 
 export default MonthCalendar;

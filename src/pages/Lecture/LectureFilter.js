@@ -4,11 +4,10 @@ import { ReactComponent as DownArrow } from "../../Assets/DownArrow.svg";
 import { ReactComponent as UpArrow } from "../../Assets/UpArrow.svg";
 
 const LectureFilter = () => {
-
   const toggleFilter = (filter) => {
     setIsToggled({ ...isToggled, [filter]: !isToggled[filter] });
   };
-  
+
   const [isToggled, setIsToggled] = useState({
     teacher: false,
     grade: false,
@@ -82,6 +81,12 @@ const LectureFilter = () => {
   );
 };
 
+const SearchWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 15%;
+`;
+
 const ArrowUp = styled(UpArrow)`
   cursor: pointer;
   justify-content: end;
@@ -92,12 +97,6 @@ const ArrowDown = styled(DownArrow)`
   cursor: pointer;
   justify-content: end;
   margin-top: 7px;
-`;
-
-const SearchWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 265px; // todo: width 수정
 `;
 
 const Line = styled.hr`
@@ -132,6 +131,5 @@ const CheckBox = styled.input.attrs({ type: "checkbox" })`
 
   cursor: pointer;
 `;
-
 
 export default LectureFilter;
