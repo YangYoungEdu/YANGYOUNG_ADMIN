@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ThemeProvider } from "styled-components";
-import { MainDiv, RowDiv } from "../../style/CommonStyle";
-import { theme } from "../../style/theme";
 import {
+  getAllLectureByDayAPI,
   getAllLectureByMonthAPI,
   getAllLectureByWeekAPI,
-  getAllLectureByDayAPI,
 } from "../../API/LectureAPI";
+import { ColumnDiv, RowDiv } from "../../style/CommonStyle";
+import { theme } from "../../style/theme";
 import DayCalendar from "./DayCaleandar";
 import LectureFilter from "./LectureFilter";
 import LectureHeader from "./LectureHeader";
@@ -55,22 +55,22 @@ const LecturePage = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <MainDiv>
-        {/* 캘린더 헤더 */}
-        <LectureHeader
-          mode={mode}
-          setMode={setMode}
-          currentDate={currentDate}
-          setCurrentDate={setCurrentDate}
-          setLectures={setLectures}
-        />
         <RowDiv>
           {/* 검색 필터 */}
           <LectureFilter />
-          {/* 캘린더 */}
-          {renderCalendar()}
+          <ColumnDiv>
+            {/* 캘린더 헤더 */}
+            <LectureHeader
+              mode={mode}
+              setMode={setMode}
+              currentDate={currentDate}
+              setCurrentDate={setCurrentDate}
+              setLectures={setLectures}
+            />
+            {/* 캘린더 */}
+            {renderCalendar()}
+          </ColumnDiv>
         </RowDiv>
-      </MainDiv>
     </ThemeProvider>
   );
 };

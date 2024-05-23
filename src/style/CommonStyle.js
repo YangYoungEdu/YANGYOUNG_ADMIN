@@ -5,17 +5,18 @@ export const MainDiv = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
 `;
 export const ColumnDiv = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* align-items: center; */
+  width: 100%;
 `;
 
 export const RowDiv = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  /* align-items: center; */
+  width: 100%;
 `;
