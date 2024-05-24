@@ -66,7 +66,7 @@ const MonthCalendar = ({ currentDate, lectures }) => {
               <DayCell key={index}>
                 {day}
                 {filteredLectures[day].map((lecture, index) => {
-                  return <div key={index}>{lecture.name}</div>;
+                  return <div key={index}>{lecture.teacher}</div>;
                 })}
               </DayCell>
             );

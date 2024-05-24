@@ -12,6 +12,7 @@ export const theme = {
     subTitle2: "14px",
     bodyText1: "22px",
     bodyText2: "16px",
+    bodyText3: "14px",
     menuRegular: "14px",
     menuBold: "14px",
   },
@@ -30,5 +31,8 @@ export const theme = {
     brown_001: "#604C4C",
     brown_002: "#362415",
     yellow_001: "#EAC784",
+    prof_kim: "#95C25C",
+    prof_hong: "#FFC14B",
+    prof_lee: "#A6773F",
   },
 };

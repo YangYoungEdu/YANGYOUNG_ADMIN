@@ -16,6 +16,7 @@ import WeekCalendar from "./WeekCalendar";
 const LecturePage = () => {
   const [mode, setMode] = useState("month");
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [originLectures, setOriginLectures] = useState([]);
   const [lectures, setLectures] = useState([]);
 
   useEffect(() => {
@@ -35,6 +36,7 @@ const LecturePage = () => {
           response = [];
       }
       setLectures(response);
+      setOriginLectures(response);
     };
 
     fetchLectures();
@@ -55,22 +57,25 @@ const LecturePage = () => {
 
   return (
     <ThemeProvider theme={theme}>
-        <RowDiv>
-          {/* 검색 필터 */}
-          <LectureFilter />
-          <ColumnDiv>
-            {/* 캘린더 헤더 */}
-            <LectureHeader
-              mode={mode}
-              setMode={setMode}
-              currentDate={currentDate}
-              setCurrentDate={setCurrentDate}
-              setLectures={setLectures}
-            />
-            {/* 캘린더 */}
-            {renderCalendar()}
-          </ColumnDiv>
-        </RowDiv>
+      <RowDiv>
+        {/* 검색 필터 */}
+        <LectureFilter
+          lectures={lectures}
+          setLectures={setLectures}
+        />
+        <ColumnDiv>
+          {/* 캘린더 헤더 */}
+          <LectureHeader
+            mode={mode}
+            setMode={setMode}
+            currentDate={currentDate}
+            setCurrentDate={setCurrentDate}
+            setLectures={setLectures}
+          />
+          {/* 캘린더 */}
+          {renderCalendar()}
+        </ColumnDiv>
+      </RowDiv>
     </ThemeProvider>
   );
 };
