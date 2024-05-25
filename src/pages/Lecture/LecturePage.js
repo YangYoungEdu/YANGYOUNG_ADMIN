@@ -35,8 +35,8 @@ const LecturePage = () => {
         default:
           response = [];
       }
-      setLectures(response);
       setOriginLectures(response);
+      setLectures(response);
     };
 
     fetchLectures();
@@ -60,7 +60,7 @@ const LecturePage = () => {
       <RowDiv>
         {/* 검색 필터 */}
         <LectureFilter
-          lectures={lectures}
+          originLectures={originLectures}
           setLectures={setLectures}
         />
         <ColumnDiv>
