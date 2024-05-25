@@ -30,30 +30,15 @@ const LectureFilter = ({ originLectures, setLectures }) => {
 
   // 강의 필터 함수 - 선생님, 학년, (강의실, 요일)
   const filterLecturesByCheckedTeachers = () => {
-    if (
-      // 모든 체크박스가 해제되었을 때 초기화
-      Object.keys(checkedTeachers).length === 0 ||
-      Object.values(checkedTeachers).every((value) => value === false)
-    ) {
-      setLectures(originLectures);
+    const lecturesByTeacher = filterLecturesByTeacher();
+    const lecturesByGrade = filterLecturesByGrade();
 
-      return originLectures;
-    }
-
-    const checkedTeacherNames = Object.keys(checkedTeachers).filter(
-      (name) => checkedTeachers[name]
+    const duplicates = lecturesByTeacher.filter((lecture) =>
+      lecturesByGrade.includes(lecture)
     );
+    console.log("Duplicates:", duplicates);
 
-    const filteredLectures = originLectures.filter((lecture) => {
-      // 해당 강의의 선생님이 선택된 선생님 목록에 있고,
-      // 해당 강의의 학년이 선택된 학년 목록에도 있으면 true 반환
-      const teacherMatched = checkedTeacherNames.includes(lecture.teacher);
-      return teacherMatched;
-    });
-
-    setLectures(filteredLectures);
-
-    return filteredLectures;
+    setLectures(duplicates);
   };
 
   // 강의 필터 - 선생님
@@ -72,6 +57,9 @@ const LectureFilter = ({ originLectures, setLectures }) => {
     const filteredLectures = originLectures.filter((lecture) =>
       checkedTeacherNames.includes(lecture.teacher)
     );
+    console.log("filteredLectures", filteredLectures);
+
+    return filteredLectures;
   };
 
   // 강의 필터 - 학년
@@ -89,6 +77,8 @@ const LectureFilter = ({ originLectures, setLectures }) => {
     const filteredLectures = originLectures.filter((lecture) =>
       checkedGradeNames.includes(lecture.grade)
     );
+
+    return filteredLectures;
   };
 
   // 필터 토글 함수 - 선생님, 학년, 강의실, 요일
