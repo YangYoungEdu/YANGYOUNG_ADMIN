@@ -32,6 +32,7 @@ const MonthCalendar = ({ currentDate, lectures }) => {
   };
 
   const fileterLectureByDay = () => {
+    console.log(lectures);
     // yyyy-mm-dd 형식의 날짜에서 dd만 추출해서 날짜별로 강의 분류
     let filteredLectures = [];
     lectures.forEach((lecture) => {
@@ -45,7 +46,6 @@ const MonthCalendar = ({ currentDate, lectures }) => {
       });
     });
 
-    console.log(filteredLectures);
     setFilteredLectures(filteredLectures);
   };
 
@@ -66,7 +66,7 @@ const MonthCalendar = ({ currentDate, lectures }) => {
               <DayCell key={index}>
                 {day}
                 {filteredLectures[day].map((lecture, index) => {
-                  return <div key={index}>{lecture.name}</div>;
+                  return <div key={index}>{lecture.teacher}</div>;
                 })}
               </DayCell>
             );
