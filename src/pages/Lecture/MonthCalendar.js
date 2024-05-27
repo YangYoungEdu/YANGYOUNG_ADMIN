@@ -5,6 +5,7 @@ import { MainDiv } from "../../style/CommonStyle";
 const MonthCalendar = ({ currentDate, lectures }) => {
   const [days, setDays] = useState([]);
   const [filteredLectures, setFilteredLectures] = useState([]);
+  const weekDays = ["월", "화", "수", "목", "금", "토", "일"];
 
   useEffect(() => {
     renderCalendar();
@@ -19,21 +20,39 @@ const MonthCalendar = ({ currentDate, lectures }) => {
 
     let dayCounter = 1;
 
-    for (let i = 0; i < totalCells; i++) {
-      if (i >= startDay && dayCounter <= totalDays) {
-        days.push(dayCounter);
-        dayCounter++;
-      } else {
-        days.push("");
-      }
+    // 이전 달의 마지막 몇 일을 추가
+    const prevMonthDays = startDay;
+    const prevMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() - 1,
+      0
+    );
+    const prevMonthTotalDays = prevMonth.getDate();
+    for (
+      let i = prevMonthTotalDays - prevMonthDays + 1;
+      i <= prevMonthTotalDays;
+      i++
+    ) {
+      days.push(i.toString());
+    }
+
+    // 이번 달의 날짜를 추가
+    for (let i = 1; i <= totalDays; i++) {
+      days.push(i.toString());
+      dayCounter++;
+    }
+
+    // 다음 달의 첫 몇 일을 추가
+    const remainingCells = totalCells - days.length;
+    for (let i = 1; i <= remainingCells; i++) {
+      days.push(i.toString());
     }
 
     setDays(days);
   };
 
+  // yyyy-mm-dd 형식의 날짜에서 dd만 추출해서 날짜별로 강의 분류
   const fileterLectureByDay = () => {
-    console.log(lectures);
-    // yyyy-mm-dd 형식의 날짜에서 dd만 추출해서 날짜별로 강의 분류
     let filteredLectures = [];
     lectures.forEach((lecture) => {
       const dateList = lecture.dateList;
@@ -61,18 +80,32 @@ const MonthCalendar = ({ currentDate, lectures }) => {
     <MonthCalendarWrapper>
       <CalendarBody>
         {days.map((day, index) => {
-          if (filteredLectures[day] !== undefined) {
-            return (
-              <DayCell key={index}>
+          const isFirstWeek = index < 7;
+          const hasLectures = filteredLectures[day] !== undefined;
+
+          return (
+            <DayCell key={index}>
+              <DayText>
+                {isFirstWeek && (
+                  <>
+                    {weekDays[index]}
+                    <br />
+                  </>
+                )}
                 {day}
-                {filteredLectures[day].map((lecture, index) => {
-                  return <div key={index}>{lecture.teacher}</div>;
-                })}
-              </DayCell>
-            );
-          } else {
-            return <DayCell key={index}>{day}</DayCell>;
-          }
+              </DayText>
+              <br />
+              {hasLectures &&
+                filteredLectures[day].map((lecture, lectureIndex) => (
+                  <LectureCell
+                    key={lectureIndex}
+                    backgroundColor={lecture.backgroundColor}
+                  >
+                    {lecture.name}
+                  </LectureCell>
+                ))}
+            </DayCell>
+          );
         })}
       </CalendarBody>
     </MonthCalendarWrapper>
@@ -96,9 +129,21 @@ const DayCell = styled.div`
   padding-bottom: calc(100% / 7);
   border: 1px solid #ddd;
   display: flex;
+  flex-direction: column;
+  text-align: center;
   justify-content: center;
-  align-items: center;
   box-sizing: border-box;
+`;
+
+const DayText = styled.div`
+  width: 100%;
+  height: 100%;
+  padding-top: 30px;
+`;
+
+const LectureCell = styled.div`
+  width: 95%;
+  border-radius: 5px;
 `;
 
 export default MonthCalendar;
