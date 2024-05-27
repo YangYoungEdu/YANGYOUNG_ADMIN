@@ -69,7 +69,7 @@ const BackDiv = styled.div`
 const Menus = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 50px;
+  margin-top: 41px;
   margin-left: 195px;
 `;
 

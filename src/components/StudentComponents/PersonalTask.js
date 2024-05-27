@@ -4,27 +4,20 @@ import styled from "styled-components";
 import { ReactComponent as UnOpenBlackPolygon } from "../../Assets/UnOpenBlackPolygon.svg";
 import { ReactComponent as BlackPolygon } from "../../Assets/BlackPolygon.svg";
 import { ReactComponent as PlusIcon } from "../../Assets/PlusIcon.svg";
-import { getOneStudentTaskAPI } from "../../API/TaskAPI";
-
-// const columns = [
-//     { key: "index", label: "순번" },
-//     { key: "name", label: "이름" },
-//     { key: "school", label: "학교" },
-//     { key: "grade", label: "학년" },
-//     { key: "studentPhoneNumber", label: "학생 연락처" },
-//     { key: "parentPhoneNumber", label: "부모님 연락처" },
-//     { key: "id", label: "학번" },
-//   ];
+import { getOneStudentTaskAPI, postOneStudentTaskAPI } from "../../API/TaskAPI";
 
 const PersonalTask = () => {
   const { id } = useParams();
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isIngOpen, setIsIngOpen] = useState(false);
+  const [isEndOpen, setIsEndOpen] = useState(false);
+  const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
     const getOneStudentTask = async () => {
       try {
         const response = await getOneStudentTaskAPI(id);
+        setTasks(response);
         console.log(response);
       } catch (error) {
         console.error(error);
@@ -37,14 +30,14 @@ const PersonalTask = () => {
       {/* 과제 현황 */}
       <BigDiv>
         <BtnArea>
-          <div onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <BlackPolygon /> : <UnOpenBlackPolygon />}
+          <div onClick={() => setIsIngOpen(!isIngOpen)}>
+            {isIngOpen ? <BlackPolygon /> : <UnOpenBlackPolygon />}
             <PolygonText>진행 중</PolygonText>
           </div>
           <PlusIcon />
         </BtnArea>
         {/* task 목록 */}
-        {isOpen && (
+        {isIngOpen && (
           <div>
             {/* 테스크 하나 */}
             <Box>
@@ -68,28 +61,30 @@ const PersonalTask = () => {
       {/* 마감된 과제 */}
       <BigDiv>
         <BtnArea>
-          <div>
-            <BlackPolygon />
+          <div onClick={() => setIsEndOpen(!isEndOpen)}>
+            {isEndOpen ? <BlackPolygon /> : <UnOpenBlackPolygon />}
             <PolygonText>마감</PolygonText>
           </div>
           <PlusIcon />
         </BtnArea>
         {/* task 목록 */}
-        <div>
-          {/* 테스크 하나 */}
-          <Box>
-            <TopInfo>
-              <Title>과제 이름</Title>
-              <DetailBox background={"#E9F2EB"}>수업 이름</DetailBox>
-              <DetailBox background={"#FFF4DE"}>과제 종류</DetailBox>
-            </TopInfo>
-            <BottomInfo>
-              <div>날짜</div>
-              <div>|</div>
-              <div>제출 상태</div>
-            </BottomInfo>
-          </Box>
-        </div>
+        {isEndOpen && (
+          <div>
+            {/* 테스크 하나 */}
+            <Box>
+              <TopInfo>
+                <Title>과제 이름</Title>
+                <DetailBox background={"#E9F2EB"}>수업 이름</DetailBox>
+                <DetailBox background={"#FFF4DE"}>과제 종류</DetailBox>
+              </TopInfo>
+              <BottomInfo>
+                <div>날짜</div>
+                <div>|</div>
+                <div>제출 상태</div>
+              </BottomInfo>
+            </Box>
+          </div>
+        )}
       </BigDiv>
     </TopDiv>
   );

@@ -33,6 +33,7 @@ const TableMenus = ({
   const deleteStudent = async () => {
     try {
       const response = await deleteStudentAPI(selectedStudent);
+      console.log(response);
       window.location.reload();
     } catch (error) {
       console.error(error);
@@ -41,12 +42,12 @@ const TableMenus = ({
 
   const hideStudent = async () => {
     try {
-        const response = await hideStudentAPI(selectedStudent);
-        // window.location.reload();
+      const response = await hideStudentAPI(selectedStudent);
+      // window.location.reload();
     } catch (err) {
-        console.error(err);
+      console.error(err);
     }
-  }
+  };
   return (
     <MainDiv>
       {/* 보관함 들어온 경우 */}
@@ -68,13 +69,21 @@ const TableMenus = ({
         {isEditing ? (
           // 편집 모드의 경우
           <EditModeButtons>
-            <EditButton onClick={hideStudent} color="black" background="#EFEFEF">
+            <EditButton
+              onClick={hideStudent}
+              color="black"
+              background="#EFEFEF"
+            >
               보관
             </EditButton>
-            <EditButton onClick={deleteStudent} color="black" background="#EFEFEF">
+            <EditButton
+              onClick={deleteStudent}
+              color="black"
+              background="#EFEFEF"
+            >
               삭제
             </EditButton>
-            <EditButton  color="white" background="#15521D">
+            <EditButton color="white" background="#15521D">
               저장
             </EditButton>
           </EditModeButtons>

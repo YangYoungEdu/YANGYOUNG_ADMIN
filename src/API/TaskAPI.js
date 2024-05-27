@@ -2,13 +2,24 @@ import axios from "axios";
 
 const server = process.env.REACT_APP_DEV_URL;
 
-export const getOneStudentTaskAPI = async(studentId) => {
-    console.log (studentId);
-    try {
-        const response = await axios.get(`${server}task/student?studentId=${studentId}`);
-        console.log (studentId);
-        console.log (response.data);
-    } catch (error) {
-        console.error(error);
-    }
+export const getOneStudentTaskAPI = async (studentId) => {
+  console.log(studentId);
+  try {
+    const response = await axios.get(
+      `${server}task/student?studentId=${studentId}`
+    );
+    console.log(studentId);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const postOneStudentTaskAPI = async (data) => {
+  try {
+    const response = await axios.post(`${server}task/student`, data);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
 };

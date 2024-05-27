@@ -49,48 +49,53 @@ const PersonalInfo = () => {
           <Grade>{studentInfo.grade}</Grade>
         </NamePart>
         <SubmitButton type="button" onClick={activeButton}>
-          수정
+          편집
         </SubmitButton>
       </UpperArea>
 
       {/* form Parts*/}
       <StyledForm>
-        <div>
-          <label>학교</label>
-          <StyledInput
-            type="text"
-            name="school"
-            value={tmpStudentInfo.school || ""}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label>학번</label>
-          <StyledInput
-            type="text"
-            name="id"
-            value={tmpStudentInfo.id || ""}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label>학생 연락처</label>
-          <StyledInput
-            type="text"
-            name="studentPhoneNumber"
-            value={tmpStudentInfo.studentPhoneNumber || ""}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label>부모님 연락처</label>
-          <StyledInput
-            type="text"
-            name="parentPhoneNumber"
-            value={tmpStudentInfo.parentPhoneNumber || ""}
-            onChange={handleChange}
-          />
-        </div>
+        <StyledFormOne>
+          <StyledDiv>
+            <label>학교</label>
+            <StyledInput
+              type="text"
+              name="school"
+              value={tmpStudentInfo.school || ""}
+              onChange={handleChange}
+            />
+          </StyledDiv>
+          <StyledDiv>
+            <label>학번</label>
+            <StyledInput
+              type="text"
+              name="id"
+              value={tmpStudentInfo.id || ""}
+              onChange={handleChange}
+            />
+          </StyledDiv>
+        </StyledFormOne>
+
+        <StyledFormOne>
+          <StyledDiv>
+            <label>학생 연락처</label>
+            <StyledInput
+              type="text"
+              name="studentPhoneNumber"
+              value={tmpStudentInfo.studentPhoneNumber || ""}
+              onChange={handleChange}
+            />
+          </StyledDiv>
+          <StyledDiv>
+            <label>부모님 연락처</label>
+            <StyledInput
+              type="text"
+              name="parentPhoneNumber"
+              value={tmpStudentInfo.parentPhoneNumber || ""}
+              onChange={handleChange}
+            />
+          </StyledDiv>
+        </StyledFormOne>
       </StyledForm>
     </TopDiv>
   );
@@ -99,7 +104,7 @@ const PersonalInfo = () => {
 const TopDiv = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 19px;
+  gap: 56px;
   margin-left: 50px;
   margin-top: 41px;
 `;
@@ -107,12 +112,19 @@ const TopDiv = styled.div`
 const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 40px;
-  div {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
+  gap: 41px;
+`;
+
+const StyledFormOne = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 61px;
+`;
+
+const StyledDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 
   label {
     font-family: Pretendard Variable;
@@ -123,10 +135,10 @@ const StyledForm = styled.form`
 `;
 
 const StyledInput = styled.input`
-  width: 410px;
+  width: 370px;
   height: 50px;
   border-radius: 5px;
-  border: 1px solid #bababa;
+  border: 1px solid #EFEFEF;
   box-sizing: border-box;
   padding-left: 18px;
   font-family: Pretendard Variable;
@@ -167,17 +179,19 @@ const Grade = styled.div`
 `;
 
 const SubmitButton = styled.button`
-  width: 100px;
-  height: 35px;
-  border: none;
+  width: 61px;
+  height: 31px;
+  padding: 10px;
   border-radius: 5px;
-  background-color: #15521d;
-  color: white;
-  font-family: Pretendard Variable;
-  font-size: 16px;
-  font-weight: 600;
+  background: #efefef;
+  box-sizing: border-box;
   text-align: center;
-  cursor: pointer;
+  line-height: 13px;
+
+  //styleName: Button 3;
+  font-family: Pretendard Variable;
+  font-size: 14px;
+  font-weight: 400;
 `;
 
 export default PersonalInfo;
