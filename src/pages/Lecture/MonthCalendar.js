@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { ThemeProvider } from "styled-components";
+import { theme } from "../../style/theme";
 import { MainDiv } from "../../style/CommonStyle";
 
 const MonthCalendar = ({ currentDate, lectures }) => {
@@ -77,38 +78,60 @@ const MonthCalendar = ({ currentDate, lectures }) => {
   };
 
   return (
-    <MonthCalendarWrapper>
-      <CalendarBody>
-        {days.map((day, index) => {
-          const isFirstWeek = index < 7;
-          const hasLectures = filteredLectures[day] !== undefined;
+    <ThemeProvider theme={theme}>
+      <MonthCalendarWrapper>
+        <CalendarBody>
+          {days.map((day, index) => {
+            const isFirstWeek = index < 7;
+            const lectureNum =
+              filteredLectures[day] && filteredLectures[day].length;
+            // const hasLectures = filteredLectures[day] !== undefined;
 
-          return (
-            <DayCell key={index}>
-              <DayText>
-                {isFirstWeek && (
-                  <>
-                    {weekDays[index]}
-                    <br />
-                  </>
-                )}
-                {day}
-              </DayText>
-              <br />
-              {hasLectures &&
-                filteredLectures[day].map((lecture, lectureIndex) => (
-                  <LectureCell
-                    key={lectureIndex}
-                    backgroundColor={lecture.backgroundColor}
-                  >
-                    {lecture.name}
-                  </LectureCell>
-                ))}
-            </DayCell>
-          );
-        })}
-      </CalendarBody>
-    </MonthCalendarWrapper>
+            return (
+              <DayCell key={index}>
+                <DayText>
+                  {isFirstWeek && (
+                    <>
+                      {weekDays[index]}
+                      <br />
+                    </>
+                  )}
+                  {day}
+                </DayText>
+                {lectureNum > 0 &&
+                  filteredLectures[day]
+                    .slice(0, 3)
+                    .map((lecture, lectureIndex) => (
+                      <React.Fragment key={lectureIndex}>
+                        <LectureCell teacher={lecture.teacher}>
+                          {lecture.name}
+                        </LectureCell>
+                        {lectureNum > 3 && lectureIndex === 2 && (
+                          <LectureText>
+                            그 외 {lectureNum - 3}개 수업이 더 있습니다.
+                          </LectureText>
+                        )}
+                      </React.Fragment>
+                    ))}
+                {/* {lectureNum > 0 &&
+                  filteredLectures[day].map((lecture, lectureIndex) =>
+                    lectureNum > 3 ? (
+                      <LectureCell key={lectureIndex} teacher={lecture.teacher}>
+                        {lecture.teacher}
+                      </LectureCell>
+                    ) : (
+                      <LectureCell key={lectureIndex} teacher={lecture.teacher}>
+                        {lecture.teacher}
+                        하이
+                      </LectureCell>
+                    )
+                  )} */}
+              </DayCell>
+            );
+          })}
+        </CalendarBody>
+      </MonthCalendarWrapper>
+    </ThemeProvider>
   );
 };
 
@@ -130,20 +153,47 @@ const DayCell = styled.div`
   border: 1px solid #ddd;
   display: flex;
   flex-direction: column;
+  align-items: center;
   text-align: center;
-  justify-content: center;
+  justify-content: flex-start;
   box-sizing: border-box;
+  position: relative;
 `;
 
 const DayText = styled.div`
   width: 100%;
-  height: 100%;
-  padding-top: 30px;
+  padding: 5px;
+  font-size: 0.9em;
+  font-weight: bold;
+  position: absolute;
+  top: 5px;
 `;
 
 const LectureCell = styled.div`
-  width: 95%;
+  width: 90%;
   border-radius: 5px;
+  margin-top: 40px;
+  margin-bottom: -30px;
+  padding: 5px;
+  font-size: 0.8em;
+  text-align: center;
+
+  background-color: ${({ teacher, theme }) => {
+    switch (teacher) {
+      case "선생님1":
+        return `${theme.colors.prof_kim}70`;
+      case "선생님2":
+        return `${theme.colors.prof_hong}70`;
+      case "선생님3":
+        return `${theme.colors.prof_lee}70`;
+      default:
+        return "rgba(135, 206, 235, 0.7)";
+    }
+  }};
 `;
 
+const LectureText = styled.div`
+  font-size: ${(props) => props.theme.fontSizes.bodyText4};
+  padding-top: 40px;
+`;
 export default MonthCalendar;
