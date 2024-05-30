@@ -6,7 +6,6 @@ const WeekCalendar = ({ currentDate, lectures }) => {
   const [filteredLectures, setFilteredLectures] = useState({});
 
   useEffect(() => {
-    // 날짜별로 강의 필터링
     const filterLecturesByDateAndTime = () => {
       const filtered = {};
       const getDayOfWeek = (date) => {
@@ -34,7 +33,6 @@ const WeekCalendar = ({ currentDate, lectures }) => {
     setFilteredLectures(filterLecturesByDateAndTime(lectures, currentDate));
   }, [currentDate, lectures]);
 
-  // 시간 표시 함수(오전/오후)
   const getHour = (hour) => {
     if (hour < 7) return `오전 ${hour + 12}:00`;
     if (hour < 12) return `오전 ${hour}:00`;
@@ -42,27 +40,69 @@ const WeekCalendar = ({ currentDate, lectures }) => {
     return `오후 ${hour - 12}:00`;
   };
 
-  // 요일별 날짜 표시 함수
   const getDayDate = (currentDate, index) => {
     const date = new Date(currentDate);
     date.setDate(date.getDate() + index);
     return date.getDate().toString().padStart(2, "0");
   };
 
-  const renderLecturesByHour = (dayOfWeek, hour) => {
-    if (filteredLectures[dayOfWeek]) {
-      return filteredLectures[dayOfWeek].map((lecture, index) => (
-        <HourCell key={index} hasLecture={true}>
-          {lecture.name}
-        </HourCell>
-      ));
+  const renderLecturesByQuarterHour = (dayOfWeek, hour, quarter) => {
+    if (filteredLectures[dayOfWeek])  {
+      // 시간순으로 강의 정렬
+      const sortedLectures = filteredLectures[dayOfWeek].sort((a, b) => {
+        const startTimeA = a.startTime;
+        const startTimeB = b.startTime;
+        return startTimeA - startTimeB;
+      });
+      console.log("sortedLectures: ", sortedLectures);
+
+      return sortedLectures.map((lecture, index) => {
+        const startTime = lecture.startTime;
+        const startHour = startTime.split(":")[0];
+        const startMinute = startTime.split(":")[1];
+        const startQuarter = Math.floor(startTime.split(":")[1] / 15);
+        const endTime = lecture.endTime;
+        const endHour = endTime.split(":")[0];
+        const endMinute = endTime.split(":")[1];
+        const endQuarter = Math.ceil(endTime.split(":")[1] / 15);
+
+        if (
+          startHour === hour &&
+          startQuarter <= quarter &&
+          (endHour > hour ||
+            (endHour === hour && endQuarter > quarter))
+        ) {
+          return (
+            <QuarterHourCell key={index} hasLecture={true}>
+              {lecture.name}
+            </QuarterHourCell>
+          );
+        }
+
+        if (startHour < hour && endHour > hour) {
+          return (
+            <QuarterHourCell key={index} hasLecture={true}>
+              {lecture.name}
+            </QuarterHourCell>
+          );
+        }
+
+        if (endHour === hour && endQuarter > quarter) {
+          return (
+            <QuarterHourCell key={index} hasLecture={true}>
+              {lecture.name}
+            </QuarterHourCell>
+          );
+        }
+
+        return null;
+      });
     }
     return null;
   };
 
   return (
     <CalendarContainer>
-      {/* 요일, 날짜 표시 */}
       <WeekRow>
         <EmptyCell></EmptyCell>
         {daysOfWeek.map((day, index) => (
@@ -73,13 +113,20 @@ const WeekCalendar = ({ currentDate, lectures }) => {
         ))}
       </WeekRow>
 
-      {/* 시간대별 강의 표시 */}
-      {[...Array(17).keys()].map((hour, index) => (
+      {[...Array(17).keys()].map((hour) => (
         <WeekRow key={hour}>
           <HourText>{getHour(hour + 7)}</HourText>
           {daysOfWeek.map((day, index) => (
             <HourCell key={index}>
-              {renderLecturesByHour(daysOfWeek[index], hour)}
+              {[...Array(4).keys()].map((quarter) => (
+                <QuarterHourCell key={quarter}>
+                  {renderLecturesByQuarterHour(
+                    daysOfWeek[index],
+                    hour + 7,
+                    quarter
+                  )}
+                </QuarterHourCell>
+              ))}
             </HourCell>
           ))}
         </WeekRow>
@@ -137,6 +184,15 @@ const HourText = styled(HourCell)`
   border: none;
   align-items: flex-start;
   margin-top: -7px;
+`;
+
+const QuarterHourCell = styled.div`
+  flex: 1;
+  border: 1px solid #ddd;
+  background-color: ${({ hasLecture }) => (hasLecture ? "#e3f2fd" : "white")};
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export default WeekCalendar;
