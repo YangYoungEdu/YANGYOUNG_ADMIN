@@ -13,18 +13,6 @@ export const getOneStudentTaskAPI = async (studentId) => {
     console.error(error);
   }
 }
-// export const getOneStudentTaskAPI = async (studentId) => {
-//   console.log(studentId);
-//   try {
-//     const response = await axios.get(
-//       `${server}task/student?studentId=${studentId}`
-//     );
-//     console.log(studentId);
-//     console.log(response.data);
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
 
 //특정 학생 과제 등록
 export const postOneStudentTaskAPI = async (data) => {

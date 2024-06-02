@@ -4,7 +4,10 @@ import styled from "styled-components";
 import { ReactComponent as UnOpenBlackPolygon } from "../../../Assets/UnOpenBlackPolygon.svg";
 import { ReactComponent as BlackPolygon } from "../../../Assets/BlackPolygon.svg";
 import { ReactComponent as PlusIcon } from "../../../Assets/PlusIcon.svg";
-import { getOneStudentTaskAPI, postOneStudentTaskAPI } from "../../../API/TaskAPI";
+import {
+  getOneStudentTaskAPI,
+  postOneStudentTaskAPI,
+} from "../../../API/TaskAPI";
 
 const PersonalTask = () => {
   const { id } = useParams();
@@ -18,8 +21,12 @@ const PersonalTask = () => {
     const getOneStudentTask = async () => {
       try {
         const response = await getOneStudentTaskAPI(id);
-        const inProgress = response.filter(task => task.taskProgress === "제출 전");
-        const completed = response.filter(task => task.taskProgress === "제출 완료");
+        const inProgress = response.filter(
+          (task) => task.taskProgress === "제출 전"
+        );
+        const completed = response.filter(
+          (task) => task.taskProgress === "제출 완료"
+        );
         setInProgressTasks(inProgress);
         setCompletedTasks(completed);
         console.log(response);
@@ -43,12 +50,14 @@ const PersonalTask = () => {
         </BtnArea>
         {/* task 목록 */}
         {isIngOpen && (
-          <div>
+          <TaskDiv>
             {inProgressTasks.map((task) => (
               <Box key={task.id}>
                 <TopInfo>
                   <Title>{task.content}</Title>
-                  <DetailBox background={"#E9F2EB"}>{task.lectureName}</DetailBox>
+                  <DetailBox background={"#E9F2EB"}>
+                    {task.lectureName}
+                  </DetailBox>
                   <DetailBox background={"#FFF4DE"}>{task.taskType}</DetailBox>
                 </TopInfo>
                 <BottomInfo>
@@ -58,7 +67,7 @@ const PersonalTask = () => {
                 </BottomInfo>
               </Box>
             ))}
-          </div>
+          </TaskDiv>
         )}
       </BigDiv>
 
@@ -80,7 +89,9 @@ const PersonalTask = () => {
               <Box key={task.id}>
                 <TopInfo>
                   <Title>{task.content}</Title>
-                  <DetailBox background={"#E9F2EB"}>{task.lectureName}</DetailBox>
+                  <DetailBox background={"#E9F2EB"}>
+                    {task.lectureName}
+                  </DetailBox>
                   <DetailBox background={"#FFF4DE"}>{task.taskType}</DetailBox>
                 </TopInfo>
                 <BottomInfo>
@@ -127,6 +138,13 @@ const PolygonText = styled.div`
   font-size: 14px;
   font-weight: 600;
 `;
+
+const TaskDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+`;
+
 const Box = styled.div`
   display: flex;
   flex-direction: column;
@@ -164,8 +182,8 @@ const Title = styled.div`
 const DetailBox = styled.div`
   box-sizing: border-box;
   text-align: center;
-  line-height: 20px;
-  /* padding: 3px 8px 3px 8px; */
+  line-height: 17px;
+  padding: 3px 8px 3px 8px;
   min-width: 57px;
   height: 20px;
   border-radius: 3px;
