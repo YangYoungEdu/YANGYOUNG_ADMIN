@@ -6,8 +6,11 @@ import { getOneStudentAPI, patchStudentAPI } from "../../../API/StudentAPI";
 const PersonalInfo = () => {
   const [studentInfo, setStudentInfo] = useState({});
   const [tmpStudentInfo, setTmpStudentInfo] = useState({});
+  const [isEditing, setIsEditing] = useState(false);
+
   const { id } = useParams();
 
+  //학생의 인적사항 정보를 불러오는 로직
   useEffect(() => {
     const getOneStudent = async () => {
       try {
@@ -29,13 +32,19 @@ const PersonalInfo = () => {
     }));
   };
 
+  // 버튼을 눌렀을 경우 처리 로직
   const activeButton = async () => {
     try {
       console.log(tmpStudentInfo);
-      await patchStudentAPI(tmpStudentInfo);
-      setStudentInfo(tmpStudentInfo);
-      console.log("수정 완료!");
-      alert("수정되었습니다.");
+      if (isEditing) {
+        await patchStudentAPI(tmpStudentInfo);
+        setStudentInfo(tmpStudentInfo);
+        console.log("수정 완료!");
+        alert("수정되었습니다.");
+        setIsEditing(false);
+      } else {
+        setIsEditing(true);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -49,9 +58,15 @@ const PersonalInfo = () => {
           <Name>{studentInfo.name}</Name>
           <Grade>{studentInfo.grade}</Grade>
         </NamePart>
-        <SubmitButton type="button" onClick={activeButton}>
-          저장
-        </SubmitButton>
+        {isEditing ? (
+          <SubmitButton type="button" onClick={activeButton}>
+            저장
+          </SubmitButton>
+        ) : (
+          <SubmitButton type="button" onClick={activeButton}>
+            편집
+          </SubmitButton>
+        )}
       </UpperArea>
 
       {/* form Parts*/}
@@ -139,7 +154,7 @@ const StyledInput = styled.input`
   width: 370px;
   height: 50px;
   border-radius: 5px;
-  border: 1px solid #EFEFEF;
+  border: 1px solid #efefef;
   box-sizing: border-box;
   padding-left: 18px;
   font-family: Pretendard Variable;
@@ -194,9 +209,9 @@ const SubmitButton = styled.button`
   font-size: 14px;
   font-weight: 400;
   cursor: pointer;
-  
+
   &:hover {
-    background: #E0E0E0;
+    background: #e0e0e0;
   }
 `;
 
