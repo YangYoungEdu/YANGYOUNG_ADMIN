@@ -1,10 +1,11 @@
 import { useState } from "react";
 import styled from "styled-components";
-import StudentAdd from "./StudentAdd";
+import StudentAdd from "../StudentComponents/StudentModal/StudentAdd";
 import { deleteStudentAPI, hideStudentAPI } from "../../API/StudentAPI";
 import { useRecoilState } from "recoil";
 import { selectedStudentState } from "../../Atom";
 import { MainDiv } from "../../style/CommonStyle";
+import StudentHide from "./StudentModal/StudentHide";
 
 const TableMenus = ({
   isEditing,
@@ -15,7 +16,9 @@ const TableMenus = ({
 }) => {
   const [selectedStudent, setSelectedStudent] =
     useRecoilState(selectedStudentState);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isHideModalOpen, setIsHideModalOpen] = useState(false);
+
 
   const setEdit = () => {
     setIsEditing(true);
@@ -26,28 +29,22 @@ const TableMenus = ({
     window.location.reload();
   };
 
-  const openModal = () => {
-    setIsModalOpen(!isModalOpen);
+  const openAddModal = () => {
+    setIsAddModalOpen(!isAddModalOpen);
   };
 
-  const deleteStudent = async () => {
-    try {
-      const response = await deleteStudentAPI(selectedStudent);
-      console.log(response);
-      window.location.reload();
-    } catch (error) {
-      console.error(error);
-    }
+  const openHideModal = () => {
+    setIsHideModalOpen(!isHideModalOpen);
   };
 
-  const hideStudent = async () => {
-    try {
-      const response = await hideStudentAPI(selectedStudent);
-      // window.location.reload();
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  // const hideStudent = async () => {
+  //   try {
+  //     const response = await hideStudentAPI(selectedStudent);
+  //     // window.location.reload();
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
   return (
     <MainDiv>
       {/* 보관함 들어온 경우 */}
@@ -60,7 +57,7 @@ const TableMenus = ({
       <TableMenusStyle>
         {isEditing ? (
           //편집 모드의 경우
-          <div>전체 선택</div>
+          <div>전체선택</div>
         ) : (
           //편집 모드 아닌 경우
           <div>총 {totalElements}개</div>
@@ -70,13 +67,11 @@ const TableMenus = ({
           // 편집 모드의 경우
           <EditModeButtons>
             <EditButton
-              onClick={hideStudent}
-              color="black"
-              background="#EFEFEF"
+              onClick={openHideModal}
             >
-              보관
+              퇴원처리
             </EditButton>
-            <EditButton
+            {/* <EditButton
               onClick={deleteStudent}
               color="black"
               background="#EFEFEF"
@@ -85,7 +80,7 @@ const TableMenus = ({
             </EditButton>
             <EditButton color="white" background="#15521D">
               저장
-            </EditButton>
+            </EditButton> */}
           </EditModeButtons>
         ) : (
           // 편집 모드가 아닌 경우
@@ -93,14 +88,16 @@ const TableMenus = ({
             <>
               <div onClick={goToSave}>보관함</div>
               <div>|</div>
-              <div onClick={openModal}>등록</div>
+              <div onClick={openAddModal}>등록</div>
               <div>|</div>
             </>
             <div onClick={setEdit}>편집</div>
           </SideMenus>
         )}
       </TableMenusStyle>
-      {isModalOpen && <StudentAdd setIsModalOpen={setIsModalOpen} />}
+      {/* 모달창들 */}
+      {isAddModalOpen && <StudentAdd setIsAddModalOpen={setIsAddModalOpen} />}
+      {isHideModalOpen && <StudentHide setIsHideModalOpen={setIsHideModalOpen} />}
     </MainDiv>
   );
 };
@@ -139,18 +136,18 @@ const EditModeButtons = styled.div`
   gap: 10px;
 `;
 const EditButton = styled.button`
-  width: 60px;
+  width: 84px;
   height: 31px;
-  padding: 7px 17.5px 7px 17.5px;
-  gap: 10px;
+  padding: 10px;
   border-radius: 5px;
   box-sizing: border-box;
-  background: ${({ background }) => background};
-  color: ${({ color }) => color};
-  //styleName: Button 3;
+  background: #efefef;
   font-family: Pretendard Variable;
   font-size: 14px;
   font-weight: 400;
+  text-align: center;
+  color: black;
+line-height: 14px;
 `;
 const SideMenus = styled.div`
   display: flex;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { getOneStudentAPI, patchStudentAPI } from "../../API/StudentAPI";
+import { getOneStudentAPI, patchStudentAPI } from "../../../API/StudentAPI";
 
 const PersonalInfo = () => {
   const [studentInfo, setStudentInfo] = useState({});
@@ -35,6 +35,7 @@ const PersonalInfo = () => {
       await patchStudentAPI(tmpStudentInfo);
       setStudentInfo(tmpStudentInfo);
       console.log("수정 완료!");
+      alert("수정되었습니다.");
     } catch (error) {
       console.error(error);
     }
@@ -49,7 +50,7 @@ const PersonalInfo = () => {
           <Grade>{studentInfo.grade}</Grade>
         </NamePart>
         <SubmitButton type="button" onClick={activeButton}>
-          편집
+          저장
         </SubmitButton>
       </UpperArea>
 
@@ -192,6 +193,11 @@ const SubmitButton = styled.button`
   font-family: Pretendard Variable;
   font-size: 14px;
   font-weight: 400;
+  cursor: pointer;
+  
+  &:hover {
+    background: #E0E0E0;
+  }
 `;
 
 export default PersonalInfo;

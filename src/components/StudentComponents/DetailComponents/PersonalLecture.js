@@ -12,9 +12,9 @@ import {
   DetailBox,
   StyledHr,
 } from "./PersonalTask";
-import { ReactComponent as UnOpenBlackPolygon } from "../../Assets/UnOpenBlackPolygon.svg";
-import { ReactComponent as BlackPolygon } from "../../Assets/BlackPolygon.svg";
-import { ReactComponent as PlusIcon } from "../../Assets/PlusIcon.svg";
+import { ReactComponent as UnOpenBlackPolygon } from "../../../Assets/UnOpenBlackPolygon.svg";
+import { ReactComponent as BlackPolygon } from "../../../Assets/BlackPolygon.svg";
+import { ReactComponent as PlusIcon } from "../../../Assets/PlusIcon.svg";
 const PersonalLecture = () => {
   const [isOpen, setIsOpen] = useState(false);
 

@@ -3,9 +3,9 @@ import styled from "styled-components";
 import { ReactComponent as Class } from "../../Assets/Class.svg";
 import { ReactComponent as Homework } from "../../Assets/Homework.svg";
 import { ReactComponent as Student } from "../../Assets/Student.svg";
-import PersonalInfo from "../../components/StudentComponents/PersonalInfo";
-import PersonalTask from "../../components/StudentComponents/PersonalTask";
-import PersonalLecture from "../../components/StudentComponents/PersonalLecture";
+import PersonalInfo from "../../components/StudentComponents/DetailComponents/PersonalInfo";
+import PersonalTask from "../../components/StudentComponents/DetailComponents/PersonalTask";
+import PersonalLecture from "../../components/StudentComponents/DetailComponents/PersonalLecture";
 
 const StudentDetail = () => {
   const [selectedMenu, setSelectedMenu] = useState("personal");
