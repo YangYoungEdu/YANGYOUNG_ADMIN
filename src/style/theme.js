@@ -13,6 +13,7 @@ export const theme = {
     bodyText1: "22px",
     bodyText2: "16px",
     bodyText3: "14px",
+    bodyText4: "12px",
     menuRegular: "14px",
     menuBold: "14px",
   },
