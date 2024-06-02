@@ -5,6 +5,7 @@ import SignIn from "./pages/SignIn/SignInPage";
 import Attendance from "./pages/Attendance/AttendancePage";
 import Student from "./pages/Student/StudentPage";
 import StudentDetail from "./pages/Student/StudentDetail";
+import Lecture from "./pages/Lecture/LecturePage";
 
 function MyRoutes() {
   return (
@@ -16,6 +17,7 @@ function MyRoutes() {
           <Route path="attendance" element={<Attendance />} />
           <Route path="student" element={<Student />} />
           <Route path="/student/:id" element={<StudentDetail />} />
+          <Route path="lecture" element={<Lecture />} />
         </Route>
       </Routes>
     </>

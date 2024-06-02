@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
+import Select from "react-select";
 import { MainDiv } from "../../style/CommonStyle";
 import { ReactComponent as DOpen } from "../../Assets/DropdownOpened.svg";
 import { ReactComponent as DClose } from "../../Assets/DropdownClosed.svg";
@@ -19,7 +20,14 @@ import {
 } from "../../Atom";
 import TableMenus from "./TableMenus";
 
-const StudentSearch = ({isEditing, setIsEditing}) => {
+const options = [
+  { value: "M3", label: "중3" },
+  { value: "H1", label: "고1" },
+  { value: "H2", label: "고2" },
+  { value: "H3", label: "고3" },
+];
+
+const StudentSearch = ({ isEditing, setIsEditing }) => {
   const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
   const [totalElements, setTotalElements] = useRecoilState(totalElementsState);
   const [totalPage, setTotalPage] = useRecoilState(totalPageState);
@@ -71,23 +79,23 @@ const StudentSearch = ({isEditing, setIsEditing}) => {
             <SearchArea>
               <SearchOptions>
                 <SearchField>
-                  <div>힉생 이름:</div>
+                  <div>힉생 이름</div>
                   <SearchInput
                     type="text"
                     placeholder="학생 이름을 입력해주세요"
                   />
                 </SearchField>
                 <SearchField>
-                  <div>학교 이름:</div>
+                  <div>학교 이름</div>
                   <SearchInput
                     type="text"
                     placeholder="학교 이름을 입력해주세요"
                   />
                 </SearchField>
-                {/* 드롭다운 디자인 주실 경우 select 태그 대신 직접 마크업 해서 커스텀할 거라서 css 덜 된 채로 냅둠*/}
                 <SearchField>
-                  <div>학년:</div>
-                  <SelectField>
+                  <div>학년</div>
+                  <CustomSelect options={options} />
+                  {/* <SelectField>
                     <option value="none" disabled selected>
                       학년 선택
                     </option>
@@ -96,7 +104,7 @@ const StudentSearch = ({isEditing, setIsEditing}) => {
                     <option value="H2">고2</option>
                     <option value="H3">고3</option>
                     <DBtn />
-                  </SelectField>
+                  </SelectField> */}
                 </SearchField>
               </SearchOptions>
 
@@ -119,7 +127,8 @@ const StudentSearch = ({isEditing, setIsEditing}) => {
 
       {/* 버튼 영역 */}
       <TableMenus
-      isEditing={isEditing} setIsEditing={setIsEditing}
+        isEditing={isEditing}
+        setIsEditing={setIsEditing}
         setIsHidden={setIsHidden}
         isHidden={isHidden}
         totalElements={totalElements}
@@ -217,12 +226,76 @@ const SearchField = styled.div`
   gap: 12.5px;
   align-items: center;
 `;
+const CustomSelect = styled(Select)`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  box-sizing: border-box;
+  width: 101px;
+  height: 42px;
+  padding: 10px 15px;
+  gap: 8px;
+  border-radius: 100px;
+  background: #fbfbfd;
+  border: 1px solid #e0e0e0;
+  font-family: Pretendard Variable;
+  font-size: 14px;
+  font-weight: 400;
+  box-shadow: none;
 
+  &:focus {
+    border: 1px solid #15521d;
+  }
+
+  /* &--menu-is-open {
+        border-color: transparent;
+        box-shadow: none; */
+
+  /* &:hover {
+          border-color: transparent;
+        } */
+
+  /* svg {
+          color: white;
+        } */
+  /* } */
+
+  &__menu {
+    margin-top: 15px;
+    top: calc(100% - 2px);
+    box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.16);
+    border-top: 0;
+
+    &-list {
+      padding: 0;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  &__option {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding: 9px 0px 9px 15px;
+    border-top: 1px solid gray;
+    color: black;
+    background-color: white;
+
+    &--is-selected {
+      font-weight: bold;
+    }
+
+    &--is-focused {
+      box-shadow: none;
+      background-color: gray;
+    }
+  }
+`;
 const SelectField = styled.select`
   display: flex;
   flex-direction: row;
   align-items: center;
-
   box-sizing: border-box;
   width: 101px;
   height: 42px;
@@ -230,15 +303,14 @@ const SelectField = styled.select`
   gap: 8px;
   border-radius: 100px;
   border: 1px;
-  opacity: 0px;
   background: #fbfbfd;
-  border: 1px solid #15521d;
-  //styleName: Button 3;
+  border: 1px solid #e0e0e0;
+  &:focus {
+    border: 1px solid #15521d;
+  }
   font-family: Pretendard Variable;
   font-size: 14px;
   font-weight: 400;
-  line-height: 16.71px;
-  text-align: left;
 `;
 
 const SearchInput = styled.input`
@@ -251,14 +323,18 @@ const SearchInput = styled.input`
   border: 1px 0px 0px 0px;
   opacity: 0px;
   background: #fbfbfd;
-  border: 1px solid #15521d;
-  ::placeholder {
+  border: 1px solid #e0e0e0;
+  &:focus {
+    border: 1px solid #15521d;
+  }
+  &::placeholder {
     //styleName: text field 2;
     font-family: Pretendard Variable;
     font-size: 15px;
     font-weight: 400;
     line-height: 17.9px;
     text-align: left;
+    color: #bababa;
   }
 `;
 
@@ -273,6 +349,7 @@ const ButtonGap = styled.div`
   flex-direction: row;
   gap: 15px;
 `;
+
 const StyledButton = styled.button`
   box-sizing: border-box;
   background: ${({ background }) => background};
@@ -283,6 +360,11 @@ const StyledButton = styled.button`
   align-items: center;
   border-radius: 5px;
   cursor: pointer;
+  &:hover {
+    background-color: #479051;
+  }
+  font-size: 14px;
+  font-weight: 400;
 `;
 
 export default StudentSearch;
