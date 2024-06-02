@@ -4,12 +4,14 @@ import styled, { ThemeProvider } from "styled-components";
 import { theme } from "./style/theme";
 import { useRecoilState } from "recoil";
 import { loginCheck } from "./Atom";
+import { isHiddenState } from "./Atom";
 import Navbar from "./components/Navbar";
 import { act } from "react";
 // import Footer from "./components/Footer";
 
 const Layout = () => {
   const [loginState, setLoginState] = useRecoilState(loginCheck);
+  const [isHidden, setIsHidden] = useRecoilState(isHiddenState);
 
   const [showLogoutButton, setShowLogoutButton] = useState(true);
   const [showSecondHeader, setShowSecondHeader] = useState(true);

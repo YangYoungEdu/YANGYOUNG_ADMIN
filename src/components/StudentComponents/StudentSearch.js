@@ -18,7 +18,8 @@ import {
   isHiddenState,
   dataState,
 } from "../../Atom";
-import TableMenus from "./TableMenus";
+import GeneralTableMenus from "./GeneralTableMenus";
+import IsHiddenTableMenus from "./IsHiddenTableMenus";
 
 const options = [
   { value: "M3", label: "중3" },
@@ -42,6 +43,7 @@ const StudentSearch = ({ isEditing, setIsEditing }) => {
   useEffect(() => {
     searchStudent();
   }, []);
+
   useEffect(() => {
     const fetchTableData = async () => {
       try {
@@ -126,13 +128,23 @@ const StudentSearch = ({ isEditing, setIsEditing }) => {
       </DropdownContainer>
 
       {/* 버튼 영역 */}
-      <TableMenus
-        isEditing={isEditing}
-        setIsEditing={setIsEditing}
-        setIsHidden={setIsHidden}
-        isHidden={isHidden}
-        totalElements={totalElements}
-      />
+      {!isHidden ? (
+        <GeneralTableMenus
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
+          setIsHidden={setIsHidden}
+          isHidden={isHidden}
+          totalElements={totalElements}
+        />
+      ) : (
+        <IsHiddenTableMenus
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
+          setIsHidden={setIsHidden}
+          isHidden={isHidden}
+          totalElements={totalElements}
+        />
+      )}
     </MainDiv>
   );
 };

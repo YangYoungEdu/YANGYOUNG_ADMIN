@@ -102,3 +102,17 @@ export const hideStudentAPI = async (idList) => {
     console.error(error);
   }
 };
+
+//숨김 학생 복원 처리 API
+export const restoreStudentAPI = async (idList) => {
+  const studentIdList = {
+    "studentIdList": idList,
+  };
+  try {
+    console.log (studentIdList);
+    const response = await axios.patch (`${server}student/restore`, studentIdList);
+    console.log (response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}

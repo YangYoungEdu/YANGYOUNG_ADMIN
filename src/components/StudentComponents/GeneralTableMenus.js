@@ -1,32 +1,25 @@
 import { useState } from "react";
 import styled from "styled-components";
 import StudentAdd from "../StudentComponents/StudentModal/StudentAdd";
-import { deleteStudentAPI, hideStudentAPI } from "../../API/StudentAPI";
-import { useRecoilState } from "recoil";
-import { selectedStudentState } from "../../Atom";
 import { MainDiv } from "../../style/CommonStyle";
 import StudentHide from "./StudentModal/StudentHide";
 
-const TableMenus = ({
+const GeneralTableMenus = ({
   isEditing,
   setIsEditing,
   setIsHidden,
   isHidden,
   totalElements,
 }) => {
-  const [selectedStudent, setSelectedStudent] =
-    useRecoilState(selectedStudentState);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isHideModalOpen, setIsHideModalOpen] = useState(false);
-
 
   const setEdit = () => {
     setIsEditing(true);
   };
 
   const goToSave = () => {
-    setIsHidden(!isHidden);
-    window.location.reload();
+    setIsHidden(true);
   };
 
   const openAddModal = () => {
@@ -37,23 +30,10 @@ const TableMenus = ({
     setIsHideModalOpen(!isHideModalOpen);
   };
 
-  // const hideStudent = async () => {
-  //   try {
-  //     const response = await hideStudentAPI(selectedStudent);
-  //     // window.location.reload();
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
   return (
     <MainDiv>
       {/* 보관함 들어온 경우 */}
-      {isHidden && (
-        <TitleDiv>
-          <div />
-          <StyledH1>학생보관함</StyledH1>
-        </TitleDiv>
-      )}
+      <Top>
       <TableMenusStyle>
         {isEditing ? (
           //편집 모드의 경우
@@ -71,16 +51,6 @@ const TableMenus = ({
             >
               퇴원처리
             </EditButton>
-            {/* <EditButton
-              onClick={deleteStudent}
-              color="black"
-              background="#EFEFEF"
-            >
-              삭제
-            </EditButton>
-            <EditButton color="white" background="#15521D">
-              저장
-            </EditButton> */}
           </EditModeButtons>
         ) : (
           // 편집 모드가 아닌 경우
@@ -98,21 +68,14 @@ const TableMenus = ({
       {/* 모달창들 */}
       {isAddModalOpen && <StudentAdd setIsAddModalOpen={setIsAddModalOpen} />}
       {isHideModalOpen && <StudentHide setIsHideModalOpen={setIsHideModalOpen} />}
+      </Top>
     </MainDiv>
   );
 };
 
-const TitleDiv = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-`;
-
-const StyledH1 = styled.h1`
-  display: flex;
-  font-size: 30px;
-  font-weight: 700;
-  margin-top: 41px;
+const Top = styled.div`
+display: flex;
+flex-direction: column;
 `;
 
 const TableMenusStyle = styled.div`
@@ -126,7 +89,7 @@ const TableMenusStyle = styled.div`
   cursor: pointer;
   width: 1050px;
   margin-bottom: 14px;
-  margin-top: 65px;
+  margin-top: 40px;
   align-items: center;
 `;
 
@@ -148,6 +111,7 @@ const EditButton = styled.button`
   text-align: center;
   color: black;
 line-height: 14px;
+cursor: pointer;
 `;
 const SideMenus = styled.div`
   display: flex;
@@ -155,4 +119,5 @@ const SideMenus = styled.div`
   gap: 10px;
 `;
 
-export default TableMenus;
+export default GeneralTableMenus;
+export { Top, TableMenusStyle,EditModeButtons,SideMenus};
