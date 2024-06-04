@@ -13,9 +13,9 @@ const Calendar = ({ currentDate, lectures }) => {
   const renderLectures = () => {
     let lectureList = lectures;
 
-    // 요일, 시간, 분 단위로 강의 시간을 표시할 배열
+    // 요일, 시간, 분 단위로 강의 시간을 표시할 배열을 강의명을 저장할 수 있도록 변경
     const lectureSlots = Array.from({ length: 7 }, () =>
-      Array.from({ length: 24 }, () => Array.from({ length: 12 }, () => false))
+      Array.from({ length: 24 }, () => Array.from({ length: 12 }, () => null))
     );
 
     for (let i = 0; i < lectureList.length; i++) {
@@ -27,30 +27,63 @@ const Calendar = ({ currentDate, lectures }) => {
       const endHour = parseInt(endTime.split(":")[0]);
       const endMinute = parseInt(endTime.split(":")[1]);
 
-      // 시작 시간부터 종료 시간까지의 강의 시간을 표시
+      // 강의명을 한번만 표시하기 위해 flag를 사용
+      let isLectureNameDisplayed = false;
+
+      // 시작 시간부터 종료 시간까지의 강의 시간에 강의명을 저장
       for (let hour = startHour; hour <= endHour; hour++) {
         const startSegment =
           hour === startHour ? Math.ceil(startMinute / 5) : 0;
         const endSegment = hour === endHour ? Math.floor(endMinute / 5) : 11;
 
         for (let segment = startSegment; segment <= endSegment; segment++) {
-          lectureSlots[i][hour][segment] = true;
+          if (!isLectureNameDisplayed) {
+            // 강의명을 한번만 표시
+            lectureSlots[i][hour][segment] = {
+              ...lectureList[i],
+              showName: true,
+            };
+            isLectureNameDisplayed = true;
+          } else {
+            lectureSlots[i][hour][segment] = {
+              ...lectureList[i],
+              showName: false,
+            };
+          }
         }
       }
     }
 
-    // 강의 시간에 따라 캘린더에 시간을 표시
+    // 강의 시간에 따라 캘린더에 강의명을 표시
     return (
       <>
         {dayList.map((_, dayIndex) => (
           <DayColumn key={dayIndex}>
             {hourList.map((hour, hourIndex) => (
               <HourRow key={hourIndex}>
-                {Array.from({ length: 12 }, (_, segmentIndex) => (
-                  <MinuteSegment key={segmentIndex}>
-                    {lectureSlots[dayIndex][hour][segmentIndex] ? "하이" : "ㅜ"}
-                  </MinuteSegment>
-                ))}
+                {Array.from({ length: 12 }, (_, segmentIndex) => {
+                  // 현재 시간대의 강의 정보를 변수로 할당
+                  const currentLecture =
+                    lectureSlots[dayIndex][hour][segmentIndex];
+
+                  return (
+                    <MinuteSegment
+                      key={segmentIndex}
+                      teacher={currentLecture ? currentLecture.teacher : ""}
+                    >
+                      {currentLecture && currentLecture.showName ? (
+                        <>
+                          <LectureTime>
+                            {getTime(currentLecture.startTime)}
+                          </LectureTime>
+                          <LectureName>{currentLecture.name}</LectureName>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                    </MinuteSegment>
+                  );
+                })}
               </HourRow>
             ))}
           </DayColumn>
@@ -59,14 +92,30 @@ const Calendar = ({ currentDate, lectures }) => {
     );
   };
 
-  // 오전 오후 시간 반환
-  const getTime = (hour) => {
+  const getHour = (hour) => {
     const isAM = hour < 12;
     const formattedHour = isAM ? hour : hour - 12;
     const period = isAM ? "오전" : "오후";
     const displayHour = formattedHour === 0 ? 12 : formattedHour;
 
     return `${period} ${displayHour}시`;
+  };
+
+  // 오전 오후 시간 반환
+  const getTime = (time) => {
+    // time이 문자열이 아닐 경우 문자열로 변환
+    if (typeof time !== "string") {
+      time = String(time);
+    }
+
+    const [hour, minute] = time.split(":").map(Number);
+    const isAM = hour < 12;
+    const formattedHour = isAM ? hour : hour - 12;
+    const period = isAM ? "오전" : "오후";
+    const displayHour = formattedHour === 0 ? 12 : formattedHour;
+    const formattedMinute = minute < 10 ? `0${minute}` : minute;
+
+    return `${period} ${displayHour}시 ${formattedMinute}분`;
   };
 
   // 요일을 받아서 해당 요일의 날짜를 반환
@@ -101,7 +150,7 @@ const Calendar = ({ currentDate, lectures }) => {
         <TimeAxis>
           {hourList.map((hour, index) => (
             <>
-              <TimeCell key={index}>{getTime(hour)}</TimeCell>
+              <TimeCell key={index}>{getHour(hour)}</TimeCell>
             </>
           ))}
         </TimeAxis>
@@ -112,12 +161,14 @@ const Calendar = ({ currentDate, lectures }) => {
   );
 };
 
-const WeekCalendarContainer = styled(MainDiv)``;
+const WeekCalendarContainer = styled(MainDiv)`
+  width: 90%;
+`;
 
 const WeekCalendarHeader = styled(RowDiv)`
   width: 93%;
   justify-content: space-between;
-  padding-right: 5%;
+  padding: 0 5% 0 5%;
 `;
 
 const HeaderCell = styled.div`
@@ -136,14 +187,16 @@ const DateText = styled.div`
 `;
 
 const TimeAxis = styled(ColumnDiv)`
-  width: 50px;
+  width: 6%;
 `;
 
 const TimeCell = styled.div`
-  height: 240px;
+  height: 48px;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  font-size: ${(props) => props.theme.fontSizes.bodyText5};
 `;
 
 const WeekCalendarBody = styled(RowDiv)`
@@ -153,7 +206,6 @@ const WeekCalendarBody = styled(RowDiv)`
 `;
 
 const DayColumn = styled(ColumnDiv)`
-  flex: 1;
   border: 1px solid black;
 `;
 
@@ -161,14 +213,35 @@ const HourRow = styled.div`
   display: flex;
   flex-direction: column;
   border-bottom: 1px solid black;
-  height: 48px;
 `;
 
 const MinuteSegment = styled.div`
   width: 100%;
-  height: 20px;
-  border-top: 1px solid #ccc;
+  height: 4px;
   box-sizing: border-box;
+
+  background-color: ${({ teacher, theme }) => {
+    switch (teacher) {
+      case "선생님1":
+        return `${theme.colors.prof_kim}70`; // 김삼유 강사일 때
+      case "선생님2":
+        return `${theme.colors.prof_hong}70`; // 홍길동 강사일 때
+      case "선생님3":
+        return `${theme.colors.prof_lee}70`; // 김수지 강사일 때
+      default:
+        return "rgba(255, 255, 255, 0.7)"; // 기본 색상
+    }
+  }};
+`;
+
+const LectureTime = styled.div`
+  font-size: 13px;
+  font-weight: 400;
+`;
+
+const LectureName = styled.div`
+  font-size: 13px;
+  font-weight: 600;
 `;
 
 export default Calendar;
