@@ -46,7 +46,7 @@ const Layout = () => {
           {showSecondHeader && (
             <SecondHeader>
               <NavLink to={`/attendance`} style={({ isActive }) => (isActive ? activeStyle : undefined)}>출결 관리</NavLink>
-              <NavLink to={`/student`} style={({ isActive }) => (isActive ? activeStyle : undefined)}>학생 관리</NavLink>
+              <NavLink to={`/student`} style={({ isActive }) => (isActive ? activeStyle : undefined)} onClick={window.location.reload}> 학생 관리</NavLink>
               <NavLink to={`/`} style={({ isActive }) => (isActive ? activeStyle : undefined)}>수업 관리</NavLink>
             </SecondHeader>
           )}

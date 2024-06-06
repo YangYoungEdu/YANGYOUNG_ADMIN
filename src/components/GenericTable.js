@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled, { ThemeProvider } from "styled-components";
 import { MainDiv } from "../style/CommonStyle";
@@ -6,12 +6,16 @@ import { theme } from "../style/theme";
 import PaginationComponent from "../components/Pagination";
 import { useRecoilState } from "recoil";
 import {
-  currentPageState,
-  totalPageState,
-  dataState,
-  selectedStudentState
+  getAllStudentAPI,
+  getHiddenStudentAPI,
+} from "../API/StudentAPI";
+import {
+  totalElementsState,
+  selectedStudentState,
+  isHiddenState,
 } from "../Atom";
 
+// 테이블 컬럼 정의
 const columns = [
   { key: "index", label: "순번" },
   { key: "name", label: "이름" },
@@ -23,34 +27,70 @@ const columns = [
 ];
 
 const GenericTable = ({ isEditing }) => {
-  const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
-  const [totalPage, setTotalPage] = useRecoilState(totalPageState);
-  const [data, setData] = useRecoilState(dataState);
+  // 보관함이 아닌 경우의 현재 페이지 상태
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // 보관함인 경우의 현재 페이지 상태
+  const [hiddenCurrentPage, setHiddenCurrentPage] = useState(1);
+
+  // 데이터와 총 페이지 상태
+  const [data, setData] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+
+  // 전역 상태
+  const [totalElements, setTotalElements] = useRecoilState(totalElementsState);
   const [selectedStudent, setSelectedStudent] = useRecoilState(selectedStudentState);
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [isHidden, setIsHidden] = useRecoilState(isHiddenState);
+
   const navigate = useNavigate();
 
+  // 데이터 fetch
+  useEffect(() => {
+    const fetchTableData = async () => {
+      console.log("보관함인가요? " + isHidden);
+      try {
+        let response;
+        if (isHidden) {
+          response = await getHiddenStudentAPI(hiddenCurrentPage);
+        } else {
+          response = await getAllStudentAPI(currentPage);
+        }
+        setData(response.content);
+        setTotalPages(response.totalPages);
+        setTotalElements(response.totalElements);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchTableData();
+  }, [isHidden, currentPage, hiddenCurrentPage]);
+
+  // 페이지 변경 핸들러
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+    if (isHidden) {
+      setHiddenCurrentPage(pageNumber);
+    } else {
+      setCurrentPage(pageNumber);
+    }
   };
 
+  // 학생 상세 페이지로 이동
   const moveToStudentDetail = (id) => {
     if (!isEditing) {
       navigate(`/student/${id}`);
     }
   };
 
+  // 체크박스 상태 변경 핸들러
   const handleCheckboxChange = (id) => {
-    setSelectedStudent((prevSelectedStudent) =>{
-      if (prevSelectedStudent.includes(id)){
-        return prevSelectedStudent.filter((id) => id !== id);
+    setSelectedStudent((prevSelectedStudent) => {
+      if (prevSelectedStudent.includes(id)) {
+        return prevSelectedStudent.filter((studentId) => studentId !== id);
       } else {
         return [...prevSelectedStudent, id];
       }
     });
   };
-
-
 
   return (
     <MainDiv>
@@ -69,10 +109,7 @@ const GenericTable = ({ isEditing }) => {
                 data.map((item, index) => {
                   const isSelected = selectedStudent.includes(item.id);
                   return (
-                    <tr
-                      key={index}
-                      onClick={() => moveToStudentDetail(item.id)}
-                    >
+                    <tr key={index} onClick={() => moveToStudentDetail(item.id)}>
                       {columns.map((column) =>
                         column.key === "index" ? (
                           <td key={column.key}>{index + 1}</td>
@@ -83,6 +120,7 @@ const GenericTable = ({ isEditing }) => {
                                 type="checkbox"
                                 checked={isSelected}
                                 onChange={() => handleCheckboxChange(item.id)}
+                                onClick={(e) => e.stopPropagation()} // Prevent row click event
                               />
                               <span>{item[column.key]}</span>
                             </CheckboxContainer>
@@ -98,8 +136,8 @@ const GenericTable = ({ isEditing }) => {
           </StyledTable>
           <PaginationContainer>
             <PaginationComponent
-              pageCount={totalPage}
-              currentPage={currentPage}
+              pageCount={totalPages}
+              currentPage={isHidden ? hiddenCurrentPage : currentPage}
               setCurrentPage={handlePageChange}
             />
           </PaginationContainer>

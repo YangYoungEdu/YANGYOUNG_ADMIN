@@ -5,19 +5,9 @@ import { MainDiv } from "../../style/CommonStyle";
 import { ReactComponent as DOpen } from "../../Assets/DropdownOpened.svg";
 import { ReactComponent as DClose } from "../../Assets/DropdownClosed.svg";
 import { ReactComponent as DBtn } from "../../Assets/DropdownBtn.svg";
-import {
-  getAllStudentAPI,
-  getHiddenStudentAPI,
-  searchStudent,
-} from "../../API/StudentAPI";
+import { searchStudent } from "../../API/StudentAPI";
 import { useRecoilState } from "recoil";
-import {
-  currentPageState,
-  totalElementsState,
-  totalPageState,
-  isHiddenState,
-  dataState,
-} from "../../Atom";
+import { totalElementsState, isHiddenState } from "../../Atom";
 import GeneralTableMenus from "./GeneralTableMenus";
 import IsHiddenTableMenus from "./IsHiddenTableMenus";
 
@@ -29,11 +19,8 @@ const options = [
 ];
 
 const StudentSearch = ({ isEditing, setIsEditing }) => {
-  const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
   const [totalElements, setTotalElements] = useRecoilState(totalElementsState);
-  const [totalPage, setTotalPage] = useRecoilState(totalPageState);
   const [isHidden, setIsHidden] = useRecoilState(isHiddenState);
-  const [data, setData] = useRecoilState(dataState);
 
   const [isOpen, setIsOpen] = useState(false);
   const toggleDropdown = () => {
@@ -43,26 +30,6 @@ const StudentSearch = ({ isEditing, setIsEditing }) => {
   useEffect(() => {
     searchStudent();
   }, []);
-
-  useEffect(() => {
-    const fetchTableData = async () => {
-      try {
-        let response;
-
-        if (isHidden) {
-          response = await getHiddenStudentAPI(currentPage);
-        } else {
-          response = await getAllStudentAPI(currentPage);
-        }
-        setData(response.content);
-        setTotalPage(response.totalPages);
-        setTotalElements(response.totalElements);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchTableData();
-  }, [currentPage]);
 
   return (
     <MainDiv>
