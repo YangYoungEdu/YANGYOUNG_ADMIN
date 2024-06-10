@@ -1,3 +1,4 @@
+import { render } from "@testing-library/react";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
@@ -17,25 +18,13 @@ const WeekCalendar = ({ currentDate, lectures }) => {
     .fill()
     .map(() => new Array(24).fill().map(() => new Array(12).fill([])));
 
-  // const weeklyCalendar = [];
-  // for (let day = 0; day < 7; day++) {
-  //   // 월요일부터 일요일까지
-  //   weeklyCalendar[day] = [];
-
-  //   for (let hour = 7; hour <= 24; hour++) {
-  //     // 오전 7시부터 오전 12시까지
-  //     weeklyCalendar[day][hour] = [];
-
-  //     for (let minute = 0; minute < 60; minute += 5) {
-  //       // 분(5분 단위)
-  //       weeklyCalendar[day][hour][minute] = [];
-  //     }
-  //   }
-  // }
-
   useEffect(() => {
     setFilteredLectures(filterLecturesByDate(lectures, currentDate));
     renderLecturesByQuarterHour();
+
+    setTimeout(() => {
+      console.log(weeklyCalendar);
+    }, 1000);
   }, [lectures, currentDate]);
 
   // 강의 목록을 날짜별로 필터링
@@ -93,40 +82,28 @@ const WeekCalendar = ({ currentDate, lectures }) => {
   };
 
   const renderLecturesByQuarterHour = () => {
-    daysOfWeek.map((day, index) => {
-      console.log(day, index);
+    dayOfWeek.forEach((day, dayIndex) => {
       const sortedLectures = filteredLectures[day];
       if (sortedLectures && sortedLectures.length > 0) {
-        return sortedLectures.map((lecture, index) => {
-          const startTime = lecture.startTime;
-          const startHour = parseInt(startTime.split(":")[0]);
-          const startMinute = Math.ceil(parseInt(startTime.split(":")[1]) / 5);
+        sortedLectures.forEach((lecture) => {
+          const [startHour, startMinute] = lecture.startTime.split(":").map(Number);
+          const [endHour, endMinute] = lecture.endTime.split(":").map(Number);
+          const startMinuteIndex = Math.floor(startMinute / 5);
+          const endMinuteIndex = Math.floor(endMinute / 5);
 
-          const endTime = lecture.endTime;
-          const endHour = parseInt(endTime.split(":")[0]);
-          const endMinute = Math.ceil(parseInt(endTime.split(":")[1]) / 5);
+          for (let hour = startHour; hour <= endHour; hour++) {
+            let minuteStart = 0,
+              minuteEnd = 11;
 
-          for (let i = startHour; i <= endHour; i++) {
-            for (let j = startMinute; j <= endMinute; j++) {
-              weeklyCalendar[index][i][j].push(lecture);
-              // console.log(index, i, j);
+            if (hour === startHour) minuteStart = startMinuteIndex;
+            if (hour === endHour) minuteEnd = endMinuteIndex;
+
+            for (let minute = minuteStart; minute <= minuteEnd; minute++) {
+              weeklyCalendar[dayIndex][hour][minute].push(lecture);
             }
           }
-
-          return null;
         });
       }
-    });
-
-    // weeklyCalendar 에서 값이 있는 것만 출력
-    weeklyCalendar.map((day, index) => {
-      return day.map((hour, index) => {
-        return hour.map((quarterHour, index) => {
-          return quarterHour.map((lecture, index) => {
-            return <div>{lecture.title}</div>;
-          });
-        });
-      });
     });
   };
 
