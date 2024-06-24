@@ -1,65 +1,71 @@
 import React, { useState, useEffect } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import { theme } from "../../style/theme";
-import { MainDiv } from "../../style/CommonStyle";
+import { MainDiv, RowDiv } from "../../style/CommonStyle";
 
-const MonthCalendar = ({ currentDate, lectures }) => {
+const MonthCalendar = ({
+  currentDate,
+  lectures,
+  isHighlight,
+  setIsHighlight,
+}) => {
   const [days, setDays] = useState([]);
   const [filteredLectures, setFilteredLectures] = useState([]);
-  const weekDays = ["월", "화", "수", "목", "금", "토", "일"];
+  const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
+  const teacherList = [
+    { name: "김삼유", color: "#95C25C" },
+    { name: "홍길동", color: "#FFC14B" },
+    { name: "김수지", color: "#A6773F" },
+  ];
 
   useEffect(() => {
     renderCalendar();
-    fileterLectureByDay();
+    filterLecturesByDay();
   }, [currentDate, lectures]);
 
   const renderCalendar = () => {
     const days = [];
     const totalDays = daysInMonth(currentDate);
     const startDay = startOfMonth(currentDate);
-    const totalCells = 35;
-
-    let dayCounter = 1;
+    const totalCells = 42;
 
     // 이전 달의 마지막 몇 일을 추가
-    const prevMonthDays = startDay;
     const prevMonth = new Date(
       currentDate.getFullYear(),
-      currentDate.getMonth() - 1,
+      currentDate.getMonth(),
       0
     );
     const prevMonthTotalDays = prevMonth.getDate();
     for (
-      let i = prevMonthTotalDays - prevMonthDays + 1;
+      let i = prevMonthTotalDays - startDay + 1;
       i <= prevMonthTotalDays;
       i++
     ) {
-      days.push(i.toString());
+      days.push({ day: i, color: "gray_005" });
     }
 
     // 이번 달의 날짜를 추가
     for (let i = 1; i <= totalDays; i++) {
-      days.push(i.toString());
-      dayCounter++;
+      days.push({ day: i, color: "black" });
     }
 
     // 다음 달의 첫 몇 일을 추가
     const remainingCells = totalCells - days.length;
     for (let i = 1; i <= remainingCells; i++) {
-      days.push(i.toString());
+      days.push({ day: i, color: "gray_005" });
     }
 
     setDays(days);
   };
 
-  // yyyy-mm-dd 형식의 날짜에서 dd만 추출해서 날짜별로 강의 분류
-  const fileterLectureByDay = () => {
-    let filteredLectures = [];
+  // ToDo : 월까지 체크
+  const filterLecturesByDay = () => {
+    const filteredLectures = {};
+
     lectures.forEach((lecture) => {
-      const dateList = lecture.dateList;
-      dateList.forEach((date) => {
+      lecture.dateList.forEach((date) => {
         const day = date.split("-")[2];
-        if (filteredLectures[day] === undefined) {
+        if (!filteredLectures[day]) {
           filteredLectures[day] = [];
         }
         filteredLectures[day].push(lecture);
@@ -69,23 +75,33 @@ const MonthCalendar = ({ currentDate, lectures }) => {
     setFilteredLectures(filteredLectures);
   };
 
+  const filterLecturesByTeacher = (lectureList = [], teacher) => {
+    return lectureList.filter((lecture) => lecture.teacher === teacher);
+  };
+
+  // 해당 월의 일 수를 구하는 함수
   const daysInMonth = (date) => {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
   };
 
+  // 해당 월의 첫 요일을 구하는 함수
   const startOfMonth = (date) => {
     return new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+  };
+
+  const highlightTheDay = (day) => {
+    setIsHighlight({ day: day, isHighlight: true });
   };
 
   return (
     <ThemeProvider theme={theme}>
       <MonthCalendarWrapper>
         <CalendarBody>
-          {days.map((day, index) => {
+          {days.map((dayObj, index) => {
             const isFirstWeek = index < 7;
-            const lectureNum =
-              filteredLectures[day] && filteredLectures[day].length;
-            // const hasLectures = filteredLectures[day] !== undefined;
+            const lectureOfDay = filteredLectures[dayObj.day];
+            const isHighlightDay =
+              isHighlight.day === dayObj.day && isHighlight.isHighlight;
 
             return (
               <DayCell key={index}>
@@ -96,36 +112,33 @@ const MonthCalendar = ({ currentDate, lectures }) => {
                       <br />
                     </>
                   )}
-                  {day}
                 </DayText>
-                {lectureNum > 0 &&
-                  filteredLectures[day]
-                    .slice(0, 3)
-                    .map((lecture, lectureIndex) => (
-                      <React.Fragment key={lectureIndex}>
-                        <LectureCell teacher={lecture.teacher}>
-                          {lecture.name}
-                        </LectureCell>
-                        {lectureNum > 3 && lectureIndex === 2 && (
-                          <LectureText>
-                            그 외 {lectureNum - 3}개 수업이 더 있습니다.
-                          </LectureText>
-                        )}
-                      </React.Fragment>
-                    ))}
-                {/* {lectureNum > 0 &&
-                  filteredLectures[day].map((lecture, lectureIndex) =>
-                    lectureNum > 3 ? (
-                      <LectureCell key={lectureIndex} teacher={lecture.teacher}>
-                        {lecture.teacher}
-                      </LectureCell>
-                    ) : (
-                      <LectureCell key={lectureIndex} teacher={lecture.teacher}>
-                        {lecture.teacher}
-                        하이
-                      </LectureCell>
+                <DateText
+                  onClick={highlightTheDay(dayObj.day)}
+                  color={dayObj.color}
+                  isHighlightDay={isHighlightDay}
+                >
+                  {dayObj.day}
+                </DateText>
+                {teacherList.map((teacher, index) => {
+                  const teacherLectures = filterLecturesByTeacher(
+                    lectureOfDay,
+                    teacher.name
+                  );
+
+                  return (
+                    teacherLectures.length > 0 && (
+                      <Lecture>
+                        <Teacher key={index} teacher={teacher}>
+                          {teacher.name}
+                        </Teacher>
+                        <LectureSize>
+                          수업 {teacherLectures.length}개
+                        </LectureSize>
+                      </Lecture>
                     )
-                  )} */}
+                  );
+                })}
               </DayCell>
             );
           })}
@@ -165,35 +178,76 @@ const DayText = styled.div`
   padding: 5px;
   font-size: 0.9em;
   font-weight: bold;
-  position: absolute;
   top: 5px;
 `;
 
-const LectureCell = styled.div`
-  width: 90%;
-  border-radius: 5px;
-  margin-top: 40px;
-  margin-bottom: -30px;
-  padding: 5px;
-  font-size: 0.8em;
-  text-align: center;
+const DateText = styled(DayText)`
+  cursor: pointer;
+  margin-bottom: 10px;
 
-  background-color: ${({ teacher, theme }) => {
-    switch (teacher) {
-      case "선생님1":
-        return `${theme.colors.prof_kim}70`;
-      case "선생님2":
-        return `${theme.colors.prof_hong}70`;
-      case "선생님3":
-        return `${theme.colors.prof_lee}70`;
+  color: ${({ color }) => {
+    switch (color) {
+      case "gray_005": // ToDo : theme로 변경
+        return "#BABABA";
       default:
-        return "rgba(135, 206, 235, 0.7)";
+        return `${theme.colors.black}`;
+    }
+  }};
+
+  ${({ isHighlightDay }) =>
+    isHighlightDay &&
+    `
+      color: ${theme.colors.primary_normal};
+      border-color: ${theme.colors.primary_normal};
+      border: 1px solid;
+      border-radius: 50%;
+      width: 25px;
+      height: 30px;
+    `}
+
+  // 호버시
+    &:hover {
+    color: ${theme.colors.white};
+    background-color: ${theme.colors.primary_normal};
+    border-color: ${theme.colors.primary_normal};
+    border: 1px solid;
+    border-radius: 50%;
+    width: 25px;
+    height: 30px;
+  }
+`;
+
+const Lecture = styled(RowDiv)`
+  margin-bottom: 5px;
+  cursor: pointer;
+`;
+
+const Teacher = styled.div`
+  width: 57px;
+  height: 25px;
+  padding-top: 5px;
+  margin-right: 5px;
+  font-size: ${(props) => props.theme.fontSizes.bodyText3};
+  color: ${(props) => props.theme.colors.white};
+  border-radius: 100px;
+
+  background-color: ${({ teacher }) => {
+    switch (teacher.name) {
+      case "김삼유":
+        return "#95C25C";
+      case "홍길동":
+        return "#FFC14B";
+      case "김수지":
+        return "#A6773F";
+      default:
+        return "#95C25C";
     }
   }};
 `;
 
-const LectureText = styled.div`
-  font-size: ${(props) => props.theme.fontSizes.bodyText4};
-  padding-top: 40px;
+const LectureSize = styled.div`
+  font-size: ${(props) => props.theme.fontSizes.bodyText3};
+  padding-top: 5.5px;
 `;
+
 export default MonthCalendar;

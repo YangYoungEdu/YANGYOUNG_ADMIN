@@ -5,7 +5,7 @@ import { ReactComponent as Plus } from "../../Assets/Plus.svg";
 import { ReactComponent as RightArrow } from "../../Assets/RightArrow.svg";
 import SelectArrow from "../../Assets/SelectArrow.svg";
 
-const LectrueHeader = ({ mode, setMode, currentDate, setCurrentDate }) => {
+const LectrueHeader = ({ mode, setMode, currentDate, setCurrentDate, setIsHighlight }) => {
   // 모드(달,주,일)에 따라서 날짜 변경 함수
   const changeDate = (amount, mode) => {
     const newDate = new Date(currentDate);
@@ -33,23 +33,27 @@ const LectrueHeader = ({ mode, setMode, currentDate, setCurrentDate }) => {
     changeDate(1, mode);
   };
 
+  const setToday = () => {
+    setIsHighlight({day: currentDate.getDate(), isHighlight: true});
+  };
+
   return (
     <>
       <CalendarHeader>
-        <TodayButton>오늘</TodayButton>
         <ArrowLeft onClick={prev} />
-        <ArrowRight onClick={next} />
         <DateTitle>
           {currentDate.toLocaleString("default", {
             month: "long",
             year: "numeric",
           })}
         </DateTitle>
+        <ArrowRight onClick={next} />
         <Select value={mode} onChange={(e) => setMode(e.target.value)}>
           <option value="month">&nbsp;&nbsp;&nbsp;월</option>
           <option value="week">&nbsp;&nbsp;&nbsp;주</option>
           <option value="day">&nbsp;&nbsp;&nbsp;일</option>
         </Select>
+        <TodayButton onClick={setToday}>오늘</TodayButton>
         <UploadButton>
           <PlusIcon />
           파일 업로드

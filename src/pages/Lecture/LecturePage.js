@@ -18,6 +18,10 @@ const LecturePage = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [originLectures, setOriginLectures] = useState([]);
   const [lectures, setLectures] = useState([]);
+  const [isHighlight, setIsHighlight] = useState({
+    day: currentDate.getDate(),
+    isHighlight: false,
+  });
 
   useEffect(() => {
     const fetchLectures = async () => {
@@ -45,7 +49,14 @@ const LecturePage = () => {
   const renderCalendar = () => {
     switch (mode) {
       case "month":
-        return <MonthCalendar currentDate={currentDate} lectures={lectures} />;
+        return (
+          <MonthCalendar
+            currentDate={currentDate}
+            lectures={lectures}
+            isHighlight={isHighlight}
+            setIsHighlight={setIsHighlight}
+          />
+        );
       case "week":
         return <WeekCalendar currentDate={currentDate} lectures={lectures} />;
       case "day":
@@ -71,6 +82,7 @@ const LecturePage = () => {
             currentDate={currentDate}
             setCurrentDate={setCurrentDate}
             setLectures={setLectures}
+            setIsHighlight={setIsHighlight}
           />
           {/* 캘린더 */}
           {renderCalendar()}
