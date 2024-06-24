@@ -114,7 +114,7 @@ const MonthCalendar = ({
                   )}
                 </DayText>
                 <DateText
-                  onClick={highlightTheDay(dayObj.day)}
+                  onClick={() => highlightTheDay(dayObj.day)}
                   color={dayObj.color}
                   isHighlightDay={isHighlightDay}
                 >

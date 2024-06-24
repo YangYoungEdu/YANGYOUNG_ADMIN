@@ -13,9 +13,9 @@ const LectureFilter = ({ originLectures, setLectures }) => {
 
   // todo: API로 받아오기
   const teacherList = [
-    { id: 1, name: "선생님1", color: "prof_kim" },
-    { id: 2, name: "선생님2", color: "prof_hong" },
-    { id: 3, name: "선생님3", color: "prof_lee" },
+    { id: 1, name: "김삼유", color: "prof_kim" },
+    { id: 2, name: "홍길동", color: "prof_hong" },
+    { id: 3, name: "김수지", color: "prof_lee" },
   ];
   const gradeList = [
     { id: 1, name: "고1", color: "primary_normal" },
