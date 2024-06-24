@@ -5,11 +5,13 @@ import { ReactComponent as SignInImage } from "../../Assets/SignInImage.svg";
 import { ReactComponent as MailIcon } from "../../Assets/Mail.svg";
 import { ReactComponent as PWIcon } from "../../Assets/PW.svg";
 import { ReactComponent as GoogleIcon } from "../../Assets/Google.svg";
-import { useRecoilState} from "recoil";
+import { useRecoilState } from "recoil";
 import { loginCheck } from "../../Atom";
+import { signIn } from "../../API/AuthAPI";
 
 function SignIn() {
-
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [loginState, setLoginState] = useRecoilState(loginCheck);
 
   // 텍스트 필드 포커스 상태 관리
@@ -21,12 +23,16 @@ function SignIn() {
   // signup 페이지로 이동시 로그아웃
   useEffect(() => {
     setLoginState(false);
-  },[]);
+  }, []);
 
   // 로그인 버튼 클릭 시 페이지 이동 및 로그인 상태 변수 관리
-  const handleLoginClick = () => {
-    setLoginState(true);
-    navigate("/attendance");
+  const handleLoginClick = async () => {
+    signIn(username, password).then((res) => {
+      setLoginState(true);
+      localStorage.setItem("accessToken", res.accessToken);
+      localStorage.setItem("refreshToken", res.refreshToken);
+      navigate("/lecture");
+    });
   };
 
   return (
@@ -45,6 +51,9 @@ function SignIn() {
               <TextInput
                 onFocus={() => setIsMailFocused(true)}
                 onBlur={() => setIsMailFocused(false)}
+                onChange={(e) => {
+                  setUsername(e.target.value);
+                }}
                 type="text"
                 placeholder="아이디"
               />
@@ -58,6 +67,9 @@ function SignIn() {
               <TextInput
                 onFocus={() => setIsPWFocused(true)}
                 onBlur={() => setIsPWFocused(false)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
                 type="password"
                 placeholder="비밀번호"
               />
@@ -66,12 +78,12 @@ function SignIn() {
 
           {/* buttons */}
           <LoginForm>
-            <LoginButton background={"#15521D"} color={"white"} onClick={handleLoginClick}>
+            <LoginButton
+              background={"#15521D"}
+              color={"white"}
+              onClick={handleLoginClick}
+            >
               Login
-            </LoginButton>
-            <LoginButton background={"#EFEFEF"}>
-              <GoogleIcon />
-              Google 로그인
             </LoginButton>
           </LoginForm>
         </RightHalf>
