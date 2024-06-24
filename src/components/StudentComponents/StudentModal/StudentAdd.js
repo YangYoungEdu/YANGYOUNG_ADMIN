@@ -1,11 +1,11 @@
 import styled from "styled-components";
-import { ReactComponent as XIcon } from "../../Assets/XIcon.svg";
+import { ReactComponent as XIcon } from "../../../Assets/XIcon.svg";
 
-const StudentAdd = ({ setIsModalOpen }) => {
+const StudentAdd = ({ setIsAddModalOpen }) => {
   // 모달 외부 클릭시 모달을 닫는 함수
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
-      setIsModalOpen(false);
+      setIsAddModalOpen(false);
     }
   };
 
@@ -15,33 +15,49 @@ const StudentAdd = ({ setIsModalOpen }) => {
         {/* 상단 */}
         <FirstDiv>
           <h1>학생 등록</h1>
-          <XIcon onClick={() => setIsModalOpen(false)} />
+          <XIcon onClick={() => setIsAddModalOpen(false)} />
         </FirstDiv>
 
         {/* 중간 폼 영역 */}
         <StyledForm>
+          <TwoForms>
           <OneForm>
             <label>아이디</label>
-            <StyledInput type="text" width="576px" placeholder="입력" />
+            <StyledInput type="text" placeholder="입력" />
           </OneForm>
+          <OneForm>
+            <label>학번</label>
+            <StyledInput type="text" placeholder="입력" />
+          </OneForm>
+          </TwoForms>
           <TwoForms>
             <OneForm>
               <label>성</label>
-              <StyledInput type="text" width="272px" placeholder="입력" />
+              <StyledInput type="text" placeholder="입력" />
             </OneForm>
             <OneForm>
               <label>이름</label>
-              <StyledInput type="text" width="272px" placeholder="입력" />
+              <StyledInput type="text" placeholder="입력" />
             </OneForm>
           </TwoForms>
           <TwoForms>
             <OneForm>
               <label>학교</label>
-              <StyledInput type="text" width="272px" placeholder="입력" />
+              <StyledInput type="text" placeholder="입력" />
             </OneForm>
             <OneForm>
               <label>학년</label>
-              <StyledInput type="text" width="272px" placeholder="입력" />
+              <StyledInput type="text" placeholder="입력" />
+            </OneForm>
+          </TwoForms>
+          <TwoForms>
+            <OneForm>
+              <label>학생 연락처</label>
+              <StyledInput type="text" placeholder="입력" />
+            </OneForm>
+            <OneForm>
+              <label>부모님 연락처</label>
+              <StyledInput type="text" placeholder="입력" />
             </OneForm>
           </TwoForms>
         </StyledForm>
@@ -74,7 +90,7 @@ const Overlay = styled.div`
 
 const Modal = styled.div`
   width: 885px;
-  height: 555px;
+  height: 646px;
   border-radius: 10px;
   background: #fff;
   display: flex;
@@ -98,7 +114,7 @@ const FirstDiv = styled.div`
   svg {
     cursor: pointer;
   }
-  margin-bottom: 65.35px;
+  margin-bottom: 56.07px;
 `;
 
 const StyledForm = styled.form`
@@ -125,7 +141,7 @@ const TwoForms = styled.div`
   gap: 32px;
 `;
 const StyledInput = styled.input`
-  width: ${(props) => props.width};
+  width: 272px;
   height: 42px;
   padding: 10px 10px 10px 18px;
   box-sizing: border-box;
@@ -144,7 +160,7 @@ const ThirdDiv = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-top: 84px;
+  margin-top: 60px;
   box-sizing: border-box;
 `;
 

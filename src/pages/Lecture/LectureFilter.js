@@ -7,11 +7,10 @@ const LectureFilter = ({ originLectures, setLectures }) => {
   const [isToggled, setIsToggled] = useState({
     teacher: false,
     grade: false,
-    room: false,
-    day: false,
   });
   const [checkedTeachers, setCheckedTeachers] = useState({});
   const [checkedGrades, setCheckedGrades] = useState({});
+
   // todo: API로 받아오기
   const teacherList = [
     { id: 1, name: "선생님1", color: "prof_kim" },
@@ -36,7 +35,6 @@ const LectureFilter = ({ originLectures, setLectures }) => {
     const duplicates = lecturesByTeacher.filter((lecture) =>
       lecturesByGrade.includes(lecture)
     );
-    console.log("Duplicates:", duplicates);
 
     setLectures(duplicates);
   };
@@ -44,19 +42,21 @@ const LectureFilter = ({ originLectures, setLectures }) => {
   // 강의 필터 - 선생님
   const filterLecturesByTeacher = () => {
     if (
+      // 체크된 선생님이 없거나 모두 false인 경우 원본 강의 반환
       Object.keys(checkedTeachers).length === 0 ||
       Object.values(checkedTeachers).every((value) => value === false)
     ) {
       return originLectures;
     }
 
-    const checkedTeacherNames = Object.keys(checkedTeachers).filter(
-      (name) => checkedTeachers[name]
+    const checkedTeacherNames = new Set(
+      Object.keys(checkedTeachers).filter((name) => checkedTeachers[name])
     );
 
     const filteredLectures = originLectures.filter((lecture) =>
-      checkedTeacherNames.includes(lecture.teacher)
+      checkedTeacherNames.has(lecture.teacher)
     );
+
     console.log("filteredLectures", filteredLectures);
 
     return filteredLectures;
@@ -65,17 +65,19 @@ const LectureFilter = ({ originLectures, setLectures }) => {
   // 강의 필터 - 학년
   const filterLecturesByGrade = () => {
     if (
+      // 체크된 학년이 없거나 모두 false인 경우 원본 강의 반환
       Object.keys(checkedGrades).length === 0 ||
       Object.values(checkedGrades).every((value) => value === false)
     ) {
       return originLectures;
     }
-    const checkedGradeNames = Object.keys(checkedGrades).filter(
-      (name) => checkedGrades[name]
+
+    const checkedGradeNames = new Set(
+      Object.keys(checkedGrades).filter((name) => checkedGrades[name])
     );
 
     const filteredLectures = originLectures.filter((lecture) =>
-      checkedGradeNames.includes(lecture.grade)
+      checkedGradeNames.has(lecture.grade)
     );
 
     return filteredLectures;
@@ -105,6 +107,17 @@ const LectureFilter = ({ originLectures, setLectures }) => {
     }));
   };
 
+  // 필터 섹션 컴포넌트
+  const FilterSection = ({ title, isToggled, onToggle, children }) => (
+    <>
+      <FilterWrapper onClick={onToggle}>
+        <FilterTitle>{title}</FilterTitle>
+        {isToggled ? <ArrowUp /> : <ArrowDown />}
+      </FilterWrapper>
+      {children}
+    </>
+  );
+
   return (
     <SearchWrapper>
       <Line />
@@ -127,6 +140,7 @@ const LectureFilter = ({ originLectures, setLectures }) => {
             </OptionLabel>
           ))}
       </FilterSection>
+
       {/* 학년 필터 */}
       <FilterSection
         title="학년"
@@ -149,16 +163,6 @@ const LectureFilter = ({ originLectures, setLectures }) => {
     </SearchWrapper>
   );
 };
-
-const FilterSection = ({ title, isToggled, onToggle, children }) => (
-  <>
-    <FilterWrapper onClick={onToggle}>
-      <FilterTitle>{title}</FilterTitle>
-      {isToggled ? <ArrowUp /> : <ArrowDown />}
-    </FilterWrapper>
-    {children}
-  </>
-);
 
 const SearchWrapper = styled.div`
   display: flex;

@@ -1,8 +1,9 @@
 import axios from "axios";
 
+const server = process.env.REACT_APP_DEV_URL;
+
 // 강의 전체 조회 API - 달 단위
 export const getAllLectureByMonthAPI = async (date) => {
-
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
 
@@ -26,7 +27,6 @@ export const getAllLectureByMonthAPI = async (date) => {
 
 // 강의 전체 조회 API - 주 단위
 export const getAllLectureByWeekAPI = async (date) => {
-
   const fixedDate = new Date(date).toLocaleDateString("en-CA");
 
   try {
@@ -34,7 +34,7 @@ export const getAllLectureByWeekAPI = async (date) => {
       `${process.env.REACT_APP_DEV_URL}lecture/week`,
       {
         params: {
-          date: fixedDate
+          date: fixedDate,
         },
       }
     );
@@ -48,7 +48,6 @@ export const getAllLectureByWeekAPI = async (date) => {
 
 // 강의 전체 조회 API - 일 단위
 export const getAllLectureByDayAPI = async (date) => {
-
   const fixedDate = new Date(date).toLocaleDateString("en-CA");
 
   try {
@@ -56,7 +55,7 @@ export const getAllLectureByDayAPI = async (date) => {
       `${process.env.REACT_APP_DEV_URL}lecture/day`,
       {
         params: {
-          date: fixedDate
+          date: fixedDate,
         },
       }
     );
@@ -65,5 +64,16 @@ export const getAllLectureByDayAPI = async (date) => {
   } catch (error) {
     console.error(error);
     throw error;
+  }
+};
+
+//특정 학생에게 할당된 과제 조회 API
+export const getOneStudentLectureAPI = async (studentId) => {
+  try {
+    const response = await axios.get (`${server}lecture/student/${studentId}`);
+    console.log (response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
   }
 };
