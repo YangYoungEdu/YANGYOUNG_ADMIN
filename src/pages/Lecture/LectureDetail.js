@@ -159,18 +159,43 @@ const LectureDetail = () => {
 
         {/* 강의별 출석 목록*/}
         {onClicked.attendance && (
-          <ColumnDiv>
-            {attendances.map((attendance, index) => (
-              <ColumnDiv key={index}>
-                <StudentWrapper key={index}>
-                  <div>{attendance.name}</div>
-                  <div>{attendance.studentPhoneNumber}</div>
-                  <div>{attendance.attendanceType}</div>
-                </StudentWrapper>
-                <Line />
-              </ColumnDiv>
-            ))}
-          </ColumnDiv>
+          // <ColumnDiv>
+          <TableWrapper>
+            <Table>
+              <thead>
+                <tr>
+                  <TableHeader>이름</TableHeader>
+                  <TableHeader>학생 연락처</TableHeader>
+                  <TableHeader>출결</TableHeader>
+                </tr>
+              </thead>
+              <tbody>
+                {attendances.map((attendance, index) => (
+                  <tr key={index}>
+                    <TableCell>{attendance.name}</TableCell>
+                    <TableCell>{attendance.studentPhoneNumber}</TableCell>
+                    <TableCell>
+                      <RadioWrapper>
+                        <RadioLabel>
+                          <Input type="radio" name="attendance" value="출석" />
+                          출석
+                        </RadioLabel>
+                        <RadioLabel>
+                          <Input type="radio" name="attendance" value="지각" />
+                          지각
+                        </RadioLabel>
+                        <label>
+                          <Input type="radio" name="attendance" value="결석" />
+                          결석
+                        </label>
+                      </RadioWrapper>
+                    </TableCell>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </TableWrapper>
+          // </ColumnDiv>
         )}
 
         {/* 강의별 과제 목록*/}
@@ -305,6 +330,86 @@ const PlusIcon = styled(Plus)`
   justify-content: center;
   cursor: pointer;
   margin: 9px 0;
+`;
+
+const TableWrapper = styled.div`
+  width: 90%;
+`;
+
+const Table = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 10px;
+  margin-bottom: 20px;
+`;
+
+const TableHeader = styled.th`
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+  background-color: #f2f2f2;
+`;
+
+const TableCell = styled.td`
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+`;
+
+const RadioWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Input = styled.input.attrs({ type: "radio" })`
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 0.5px solid #95c25c;
+  border-radius: 50%;
+  outline: none;
+  margin-right: 8px;
+  position: relative;
+  cursor: pointer;
+
+  &::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &::after {
+    content: "";
+    display: block;
+    width: 60%;
+    height: 60%;
+    border-radius: 50%;
+    background-color: #95c25c;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+  }
+
+  &:checked::after {
+    opacity: 1;
+  }
+`;
+
+const RadioLabel = styled.label`
+  display: flex;
+  align-items: center;
 `;
 
 export default LectureDetail;

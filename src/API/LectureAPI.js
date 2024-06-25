@@ -82,7 +82,7 @@ export const getOneStudentLectureAPI = async (studentId) => {
 // 강의 상세 조회 API
 export const getOneLectureAPI = async (lectureId) => {
   try {
-    const response = await axios.get(`${local}lecture/${lectureId}`);
+    const response = await axios.get(`${server}lecture/${lectureId}`);
     console.log(response.data);
     return response.data;
   } catch (error) {
