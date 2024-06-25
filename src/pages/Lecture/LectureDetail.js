@@ -82,6 +82,11 @@ const LectureDetail = () => {
     }
   };
 
+  const convertDate = (date) => {
+    const [year, month, day] = date.split("-");
+    return `${month}월 ${day}일`;
+  };
+
   const handleButtonClick = (type) => {
     setOnClicked((prevState) => ({
       ...prevState,
@@ -176,16 +181,28 @@ const LectureDetail = () => {
                     <TableCell>{attendance.studentPhoneNumber}</TableCell>
                     <TableCell>
                       <RadioWrapper>
-                        <RadioLabel>
-                          <Input type="radio" name="attendance" value="출석" />
+                        <label>
+                          <RadioInput
+                            type="radio"
+                            name="attendance"
+                            value="출석"
+                          />
                           출석
-                        </RadioLabel>
+                        </label>
                         <RadioLabel>
-                          <Input type="radio" name="attendance" value="지각" />
+                          <RadioInput
+                            type="radio"
+                            name="attendance"
+                            value="지각"
+                          />
                           지각
                         </RadioLabel>
                         <label>
-                          <Input type="radio" name="attendance" value="결석" />
+                          <RadioInput
+                            type="radio"
+                            name="attendance"
+                            value="결석"
+                          />
                           결석
                         </label>
                       </RadioWrapper>
@@ -200,15 +217,20 @@ const LectureDetail = () => {
 
         {/* 강의별 과제 목록*/}
         {onClicked.assignment && (
-          <ColumnDiv>
+          <TaskWrapper>
             {taskDummy.map((task, index) => (
-              <RowDiv key={index}>
-                <div>{task.content}</div>
-                <div>{task.taskType}</div>
-                <div>{task.taskDate}</div>
-              </RowDiv>
+              <TaskBox key={index}>
+                <div>
+                  <TaskTitle>{task.content}</TaskTitle>
+                  <TaskType>{task.taskType}</TaskType>
+                </div>
+                <TaskDate>마감일:{convertDate(task.taskDate)}</TaskDate>
+              </TaskBox>
             ))}
-          </ColumnDiv>
+            <TaskBox>
+              <PlusIcon />
+            </TaskBox>
+          </TaskWrapper>
         )}
       </LectureDetailWrapper>
     </ThemeProvider>
@@ -362,16 +384,14 @@ const RadioWrapper = styled.div`
   align-items: center;
 `;
 
-const Input = styled.input.attrs({ type: "radio" })`
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  width: 16px;
-  height: 16px;
+const RadioInput = styled.input.attrs({ type: "radio" })`
+  width: 12px;
+  height: 12px;
   border: 0.5px solid #95c25c;
   border-radius: 50%;
   outline: none;
-  margin-right: 8px;
+  margin-left: 16px;
+  margin-right: 3px;
   position: relative;
   cursor: pointer;
 
@@ -410,6 +430,40 @@ const Input = styled.input.attrs({ type: "radio" })`
 const RadioLabel = styled.label`
   display: flex;
   align-items: center;
+`;
+
+const TaskWrapper = styled(ColumnDiv)`
+  /* width: 90%; */
+  padding-left: 9.5%;
+`;
+const TaskBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  height: 84px;
+  /* height: 14%; */
+  border-radius: 5px;
+  border: 1px solid #e0e0e0;
+  margin: 2.5px 0px;
+`;
+
+const TaskTitle = styled.div`
+  font-size: ${(props) => props.theme.fontSizes.bodyText3};
+  font-weight: 700;
+`;
+
+const TaskType = styled.div`
+  width: 57px;
+  height: 20px;
+  background-color: ${(props) => props.theme.colors.yellow};
+  font-size: ${(props) => props.theme.fontSizes.bodyText4};
+  font-weight: 400;
+  text-align: center;
+`;
+
+const TaskDate = styled.div`
+  font-size: ${(props) => props.theme.fontSizes.bodyText4};
+  font-weight: 400;
 `;
 
 export default LectureDetail;
