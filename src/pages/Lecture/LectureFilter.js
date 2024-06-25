@@ -15,6 +15,11 @@ const LectureFilter = ({ originLectures, setLectures }) => {
     { id: 2, name: "홍길동", color: "prof_hong" },
     { id: 3, name: "김수지", color: "prof_lee" },
   ];
+  const gradeList = [
+    { id: 1, name: "고1", color: "primary_normal" },
+    { id: 2, name: "고2", color: "primary_normal" },
+    { id: 3, name: "고3", color: "primary_normal" },
+  ];
 
   useEffect(() => {
     filterLecturesByCheckedTeachers();
