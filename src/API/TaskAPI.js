@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const server = process.env.REACT_APP_DEV_URL;
+const local = process.env.REACT_APP_LOCAL_URL;
 
 //특정 학생 과제 조회
 export const getOneStudentTaskAPI = async (studentId) => {
@@ -19,6 +20,17 @@ export const postOneStudentTaskAPI = async (data) => {
   try {
     const response = await axios.post(`${server}task/student`, data);
     console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// 강의별 과제 조회
+export const getLectureTaskAPI = async (lectureId) => {
+  try {
+    const response = await axios.get(`${local}task/lecture/${lectureId}`);
+    console.log(response.data);
+    return response.data;
   } catch (error) {
     console.error(error);
   }
