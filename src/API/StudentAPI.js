@@ -28,7 +28,7 @@ export const getHiddenStudentAPI = async (page = 1, size = 10) => {
         size,
       },
     });
-    console.log (response.data);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -42,12 +42,12 @@ export const searchStudent = async () => {
     schoolList: ["동대전고"],
     gradeList: [],
     page: 1,
-    size: 10
+    size: 10,
   };
 
   try {
     const response = await axios.get(`${server}student/search`, data);
-    console.log (response.data);
+    console.log(response.data);
     return response;
   } catch (error) {
     console.error(error);
@@ -91,13 +91,26 @@ export const deleteStudentAPI = async (idList) => {
 //학생 숨김 처리 API
 export const hideStudentAPI = async (idList) => {
   const studentIdList = {
-    "studentIdList": idList,
+    studentIdList: idList,
   };
   console.log(studentIdList);
   try {
-    const response = await axios.patch(`${server}student/hidden`, studentIdList);
+    const response = await axios.patch(
+      `${server}student/hidden`,
+      studentIdList
+    );
     console.log(response);
     alert("선택한 학생이 퇴원처리 되었습니다.");
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// 강의별 학생 조회 API
+export const getStudentByLectureAPI = async (lectureId) => {
+  try {
+    const response = await axios.get(`${server}student/lecture/${lectureId}`);
+    return response.data;
   } catch (error) {
     console.error(error);
   }

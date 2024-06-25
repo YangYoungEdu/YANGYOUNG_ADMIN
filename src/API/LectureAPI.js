@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const server = process.env.REACT_APP_DEV_URL;
+const local = process.env.REACT_APP_LOCAL_URL;
 
 // 강의 전체 조회 API - 달 단위
 export const getAllLectureByMonthAPI = async (date) => {
@@ -70,8 +71,19 @@ export const getAllLectureByDayAPI = async (date) => {
 //특정 학생에게 할당된 과제 조회 API
 export const getOneStudentLectureAPI = async (studentId) => {
   try {
-    const response = await axios.get (`${server}lecture/student/${studentId}`);
-    console.log (response.data);
+    const response = await axios.get(`${server}lecture/student/${studentId}`);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// 강의 상세 조회 API
+export const getOneLectureAPI = async (lectureId) => {
+  try {
+    const response = await axios.get(`${local}lecture/${lectureId}`);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(error);
