@@ -157,7 +157,7 @@ const LectureDetail = () => {
                 <Line />
               </ColumnDiv>
             ))}
-            <PlusIcon />
+            <StudentPlusIcon />
             <Line />
           </ColumnDiv>
         )}
@@ -166,11 +166,11 @@ const LectureDetail = () => {
         {onClicked.attendance && (
           // <ColumnDiv>
           <TableWrapper>
-            <Table>
+            <AttendanceTable>
               <thead>
                 <tr>
-                  <TableHeader>이름</TableHeader>
-                  <TableHeader>학생 연락처</TableHeader>
+                  <TableHeader style={{width: "164px"}}>이름</TableHeader>
+                  <TableHeader style={{width: "174px"}}>학생 연락처</TableHeader>
                   <TableHeader>출결</TableHeader>
                 </tr>
               </thead>
@@ -210,7 +210,7 @@ const LectureDetail = () => {
                   </tr>
                 ))}
               </tbody>
-            </Table>
+            </AttendanceTable>
           </TableWrapper>
           // </ColumnDiv>
         )}
@@ -220,15 +220,15 @@ const LectureDetail = () => {
           <TaskWrapper>
             {taskDummy.map((task, index) => (
               <TaskBox key={index}>
-                <div>
+                <TaskTitleWrapper>
                   <TaskTitle>{task.content}</TaskTitle>
                   <TaskType>{task.taskType}</TaskType>
-                </div>
-                <TaskDate>마감일:{convertDate(task.taskDate)}</TaskDate>
+                </TaskTitleWrapper>
+                <TaskDate>마감일: {convertDate(task.taskDate)}</TaskDate>
               </TaskBox>
             ))}
             <TaskBox>
-              <PlusIcon />
+              <TaskPlusIcon />
             </TaskBox>
           </TaskWrapper>
         )}
@@ -347,11 +347,18 @@ const Line = styled.hr`
 `;
 
 const PlusIcon = styled(Plus)`
-  width: 100%;
+  width: 14px;
+  height: 14px;
+  padding-left: 48%;
   display: flex;
   justify-content: center;
+  align-items: center;
   cursor: pointer;
-  margin: 9px 0;
+`;
+
+const StudentPlusIcon = styled(PlusIcon)`
+  margin: 10px 0px 10px 0px;
+
 `;
 
 const TableWrapper = styled.div`
@@ -360,9 +367,11 @@ const TableWrapper = styled.div`
 
 const Table = styled.table`
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   border-radius: 10px;
   margin-bottom: 20px;
+  /* overflow: hidden; */
 `;
 
 const TableHeader = styled.th`
@@ -370,12 +379,30 @@ const TableHeader = styled.th`
   padding: 8px;
   text-align: center;
   background-color: #f2f2f2;
+
+  &:first-child {
+    border-top-left-radius: 10px;
+  }
+  
+  &:last-child {
+    border-top-right-radius: 10px;
+  }
 `;
 
 const TableCell = styled.td`
   border: 1px solid #ddd;
   padding: 8px;
   text-align: center;
+`;
+
+const AttendanceTable = styled(Table)`
+tbody tr:last-child ${TableCell}:first-child {
+    border-bottom-left-radius: 10px;
+  }
+  
+  tbody tr:last-child ${TableCell}:last-child {
+    border-bottom-right-radius: 10px;
+  }
 `;
 
 const RadioWrapper = styled.div`
@@ -440,16 +467,27 @@ const TaskBox = styled.div`
   display: flex;
   flex-direction: column;
   width: 90%;
-  height: 84px;
-  /* height: 14%; */
+  height: 86px;
   border-radius: 5px;
   border: 1px solid #e0e0e0;
   margin: 2.5px 0px;
+  padding: 18.5px 0 0 23px;
+  box-sizing: border-box;
+`;
+
+const TaskPlusIcon = styled(PlusIcon)`
+  margin: 20px 0px 0px -10px;
+  /* margin-top: 20px; */
+`;
+
+const TaskTitleWrapper = styled.div`
+  padding-bottom: 9px;
 `;
 
 const TaskTitle = styled.div`
   font-size: ${(props) => props.theme.fontSizes.bodyText3};
   font-weight: 700;
+  padding-right: 9px;
 `;
 
 const TaskType = styled.div`
