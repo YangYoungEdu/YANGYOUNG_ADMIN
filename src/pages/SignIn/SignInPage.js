@@ -35,6 +35,12 @@ function SignIn() {
     });
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleLoginClick();
+    }
+  };
+
   return (
     <>
       <Div>
@@ -70,6 +76,7 @@ function SignIn() {
                 onChange={(e) => {
                   setPassword(e.target.value);
                 }}
+                onKeyDown={handleKeyDown}
                 type="password"
                 placeholder="비밀번호"
               />

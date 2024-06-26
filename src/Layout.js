@@ -4,16 +4,14 @@ import styled, { ThemeProvider } from "styled-components";
 import { theme } from "./style/theme";
 import { useRecoilState } from "recoil";
 import { loginCheck } from "./Atom";
-import Navbar from "./components/Navbar";
-import { act } from "react";
-// import Footer from "./components/Footer";
 
 const Layout = () => {
   const [loginState, setLoginState] = useRecoilState(loginCheck);
-
   const [showLogoutButton, setShowLogoutButton] = useState(true);
   const [showSecondHeader, setShowSecondHeader] = useState(true);
   const [showFooter, setShowFooter] = useState(true);
+
+  const accessToken = localStorage.getItem("accessToken");
 
   //로그인 상태에 따라 로그아웃 버튼, 헤더바2, 푸터 표시 여부 변경
   useEffect(() => {
@@ -26,7 +24,7 @@ const Layout = () => {
   // 특정 페이지가 활성화될 경우 메뉴의 스타일
   const activeStyle = {
     color: "#15521D",
-    fontWeight: "bold"
+    fontWeight: "bold",
   };
 
   return (
@@ -43,9 +41,24 @@ const Layout = () => {
           {/* 헤더바 2 */}
           {showSecondHeader && (
             <SecondHeader>
-              <NavLink to={`/attendance`} style={({ isActive }) => (isActive ? activeStyle : undefined)}>출결 관리</NavLink>
-              <NavLink to={`/student`} style={({ isActive }) => (isActive ? activeStyle : undefined)}>학생 관리</NavLink>
-              <NavLink to={`/`} style={({ isActive }) => (isActive ? activeStyle : undefined)}>수업 관리</NavLink>
+              <NavLink
+                to={`/attendance`}
+                style={({ isActive }) => (isActive ? activeStyle : undefined)}
+              >
+                출결 관리
+              </NavLink>
+              <NavLink
+                to={`/student`}
+                style={({ isActive }) => (isActive ? activeStyle : undefined)}
+              >
+                학생 관리
+              </NavLink>
+              <NavLink
+                to={`/lecture`}
+                style={({ isActive }) => (isActive ? activeStyle : undefined)}
+              >
+                수업 관리
+              </NavLink>
             </SecondHeader>
           )}
         </Header>
@@ -106,7 +119,6 @@ const SecondHeader = styled.div`
   a {
     cursor: pointer;
   }
-
 `;
 
 const Logo = styled.div`

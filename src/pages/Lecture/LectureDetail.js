@@ -16,7 +16,7 @@ const LectureDetail = () => {
   const [lecture, setLecture] = useState({});
   const [students, setStudents] = useState([]);
   const [attendances, setAttendances] = useState([]);
-  const [assignments, setAssignments] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [onClicked, setOnClicked] = useState({
     student: true,
     attendance: false,
@@ -63,7 +63,7 @@ const LectureDetail = () => {
     }
     if (onClicked.assignment) {
       getLectureTaskAPI(id).then((res) => {
-        setAssignments(res);
+        setTasks(res);
         console.log(res);
       });
     }
@@ -218,7 +218,7 @@ const LectureDetail = () => {
         {/* 강의별 과제 목록*/}
         {onClicked.assignment && (
           <TaskWrapper>
-            {taskDummy.map((task, index) => (
+            {tasks.map((task, index) => (
               <TaskBox key={index}>
                 <TaskTitleWrapper>
                   <TaskTitle>{task.content}</TaskTitle>
