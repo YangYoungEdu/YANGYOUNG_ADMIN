@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import { theme } from "../../style/theme";
+import DayTimeTable from "./DayTimeTable";
 
 const MonthCalendar = ({
   currentDate,
@@ -48,7 +49,8 @@ const MonthCalendar = ({
       i++
     ) {
       const year = currentMonth === 0 ? currentYear - 1 : currentYear;
-      const month = currentMonth < 10 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
+      const month =
+        currentMonth < 10 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
       const day = i < 10 ? `0${i}` : `${i}`;
 
       days.push({
@@ -63,7 +65,8 @@ const MonthCalendar = ({
   const addCurrentMonthDays = (days, currentYear, currentMonth, totalDays) => {
     for (let i = 1; i <= totalDays; i++) {
       const year = currentMonth === 0 ? currentYear - 1 : currentYear;
-      const month = currentMonth < 10 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
+      const month =
+        currentMonth < 10 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
       const day = i < 10 ? `0${i}` : `${i}`;
 
       days.push({
@@ -79,7 +82,8 @@ const MonthCalendar = ({
     const remainingCells = totalCells - days.length;
     for (let i = 1; i <= remainingCells; i++) {
       const year = currentMonth === 0 ? currentYear - 1 : currentYear;
-      const month = currentMonth < 9 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
+      const month =
+        currentMonth < 9 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
       const day = i < 10 ? `0${i}` : `${i}`;
 
       days.push({
@@ -151,8 +155,6 @@ const MonthCalendar = ({
           {days.map((dayObj) => {
             const dateKey = `${dayObj.year}-${dayObj.month}-${dayObj.day}`;
             const lectureOfDay = filteredLectures[dateKey];
-            console.log(dateKey);
-            console.log(lectureOfDay);
             const isHighlightDay = checkHighlightDay(dayObj);
 
             return (
@@ -185,6 +187,7 @@ const MonthCalendar = ({
             );
           })}
         </CalendarBody>
+        <DayTimeTable filteredLectures={filteredLectures} />
       </MonthCalendarWrapper>
     </ThemeProvider>
   );

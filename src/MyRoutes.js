@@ -7,6 +7,7 @@ import Student from "./pages/Student/StudentPage";
 import StudentDetail from "./pages/Student/StudentDetail";
 import Lecture from "./pages/Lecture/LecturePage";
 import LectureDetail from "./pages/Lecture/LectureDetail";
+import DayTimeTable from "./pages/Lecture/DayTimeTable";
 
 function MyRoutes() {
   return (
@@ -20,6 +21,7 @@ function MyRoutes() {
           <Route path="/student/:id" element={<StudentDetail />} />
           <Route path="lecture" element={<Lecture />} />
           <Route path="lecture/:id" element={<LectureDetail />} />
+          <Route path="/lecture/day" element={<DayTimeTable />} />
         </Route>
       </Routes>
     </>
