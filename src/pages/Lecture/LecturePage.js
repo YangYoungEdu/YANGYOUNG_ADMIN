@@ -19,6 +19,8 @@ const LecturePage = () => {
   const [originLectures, setOriginLectures] = useState([]);
   const [lectures, setLectures] = useState([]);
   const [isHighlight, setIsHighlight] = useState({
+    year: currentDate.getFullYear(),
+    month: currentDate.getMonth(),
     day: currentDate.getDate(),
     isHighlight: false,
   });
