@@ -66,7 +66,7 @@ const LectrueHeader = ({ mode, setMode, currentDate, setCurrentDate, setIsHighli
 const CalendarHeader = styled(RowDiv)`
   width: 90%;
   justify-content: flex-start;
-  padding: 0px 0px 17px 0px;
+  padding: 30px 0px 17px 0px;
 `;
 
 const TodayButton = styled.button`
@@ -76,23 +76,24 @@ const TodayButton = styled.button`
   border: 1px solid ${(props) => props.theme.colors.gray_004};
   background-color: #ffffff;
   text-align: center;
+  margin-left: 6px;
   cursor: pointer;
 `;
 
 const ArrowLeft = styled(LeftArrow)`
   cursor: pointer;
-  padding: 5px 12px 0px 20px;
+  padding: 5px 0px 0px 9px;
 `;
 
 const ArrowRight = styled(RightArrow)`
   cursor: pointer;
-  padding: 5px 26px 0px 0px;
+  padding: 5px 9px 0px 0px;
 `;
 
 const DateTitle = styled.div`
   font-size: 20px;
   font-weight: 500;
-  padding: 2px 20px 0px 0px;
+  padding: 2px 6px 0px 6px;
 `;
 
 const Select = styled.select`
