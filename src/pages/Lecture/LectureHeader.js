@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import styled from "styled-components";
 import { RowDiv } from "../../style/CommonStyle";
 import { ReactComponent as LeftArrow } from "../../Assets/LeftArrow.svg";
@@ -5,7 +6,21 @@ import { ReactComponent as Plus } from "../../Assets/Plus.svg";
 import { ReactComponent as RightArrow } from "../../Assets/RightArrow.svg";
 import SelectArrow from "../../Assets/SelectArrow.svg";
 
-const LectrueHeader = ({ mode, setMode, currentDate, setCurrentDate, setIsHighlight }) => {
+const LectrueHeader = ({
+  mode,
+  setMode,
+  currentDate,
+  setCurrentDate,
+  setIsHighlight,
+  isToday,
+  setIsToday,
+}) => {
+  useEffect(() => {
+    if (isToday) {
+      setCurrentDate(new Date());
+      setIsToday(false);
+    }
+  }, [isToday]);
   // 모드(달,주,일)에 따라서 날짜 변경 함수
   const changeDate = (amount, mode) => {
     const newDate = new Date(currentDate);
@@ -34,7 +49,13 @@ const LectrueHeader = ({ mode, setMode, currentDate, setCurrentDate, setIsHighli
   };
 
   const setToday = () => {
-    setIsHighlight({day: currentDate.getDate(), isHighlight: true});
+    setIsToday(true);
+    setIsHighlight({
+      year: currentDate.getFullYear(),
+      month: currentDate.getMonth(),
+      day: currentDate.getDate(),
+      isHighlight: true,
+    });
   };
 
   return (

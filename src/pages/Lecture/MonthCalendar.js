@@ -25,64 +25,92 @@ const MonthCalendar = ({
   const renderCalendar = () => {
     const days = [];
     const totalDays = daysInMonth(currentDate);
-    const startDay = startOfMonth(currentDate);
-    const totalCells = 42;
+    const startDay = getFirstDayOfWeek(currentDate);
+    const totalCells = 35;
 
-    // 이번 달의 연도와 월 정보
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth();
 
-    // 이전 달의 마지막 몇 일을 추가
+    addPreviousMonthDays(days, currentYear, currentMonth, startDay);
+    addCurrentMonthDays(days, currentYear, currentMonth, totalDays);
+    addNextMonthDays(days, currentYear, currentMonth, totalCells);
+
+    setDays(days);
+  };
+
+  const addPreviousMonthDays = (days, currentYear, currentMonth, startDay) => {
     const prevMonth = new Date(currentYear, currentMonth, 0);
     const prevMonthTotalDays = prevMonth.getDate();
+
     for (
       let i = prevMonthTotalDays - startDay + 1;
       i <= prevMonthTotalDays;
       i++
     ) {
+      const year = currentMonth === 0 ? currentYear - 1 : currentYear;
+      const month = currentMonth < 10 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
+      const day = i < 10 ? `0${i}` : `${i}`;
+
       days.push({
-        year: currentYear,
-        month: currentMonth,
-        day: i,
+        year: year,
+        month: month,
+        day: day,
         color: "gray_005",
       });
     }
+  };
 
-    // 이번 달의 날짜를 추가
+  const addCurrentMonthDays = (days, currentYear, currentMonth, totalDays) => {
     for (let i = 1; i <= totalDays; i++) {
+      const year = currentMonth === 0 ? currentYear - 1 : currentYear;
+      const month = currentMonth < 10 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
+      const day = i < 10 ? `0${i}` : `${i}`;
+
       days.push({
-        year: currentYear,
-        month: currentMonth,
-        day: i,
+        year: year,
+        month: month,
+        day: day,
         color: "black",
       });
     }
+  };
 
-    // 다음 달의 첫 몇 일을 추가
+  const addNextMonthDays = (days, currentYear, currentMonth, totalCells) => {
     const remainingCells = totalCells - days.length;
     for (let i = 1; i <= remainingCells; i++) {
+      const year = currentMonth === 0 ? currentYear - 1 : currentYear;
+      const month = currentMonth < 9 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
+      const day = i < 10 ? `0${i}` : `${i}`;
+
       days.push({
-        year: currentYear,
-        month: currentMonth,
-        day: i,
+        year: year,
+        month: month,
+        day: day,
         color: "gray_005",
       });
     }
-
-    setDays(days);
   };
 
-  // ToDo : 월까지 체크
+  const daysInMonth = (date) => {
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+  };
+
+  const getFirstDayOfWeek = (date) => {
+    return new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+  };
+
   const filterLecturesByDay = () => {
     const filteredLectures = {};
 
     lectures.forEach((lecture) => {
       lecture.dateList.forEach((date) => {
-        const day = date.split("-")[2];
-        if (!filteredLectures[day]) {
-          filteredLectures[day] = [];
+        const [year, month, day] = date.split("-");
+        const dateKey = `${year}-${month}-${day}`;
+
+        if (!filteredLectures[dateKey]) {
+          filteredLectures[dateKey] = [];
         }
-        filteredLectures[day].push(lecture);
+        filteredLectures[dateKey].push(lecture);
       });
     });
 
@@ -91,16 +119,6 @@ const MonthCalendar = ({
 
   const filterLecturesByTeacher = (lectureList = [], teacher) => {
     return lectureList.filter((lecture) => lecture.teacher === teacher);
-  };
-
-  // 해당 월의 일 수를 구하는 함수
-  const daysInMonth = (date) => {
-    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-  };
-
-  // 해당 월의 첫 요일을 구하는 함수
-  const startOfMonth = (date) => {
-    return new Date(date.getFullYear(), date.getMonth(), 1).getDay();
   };
 
   const highlightTheDay = (dayObj) => {
@@ -112,6 +130,15 @@ const MonthCalendar = ({
     });
   };
 
+  const checkHighlightDay = (dayObj) => {
+    return (
+      isHighlight.day === dayObj.day &&
+      isHighlight.month === dayObj.month &&
+      isHighlight.year === dayObj.year &&
+      isHighlight.isHighlight
+    );
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <MonthCalendarWrapper>
@@ -121,13 +148,15 @@ const MonthCalendar = ({
           ))}
         </DayWrapper>
         <CalendarBody>
-          {days.map((dayObj, dayIndex) => {
-            const lectureOfDay = filteredLectures[dayObj.day];
-            const isHighlightDay =
-              isHighlight.day === dayObj.day && isHighlight.isHighlight;
+          {days.map((dayObj) => {
+            const dateKey = `${dayObj.year}-${dayObj.month}-${dayObj.day}`;
+            const lectureOfDay = filteredLectures[dateKey];
+            console.log(dateKey);
+            console.log(lectureOfDay);
+            const isHighlightDay = checkHighlightDay(dayObj);
 
             return (
-              <DayCell key={dayObj.day}>
+              <DayCell>
                 <DateText
                   onClick={() => highlightTheDay(dayObj)}
                   color={dayObj.color}
@@ -143,7 +172,7 @@ const MonthCalendar = ({
 
                   return (
                     teacherLectures.length > 0 && (
-                      <Lecture key={teacher.name}>
+                      <Lecture>
                         <Teacher teacher={teacher}>{teacher.name}</Teacher>
                         <LectureSize>
                           수업 {teacherLectures.length}개
@@ -235,7 +264,6 @@ const DateText = styled.div`
 
 const Lecture = styled.div`
   margin-bottom: 5px;
-  cursor: pointer;
   display: flex;
   align-items: center;
 `;
