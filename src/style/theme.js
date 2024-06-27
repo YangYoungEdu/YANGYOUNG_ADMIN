@@ -32,6 +32,7 @@ export const theme = {
     black: "#000000",
     brown_001: "#604C4C",
     brown_002: "#362415",
+    yellow: "#FFF4DE",
     yellow_001: "#EAC784",
     prof_kim: "#95C25C",
     prof_hong: "#FFC14B",

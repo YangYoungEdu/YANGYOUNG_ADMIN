@@ -4,18 +4,16 @@ import { ReactComponent as DownArrow } from "../../Assets/DownArrow.svg";
 import { ReactComponent as UpArrow } from "../../Assets/UpArrow.svg";
 
 const LectureFilter = ({ originLectures, setLectures }) => {
-  const [isToggled, setIsToggled] = useState({
-    teacher: false,
-    grade: false,
-  });
+  // const [isToggled, setIsToggled] = useState({
+  //   teacher: false,
+  // });
   const [checkedTeachers, setCheckedTeachers] = useState({});
-  const [checkedGrades, setCheckedGrades] = useState({});
 
   // todo: API로 받아오기
   const teacherList = [
-    { id: 1, name: "선생님1", color: "prof_kim" },
-    { id: 2, name: "선생님2", color: "prof_hong" },
-    { id: 3, name: "선생님3", color: "prof_lee" },
+    { id: 1, name: "김삼유", color: "prof_kim" },
+    { id: 2, name: "홍길동", color: "prof_hong" },
+    { id: 3, name: "김수지", color: "prof_lee" },
   ];
   const gradeList = [
     { id: 1, name: "고1", color: "primary_normal" },
@@ -25,18 +23,12 @@ const LectureFilter = ({ originLectures, setLectures }) => {
 
   useEffect(() => {
     filterLecturesByCheckedTeachers();
-  }, [checkedTeachers, checkedGrades]);
+  }, [checkedTeachers]);
 
-  // 강의 필터 함수 - 선생님, 학년, (강의실, 요일)
+  // 강의 필터 함수 - 선생님
   const filterLecturesByCheckedTeachers = () => {
     const lecturesByTeacher = filterLecturesByTeacher();
-    const lecturesByGrade = filterLecturesByGrade();
-
-    const duplicates = lecturesByTeacher.filter((lecture) =>
-      lecturesByGrade.includes(lecture)
-    );
-
-    setLectures(duplicates);
+    setLectures(lecturesByTeacher);
   };
 
   // 강의 필터 - 선생님
@@ -62,46 +54,17 @@ const LectureFilter = ({ originLectures, setLectures }) => {
     return filteredLectures;
   };
 
-  // 강의 필터 - 학년
-  const filterLecturesByGrade = () => {
-    if (
-      // 체크된 학년이 없거나 모두 false인 경우 원본 강의 반환
-      Object.keys(checkedGrades).length === 0 ||
-      Object.values(checkedGrades).every((value) => value === false)
-    ) {
-      return originLectures;
-    }
-
-    const checkedGradeNames = new Set(
-      Object.keys(checkedGrades).filter((name) => checkedGrades[name])
-    );
-
-    const filteredLectures = originLectures.filter((lecture) =>
-      checkedGradeNames.has(lecture.grade)
-    );
-
-    return filteredLectures;
-  };
-
   // 필터 토글 함수 - 선생님, 학년, 강의실, 요일
-  const toggleFilter = (filter) => {
-    setIsToggled((prev) => ({
-      ...prev,
-      [filter]: !prev[filter],
-    }));
-  };
+  // const toggleFilter = (filter) => {
+  //   setIsToggled((prev) => ({
+  //     ...prev,
+  //     [filter]: !prev[filter],
+  //   }));
+  // };
 
   // 체크박스 변경 함수 - 선생님
   const handleCheckboxChange = (name) => {
     setCheckedTeachers((prev) => ({
-      ...prev,
-      [name]: !prev[name],
-    }));
-  };
-
-  // 체크박스 변경 함수 - 학년
-  const handleGradeCheckboxChange = (name) => {
-    setCheckedGrades((prev) => ({
       ...prev,
       [name]: !prev[name],
     }));
@@ -112,7 +75,7 @@ const LectureFilter = ({ originLectures, setLectures }) => {
     <>
       <FilterWrapper onClick={onToggle}>
         <FilterTitle>{title}</FilterTitle>
-        {isToggled ? <ArrowUp /> : <ArrowDown />}
+        {/* {isToggled ? <ArrowUp /> : <ArrowDown />} */}
       </FilterWrapper>
       {children}
     </>
@@ -124,41 +87,20 @@ const LectureFilter = ({ originLectures, setLectures }) => {
       {/* 선생님 필터 */}
       <FilterSection
         title="선생님"
-        isToggled={isToggled.teacher}
-        onToggle={() => toggleFilter("teacher")}
+        // isToggled={isToggled.teacher}
+        // onToggle={() => toggleFilter("teacher")}
       >
-        {isToggled.teacher &&
-          teacherList.map((teacher) => (
-            <OptionLabel key={teacher.id}>
-              <CheckBox
-                type="checkbox"
-                checked={checkedTeachers[teacher.name] || false}
-                onChange={() => handleCheckboxChange(teacher.name)}
-                checkColor={teacher.color}
-              />
-              {teacher.name}
-            </OptionLabel>
-          ))}
-      </FilterSection>
-
-      {/* 학년 필터 */}
-      <FilterSection
-        title="학년"
-        isToggled={isToggled.grade}
-        onToggle={() => toggleFilter("grade")}
-      >
-        {isToggled.grade &&
-          gradeList.map((grade) => (
-            <OptionLabel key={grade.id}>
-              <CheckBox
-                type="checkbox"
-                checked={checkedTeachers[grade.name] || false}
-                onChange={() => handleGradeCheckboxChange(grade.name)}
-                checkColor={grade.color}
-              />
-              {grade.name}
-            </OptionLabel>
-          ))}
+        {teacherList.map((teacher) => (
+          <OptionLabel key={teacher.id}>
+            <CheckBox
+              type="checkbox"
+              checked={checkedTeachers[teacher.name] || false}
+              onChange={() => handleCheckboxChange(teacher.name)}
+              checkColor={teacher.color}
+            />
+            {teacher.name}
+          </OptionLabel>
+        ))}
       </FilterSection>
     </SearchWrapper>
   );
@@ -168,6 +110,7 @@ const SearchWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 15%;
+  padding-top: 30px;
 `;
 
 const Line = styled.hr`
