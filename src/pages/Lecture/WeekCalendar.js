@@ -1,37 +1,48 @@
+import { render } from "@testing-library/react";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 const WeekCalendar = ({ currentDate, lectures }) => {
-  const daysOfWeek = ["월", "화", "수", "목", "금", "토", "일"];
+  const daysOfWeek = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+  const dayOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
   const [filteredLectures, setFilteredLectures] = useState({});
+  const weeklyCalendar = new Array(7).fill().map(() => new Array(24).fill().map(() => new Array(12).fill([])));
 
   useEffect(() => {
-    const filterLecturesByDateAndTime = () => {
-      const filtered = {};
-      const getDayOfWeek = (date) => {
-        const dayOfWeek = new Date(date).getDay();
-        return ["일", "월", "화", "수", "목", "금", "토"][dayOfWeek];
-      };
+    setFilteredLectures(filterLecturesByDate(lectures, currentDate));
+    renderLecturesByQuarterHour();
+    setTimeout(() => {
+      console.log(weeklyCalendar);
+    }, 1000);
+  }, [lectures, currentDate]);
 
-      const getLecturesByDate = (lectures, date) => {
-        return lectures.filter((lecture) => lecture.dateList.includes(date));
-      };
+  const filterLecturesByDate = (lectures, currentDate) => {
+    const filtered = {};
+    const startDate = getStartOfWeek(currentDate);
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
+      const dayOfWeek = getDayOfWeek(date);
+      filtered[dayOfWeek] = getLecturesByDate(lectures, date.toISOString().slice(0, 10));
+    }
+    return filtered;
+  };
 
-      for (let i = 0; i <= 6; i++) {
-        const date = new Date(currentDate);
-        date.setDate(currentDate.getDate() + i);
-        const dayOfWeek = getDayOfWeek(date);
-        filtered[dayOfWeek] = getLecturesByDate(
-          lectures,
-          date.toISOString().slice(0, 10)
-        );
-      }
+  const getStartOfWeek = (date) => {
+    const currentDate = new Date(date);
+    const day = currentDate.getDay();
+    const diff = currentDate.getDate() - day;
+    return new Date(currentDate.setDate(diff));
+  };
 
-      return filtered;
-    };
+  const getDayOfWeek = (date) => {
+    const dayOfWeek = new Date(date).getDay();
+    return ["일", "월", "화", "수", "목", "금", "토"][dayOfWeek];
+  };
 
-    setFilteredLectures(filterLecturesByDateAndTime(lectures, currentDate));
-  }, [currentDate, lectures]);
+  const getLecturesByDate = (lectures, date) => {
+    return lectures.filter((lecture) => lecture.dateList.includes(date)).sort((a, b) => a.startTime - b.startTime);
+  };
 
   const getHour = (hour) => {
     if (hour < 7) return `오전 ${hour + 12}:00`;
@@ -46,59 +57,30 @@ const WeekCalendar = ({ currentDate, lectures }) => {
     return date.getDate().toString().padStart(2, "0");
   };
 
-  const renderLecturesByQuarterHour = (dayOfWeek, hour, quarter) => {
-    if (filteredLectures[dayOfWeek])  {
-      // 시간순으로 강의 정렬
-      const sortedLectures = filteredLectures[dayOfWeek].sort((a, b) => {
-        const startTimeA = a.startTime;
-        const startTimeB = b.startTime;
-        return startTimeA - startTimeB;
-      });
-      console.log("sortedLectures: ", sortedLectures);
+  const renderLecturesByQuarterHour = () => {
+    dayOfWeek.forEach((day, dayIndex) => {
+      const sortedLectures = filteredLectures[day];
+      if (sortedLectures && sortedLectures.length > 0) {
+        sortedLectures.forEach((lecture) => {
+          const [startHour, startMinute] = lecture.startTime.split(":").map(Number);
+          const [endHour, endMinute] = lecture.endTime.split(":").map(Number);
+          const startMinuteIndex = Math.floor(startMinute / 5);
+          const endMinuteIndex = Math.floor(endMinute / 5);
 
-      return sortedLectures.map((lecture, index) => {
-        const startTime = lecture.startTime;
-        const startHour = startTime.split(":")[0];
-        const startMinute = startTime.split(":")[1];
-        const startQuarter = Math.floor(startTime.split(":")[1] / 15);
-        const endTime = lecture.endTime;
-        const endHour = endTime.split(":")[0];
-        const endMinute = endTime.split(":")[1];
-        const endQuarter = Math.ceil(endTime.split(":")[1] / 15);
+          for (let hour = startHour; hour <= endHour; hour++) {
+            let minuteStart = 0,
+              minuteEnd = 11;
 
-        if (
-          startHour === hour &&
-          startQuarter <= quarter &&
-          (endHour > hour ||
-            (endHour === hour && endQuarter > quarter))
-        ) {
-          return (
-            <QuarterHourCell key={index} hasLecture={true}>
-              {lecture.name}
-            </QuarterHourCell>
-          );
-        }
+            if (hour === startHour) minuteStart = startMinuteIndex;
+            if (hour === endHour) minuteEnd = endMinuteIndex;
 
-        if (startHour < hour && endHour > hour) {
-          return (
-            <QuarterHourCell key={index} hasLecture={true}>
-              {lecture.name}
-            </QuarterHourCell>
-          );
-        }
-
-        if (endHour === hour && endQuarter > quarter) {
-          return (
-            <QuarterHourCell key={index} hasLecture={true}>
-              {lecture.name}
-            </QuarterHourCell>
-          );
-        }
-
-        return null;
-      });
-    }
-    return null;
+            for (let minute = minuteStart; minute <= minuteEnd; minute++) {
+              weeklyCalendar[dayIndex][hour][minute].push(lecture);
+            }
+          }
+        });
+      }
+    });
   };
 
   return (
@@ -118,7 +100,8 @@ const WeekCalendar = ({ currentDate, lectures }) => {
           <HourText>{getHour(hour + 7)}</HourText>
           {daysOfWeek.map((day, index) => (
             <HourCell key={index}>
-              {[...Array(4).keys()].map((quarter) => (
+              {/* 하루에 할당 되는 수업 매핑 - 동시간대 4개까지 보임 */}
+              {/* {[...Array(4).keys()].map((quarter) => (
                 <QuarterHourCell key={quarter}>
                   {renderLecturesByQuarterHour(
                     daysOfWeek[index],
@@ -126,7 +109,7 @@ const WeekCalendar = ({ currentDate, lectures }) => {
                     quarter
                   )}
                 </QuarterHourCell>
-              ))}
+              ))} */}
             </HourCell>
           ))}
         </WeekRow>
@@ -166,29 +149,30 @@ const DayCell = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-bottom: 24px;
 `;
 
 const HourCell = styled.div`
   flex: 1;
   height: 50px;
-  border: 1px solid #ccc;
+  border-width: 1px 0 0 1px;
+  border-style: solid;
+  border-color: #ccc;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${(props) =>
-    props.hasLecture ? "skyblue" : "transparent"};
+  background-color: ${(props) => (props.hasLecture ? "skyblue" : "transparent")};
 `;
 
 const HourText = styled(HourCell)`
   font-size: ${(props) => props.theme.fontSizes.bodyText5};
   border: none;
   align-items: flex-start;
-  margin-top: -7px;
+  margin-top: -4px;
 `;
 
 const QuarterHourCell = styled.div`
   flex: 1;
-  border: 1px solid #ddd;
   background-color: ${({ hasLecture }) => (hasLecture ? "#e3f2fd" : "white")};
   display: flex;
   align-items: center;
