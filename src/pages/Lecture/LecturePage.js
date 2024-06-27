@@ -18,7 +18,10 @@ const LecturePage = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [originLectures, setOriginLectures] = useState([]);
   const [lectures, setLectures] = useState([]);
+  const [isToday, setIsToday] = useState(false);
   const [isHighlight, setIsHighlight] = useState({
+    year: currentDate.getFullYear(),
+    month: currentDate.getMonth(),
     day: currentDate.getDate(),
     isHighlight: false,
   });
@@ -83,6 +86,8 @@ const LecturePage = () => {
             setCurrentDate={setCurrentDate}
             setLectures={setLectures}
             setIsHighlight={setIsHighlight}
+            isToday={isToday}
+            setIsToday={setIsToday}
           />
           {/* 캘린더 */}
           {renderCalendar()}

@@ -110,7 +110,7 @@ const SearchWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 15%;
-  padding-top: 30px;
+  padding-top: 56px;
 `;
 
 const Line = styled.hr`

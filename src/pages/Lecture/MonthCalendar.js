@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import { theme } from "../../style/theme";
-import { MainDiv, RowDiv } from "../../style/CommonStyle";
 
 const MonthCalendar = ({
   currentDate,
@@ -26,49 +25,92 @@ const MonthCalendar = ({
   const renderCalendar = () => {
     const days = [];
     const totalDays = daysInMonth(currentDate);
-    const startDay = startOfMonth(currentDate);
-    const totalCells = 42;
+    const startDay = getFirstDayOfWeek(currentDate);
+    const totalCells = 35;
 
-    // 이전 달의 마지막 몇 일을 추가
-    const prevMonth = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      0
-    );
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+
+    addPreviousMonthDays(days, currentYear, currentMonth, startDay);
+    addCurrentMonthDays(days, currentYear, currentMonth, totalDays);
+    addNextMonthDays(days, currentYear, currentMonth, totalCells);
+
+    setDays(days);
+  };
+
+  const addPreviousMonthDays = (days, currentYear, currentMonth, startDay) => {
+    const prevMonth = new Date(currentYear, currentMonth, 0);
     const prevMonthTotalDays = prevMonth.getDate();
+
     for (
       let i = prevMonthTotalDays - startDay + 1;
       i <= prevMonthTotalDays;
       i++
     ) {
-      days.push({ day: i, color: "gray_005" });
-    }
+      const year = currentMonth === 0 ? currentYear - 1 : currentYear;
+      const month = currentMonth < 10 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
+      const day = i < 10 ? `0${i}` : `${i}`;
 
-    // 이번 달의 날짜를 추가
-    for (let i = 1; i <= totalDays; i++) {
-      days.push({ day: i, color: "black" });
+      days.push({
+        year: year,
+        month: month,
+        day: day,
+        color: "gray_005",
+      });
     }
-
-    // 다음 달의 첫 몇 일을 추가
-    const remainingCells = totalCells - days.length;
-    for (let i = 1; i <= remainingCells; i++) {
-      days.push({ day: i, color: "gray_005" });
-    }
-
-    setDays(days);
   };
 
-  // ToDo : 월까지 체크
+  const addCurrentMonthDays = (days, currentYear, currentMonth, totalDays) => {
+    for (let i = 1; i <= totalDays; i++) {
+      const year = currentMonth === 0 ? currentYear - 1 : currentYear;
+      const month = currentMonth < 10 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
+      const day = i < 10 ? `0${i}` : `${i}`;
+
+      days.push({
+        year: year,
+        month: month,
+        day: day,
+        color: "black",
+      });
+    }
+  };
+
+  const addNextMonthDays = (days, currentYear, currentMonth, totalCells) => {
+    const remainingCells = totalCells - days.length;
+    for (let i = 1; i <= remainingCells; i++) {
+      const year = currentMonth === 0 ? currentYear - 1 : currentYear;
+      const month = currentMonth < 9 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
+      const day = i < 10 ? `0${i}` : `${i}`;
+
+      days.push({
+        year: year,
+        month: month,
+        day: day,
+        color: "gray_005",
+      });
+    }
+  };
+
+  const daysInMonth = (date) => {
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+  };
+
+  const getFirstDayOfWeek = (date) => {
+    return new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+  };
+
   const filterLecturesByDay = () => {
     const filteredLectures = {};
 
     lectures.forEach((lecture) => {
       lecture.dateList.forEach((date) => {
-        const day = date.split("-")[2];
-        if (!filteredLectures[day]) {
-          filteredLectures[day] = [];
+        const [year, month, day] = date.split("-");
+        const dateKey = `${year}-${month}-${day}`;
+
+        if (!filteredLectures[dateKey]) {
+          filteredLectures[dateKey] = [];
         }
-        filteredLectures[day].push(lecture);
+        filteredLectures[dateKey].push(lecture);
       });
     });
 
@@ -79,48 +121,50 @@ const MonthCalendar = ({
     return lectureList.filter((lecture) => lecture.teacher === teacher);
   };
 
-  // 해당 월의 일 수를 구하는 함수
-  const daysInMonth = (date) => {
-    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+  const highlightTheDay = (dayObj) => {
+    setIsHighlight({
+      year: dayObj.year,
+      month: dayObj.month,
+      day: dayObj.day,
+      isHighlight: true,
+    });
   };
 
-  // 해당 월의 첫 요일을 구하는 함수
-  const startOfMonth = (date) => {
-    return new Date(date.getFullYear(), date.getMonth(), 1).getDay();
-  };
-
-  const highlightTheDay = (day) => {
-    setIsHighlight({ day: day, isHighlight: true });
+  const checkHighlightDay = (dayObj) => {
+    return (
+      isHighlight.day === dayObj.day &&
+      isHighlight.month === dayObj.month &&
+      isHighlight.year === dayObj.year &&
+      isHighlight.isHighlight
+    );
   };
 
   return (
     <ThemeProvider theme={theme}>
       <MonthCalendarWrapper>
+        <DayWrapper>
+          {weekDays.map((day) => (
+            <DayText>{day}</DayText>
+          ))}
+        </DayWrapper>
         <CalendarBody>
-          {days.map((dayObj, index) => {
-            const isFirstWeek = index < 7;
-            const lectureOfDay = filteredLectures[dayObj.day];
-            const isHighlightDay =
-              isHighlight.day === dayObj.day && isHighlight.isHighlight;
+          {days.map((dayObj) => {
+            const dateKey = `${dayObj.year}-${dayObj.month}-${dayObj.day}`;
+            const lectureOfDay = filteredLectures[dateKey];
+            console.log(dateKey);
+            console.log(lectureOfDay);
+            const isHighlightDay = checkHighlightDay(dayObj);
 
             return (
-              <DayCell key={index}>
-                <DayText>
-                  {isFirstWeek && (
-                    <>
-                      {weekDays[index]}
-                      <br />
-                    </>
-                  )}
-                </DayText>
+              <DayCell>
                 <DateText
-                  onClick={() => highlightTheDay(dayObj.day)}
+                  onClick={() => highlightTheDay(dayObj)}
                   color={dayObj.color}
                   isHighlightDay={isHighlightDay}
                 >
                   {dayObj.day}
                 </DateText>
-                {teacherList.map((teacher, index) => {
+                {teacherList.map((teacher) => {
                   const teacherLectures = filterLecturesByTeacher(
                     lectureOfDay,
                     teacher.name
@@ -129,9 +173,7 @@ const MonthCalendar = ({
                   return (
                     teacherLectures.length > 0 && (
                       <Lecture>
-                        <Teacher key={index} teacher={teacher}>
-                          {teacher.name}
-                        </Teacher>
+                        <Teacher teacher={teacher}>{teacher.name}</Teacher>
                         <LectureSize>
                           수업 {teacherLectures.length}개
                         </LectureSize>
@@ -148,9 +190,11 @@ const MonthCalendar = ({
   );
 };
 
-const MonthCalendarWrapper = styled(MainDiv)`
+const MonthCalendarWrapper = styled.div`
   width: 90%;
   align-items: flex-start;
+  display: flex;
+  flex-direction: column;
 `;
 
 const CalendarBody = styled.div`
@@ -173,53 +217,55 @@ const DayCell = styled.div`
   position: relative;
 `;
 
-const DayText = styled.div`
+const DayWrapper = styled.div`
   width: 100%;
-  padding: 5px;
-  font-size: 0.9em;
-  font-weight: bold;
-  top: 5px;
+  display: flex;
+  justify-content: space-between;
+  box-sizing: border-box;
 `;
 
-const DateText = styled(DayText)`
+const DayText = styled.div`
+  flex: 1;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 500;
+`;
+
+const DateText = styled.div`
   cursor: pointer;
+  margin-top: 5px;
   margin-bottom: 10px;
+  font-size: ${(props) => props.theme.fontSizes.bodyText4};
+  font-weight: 400;
+  width: 33px;
+  height: 33px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 30px;
 
-  color: ${({ color }) => {
-    switch (color) {
-      case "gray_005": // ToDo : theme로 변경
-        return "#BABABA";
-      default:
-        return `${theme.colors.black}`;
-    }
-  }};
+  color: ${({ color, theme }) =>
+    color === "gray_005" ? "#BABABA" : theme.colors.black};
 
-  ${({ isHighlightDay }) =>
+  ${({ isHighlightDay, theme }) =>
     isHighlightDay &&
     `
       color: ${theme.colors.primary_normal};
       border-color: ${theme.colors.primary_normal};
       border: 1px solid;
-      border-radius: 50%;
-      width: 25px;
-      height: 30px;
     `}
 
-  // 호버시
-    &:hover {
-    color: ${theme.colors.white};
-    background-color: ${theme.colors.primary_normal};
-    border-color: ${theme.colors.primary_normal};
+  &:hover {
+    color: ${({ theme }) => theme.colors.white};
+    background-color: ${({ theme }) => theme.colors.primary_normal};
+    border-color: ${({ theme }) => theme.colors.primary_normal};
     border: 1px solid;
-    border-radius: 50%;
-    width: 25px;
-    height: 30px;
   }
 `;
 
-const Lecture = styled(RowDiv)`
+const Lecture = styled.div`
   margin-bottom: 5px;
-  cursor: pointer;
+  display: flex;
+  align-items: center;
 `;
 
 const Teacher = styled.div`
