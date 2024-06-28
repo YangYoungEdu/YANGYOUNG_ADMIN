@@ -187,8 +187,8 @@ const MonthCalendar = ({
             );
           })}
         </CalendarBody>
-        <DayTimeTable filteredLectures={filteredLectures} />
       </MonthCalendarWrapper>
+      <DayTimeTable filteredLectures={filteredLectures} />
     </ThemeProvider>
   );
 };

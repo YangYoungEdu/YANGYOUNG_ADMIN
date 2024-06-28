@@ -72,10 +72,9 @@ const DayTimeTable = ({ filteredLectures }) => {
 
             if (slotTime === lectureStartTime) {
               return (
-                <LectureItem lecture={lecture}/>
                 // <Lecture key={idx} slot={lecture.diffrenceSlot}>
-                //   {lecture.name}
                 // </Lecture>
+                  <LectureItem lecture={lecture} slot={lecture.diffrenceSlot} />
               );
             }
 
