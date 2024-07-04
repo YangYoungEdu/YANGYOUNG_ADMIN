@@ -18,7 +18,7 @@ const LectureItem = ({ lecture }) => {
 
 const LectureItemWrapper = styled(RowDiv)`
   width: 80%;
-  height: ${(props) => (props.slot * 50) / 12}px;
+  height: ${(props) => (props.slot * 4.5) / 12}vh;
   z-index: 1;
   margin-left: 55px;
   position: absolute;
@@ -27,7 +27,8 @@ const LectureItemWrapper = styled(RowDiv)`
 
 const Left = styled.div`
   width: 1%;
-  height: ${(props) => (props.slot * 50) / 12}px;
+  /* height: ${(props) => (props.slot * 50) / 12}px; */
+  height: ${(props) => (props.slot * 4.5) / 12}vh;
   background-color: #95c25c;
   border-radius: 5px 0 0 5px;
 `;

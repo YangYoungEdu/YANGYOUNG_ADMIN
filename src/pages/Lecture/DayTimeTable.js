@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { MainDiv, RowDiv } from "../../style/CommonStyle";
-import { getAmPm } from "../../util/Util";
+import { getAmPm, formatDate } from "../../util/Util";
 import LectureItem from "./LecutreItem";
+import { ReactComponent as Cancel } from "../../Assets/Cancel.svg";
 
-const DayTimeTable = ({ lectureOfDay }) => {
+const DayTimeTable = ({ lectureOfDay, isHighlight, setIsModalOpen }) => {
   const [orderLecture, setOrderLecture] = useState([]);
-
   useEffect(() => {
     console.log(lectureOfDay);
     orderLectureByTime(lectureOfDay);
@@ -44,16 +44,17 @@ const DayTimeTable = ({ lectureOfDay }) => {
 
   return (
     <DayTimeTableWrapper>
-      <div>2024년 5월 9일</div>
+      <HeaderWrapper>
+        <Title>{isHighlight.year}년 {isHighlight.month}월 {isHighlight.day}일</Title>
+        <CancelIcon onClick={()=>setIsModalOpen(false)}/>
+      </HeaderWrapper>
       {timeSlot.map((slot, index) => (
         <HourWrapper>
           {slot.minute === 0 && (
-            <>
-              <Hour>
-                {getAmPm(slot.hour)} ~ {slot.minute}
-              </Hour>
+            <HourItem>
+              <Hour>{getAmPm(slot.hour)}</Hour>
               <HourLine />
-            </>
+            </HourItem>
           )}
 
           {orderLecture.map((lecture) => {
@@ -70,6 +71,10 @@ const DayTimeTable = ({ lectureOfDay }) => {
           })}
         </HourWrapper>
       ))}
+      <HourItem>
+        <Hour>&nbsp;</Hour>
+        <HourLine />
+      </HourItem>
     </DayTimeTableWrapper>
   );
 };
@@ -78,15 +83,38 @@ const DayTimeTableWrapper = styled(MainDiv)`
   background-color: white;
 `;
 
-const HourWrapper = styled(RowDiv)`
-  /* position: relative; */
+const HeaderWrapper = styled(RowDiv)`
+  justify-content: space-between;
+  margin-top: 30px;
+  margin-bottom: 50px;
+`;
+
+const HourWrapper = styled(RowDiv)``;
+
+const Title = styled.div`
+  font-size: ${(props) => props.theme.fontSizes.title2};
+  padding-left: 46px;
+`;
+
+const CancelIcon = styled(Cancel)`
+  width: 16.5px;
+  height: 18px;
+  padding-right: 55px;
+  padding-top: 8px;
+  cursor: pointer;
+`;
+
+const HourItem = styled(RowDiv)`
+  height: 4.5vh;
 `;
 
 const Hour = styled.div`
   font-size: 10px;
   font-weight: 400;
   width: 55px;
-  height: 5.75vh;
+  margin-top: -7px;
+  /* height: 4.66vh; */
+  /* padding-bottom: -10px; */
 `;
 
 const HourLine = styled.div`

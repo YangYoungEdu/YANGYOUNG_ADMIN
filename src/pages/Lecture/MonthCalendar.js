@@ -197,11 +197,12 @@ const MonthCalendar = ({
 
       {isModalOpen && (
         <DayTimeTableWrapper>
-        <DayTimeTable
-          setIsModalOpen={setIsModalOpen}
-          lectureOfDay={lectureOfDay}
-        />
-      </DayTimeTableWrapper>
+          <DayTimeTable
+            setIsModalOpen={setIsModalOpen}
+            lectureOfDay={lectureOfDay}
+            isHighlight={isHighlight}
+          />
+        </DayTimeTableWrapper>
       )}
     </ThemeProvider>
   );
@@ -316,10 +317,26 @@ const LectureSize = styled.div`
 const DayTimeTableWrapper = styled.div`
   position: absolute;
   top: 0;
-  left: 48.5vw;
+  left: ${({ isModalOpen }) => (isModalOpen ? '25vw' : '100vw')};
   width: 50vw;
-  height: 100vh;
+  height: 99.7%;
   border: 1px solid ${({ theme }) => theme.colors.gray_004};
-`
+  transition: left 0.5s ease-in-out;
+  transform: ${({ isModalOpen }) => (isModalOpen ? 'translateX(-50vw)' : 'translateX(-100%)')};
+`;
+
+// const DayTimeTableWrapper = styled.div`
+//   position: absolute;
+//   top: 0;
+//   left: 48.6vw;
+//   width: 50vw;
+//   height: 99.7%;
+//   border: 1px solid ${({ theme }) => theme.colors.gray_004};
+  
+//   transition: transform 0.5s ease-in-out;
+
+//   transform: ${({ isModalOpen }) =>
+//     isModalOpen ? "translateX(-50vw)" : "translateX(100%)"}; 
+// `;
 
 export default MonthCalendar;
