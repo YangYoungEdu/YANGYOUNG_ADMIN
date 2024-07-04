@@ -44,6 +44,7 @@ const MonthCalendar = ({
   const addPreviousMonthDays = (days, currentYear, currentMonth, startDay) => {
     const prevMonth = new Date(currentYear, currentMonth, 0);
     const prevMonthTotalDays = prevMonth.getDate();
+    console.log("prevMonth: ", prevMonth.getMonth());
 
     for (
       let i = prevMonthTotalDays - startDay + 1;
@@ -52,7 +53,9 @@ const MonthCalendar = ({
     ) {
       const year = currentMonth === 0 ? currentYear - 1 : currentYear;
       const month =
-        currentMonth < 10 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
+        prevMonth.getMonth() + 1 < 10
+          ? `0${prevMonth.getMonth() + 1}`
+          : `${prevMonth.getMonth() + 1}`;
       const day = i < 10 ? `0${i}` : `${i}`;
 
       days.push({
@@ -199,7 +202,7 @@ const MonthCalendar = ({
         <DayTimeTableWrapper>
           <DayTimeTable
             setIsModalOpen={setIsModalOpen}
-            lectureOfDay={lectureOfDay}
+            lectureOfDay={lectureOfDay ? lectureOfDay : []}
             isHighlight={isHighlight}
           />
         </DayTimeTableWrapper>
@@ -317,26 +320,13 @@ const LectureSize = styled.div`
 const DayTimeTableWrapper = styled.div`
   position: absolute;
   top: 0;
-  left: ${({ isModalOpen }) => (isModalOpen ? '25vw' : '100vw')};
+  left: ${({ isModalOpen }) => (isModalOpen ? "25vw" : "100vw")};
   width: 50vw;
   height: 99.7%;
   border: 1px solid ${({ theme }) => theme.colors.gray_004};
   transition: left 0.5s ease-in-out;
-  transform: ${({ isModalOpen }) => (isModalOpen ? 'translateX(-50vw)' : 'translateX(-100%)')};
+  transform: ${({ isModalOpen }) =>
+    isModalOpen ? "translateX(-50vw)" : "translateX(-100%)"};
 `;
-
-// const DayTimeTableWrapper = styled.div`
-//   position: absolute;
-//   top: 0;
-//   left: 48.6vw;
-//   width: 50vw;
-//   height: 99.7%;
-//   border: 1px solid ${({ theme }) => theme.colors.gray_004};
-  
-//   transition: transform 0.5s ease-in-out;
-
-//   transform: ${({ isModalOpen }) =>
-//     isModalOpen ? "translateX(-50vw)" : "translateX(100%)"}; 
-// `;
 
 export default MonthCalendar;
