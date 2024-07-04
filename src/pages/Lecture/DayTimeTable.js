@@ -75,6 +75,7 @@ const DayTimeTable = ({ lectureOfDay }) => {
 };
 
 const DayTimeTableWrapper = styled(MainDiv)`
+  background-color: white;
 `;
 
 const HourWrapper = styled(RowDiv)`
@@ -85,14 +86,14 @@ const Hour = styled.div`
   font-size: 10px;
   font-weight: 400;
   width: 55px;
-  height: 50px;
+  height: 5.75vh;
 `;
 
 const HourLine = styled.div`
   width: 80%;
   height: 1px;
   background-color: #ddd;
-  margin-top: 6px;
+  /* margin-top: 6px; */
 `;
 
 export default DayTimeTable;

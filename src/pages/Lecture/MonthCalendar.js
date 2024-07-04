@@ -315,9 +315,11 @@ const LectureSize = styled.div`
 
 const DayTimeTableWrapper = styled.div`
   position: absolute;
+  top: 0;
+  left: 48.5vw;
   width: 50vw;
   height: 100vh;
-  border: 1px solid black;
+  border: 1px solid ${({ theme }) => theme.colors.gray_004};
 `
 
 export default MonthCalendar;
