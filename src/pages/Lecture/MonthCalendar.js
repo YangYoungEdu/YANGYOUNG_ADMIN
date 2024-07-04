@@ -11,6 +11,8 @@ const MonthCalendar = ({
 }) => {
   const [days, setDays] = useState([]);
   const [filteredLectures, setFilteredLectures] = useState([]);
+  const [lectureOfDay, setLectureOfDay] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
   const teacherList = [
     { name: "김삼유", color: "#95C25C" },
@@ -125,13 +127,15 @@ const MonthCalendar = ({
     return lectureList.filter((lecture) => lecture.teacher === teacher);
   };
 
-  const highlightTheDay = (dayObj) => {
+  const highlightTheDay = (dayObj, lectureOfDay) => {
     setIsHighlight({
       year: dayObj.year,
       month: dayObj.month,
       day: dayObj.day,
       isHighlight: true,
     });
+    setIsModalOpen(true);
+    setLectureOfDay(lectureOfDay);
   };
 
   const checkHighlightDay = (dayObj) => {
@@ -151,44 +155,54 @@ const MonthCalendar = ({
             <DayText>{day}</DayText>
           ))}
         </DayWrapper>
+
         <CalendarBody>
           {days.map((dayObj) => {
             const dateKey = `${dayObj.year}-${dayObj.month}-${dayObj.day}`;
             const lectureOfDay = filteredLectures[dateKey];
-            const isHighlightDay = checkHighlightDay(dayObj);
 
             return (
-              <DayCell>
-                <DateText
-                  onClick={() => highlightTheDay(dayObj)}
-                  color={dayObj.color}
-                  isHighlightDay={isHighlightDay}
-                >
-                  {dayObj.day}
-                </DateText>
-                {teacherList.map((teacher) => {
-                  const teacherLectures = filterLecturesByTeacher(
-                    lectureOfDay,
-                    teacher.name
-                  );
+              <>
+                <DayCell>
+                  <DateText
+                    onClick={() => highlightTheDay(dayObj, lectureOfDay)}
+                    color={dayObj.color}
+                    isHighlightDay={checkHighlightDay(dayObj)}
+                  >
+                    {dayObj.day}
+                  </DateText>
+                  {teacherList.map((teacher) => {
+                    const teacherLectures = filterLecturesByTeacher(
+                      lectureOfDay,
+                      teacher.name
+                    );
 
-                  return (
-                    teacherLectures.length > 0 && (
-                      <Lecture>
-                        <Teacher teacher={teacher}>{teacher.name}</Teacher>
-                        <LectureSize>
-                          수업 {teacherLectures.length}개
-                        </LectureSize>
-                      </Lecture>
-                    )
-                  );
-                })}
-              </DayCell>
+                    return (
+                      teacherLectures.length > 0 && (
+                        <Lecture>
+                          <Teacher teacher={teacher}>{teacher.name}</Teacher>
+                          <LectureSize>
+                            수업 {teacherLectures.length}개
+                          </LectureSize>
+                        </Lecture>
+                      )
+                    );
+                  })}
+                </DayCell>
+              </>
             );
           })}
         </CalendarBody>
       </MonthCalendarWrapper>
-      <DayTimeTable filteredLectures={filteredLectures} />
+
+      {isModalOpen && (
+        <DayTimeTableWrapper>
+        <DayTimeTable
+          setIsModalOpen={setIsModalOpen}
+          lectureOfDay={lectureOfDay}
+        />
+      </DayTimeTableWrapper>
+      )}
     </ThemeProvider>
   );
 };
@@ -298,5 +312,12 @@ const LectureSize = styled.div`
   font-size: ${(props) => props.theme.fontSizes.bodyText3};
   padding-top: 5.5px;
 `;
+
+const DayTimeTableWrapper = styled.div`
+  position: absolute;
+  width: 50vw;
+  height: 100vh;
+  border: 1px solid black;
+`
 
 export default MonthCalendar;

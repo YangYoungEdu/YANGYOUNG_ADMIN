@@ -8,6 +8,7 @@ import StudentDetail from "./pages/Student/StudentDetail";
 import Lecture from "./pages/Lecture/LecturePage";
 import LectureDetail from "./pages/Lecture/LectureDetail";
 import DayTimeTable from "./pages/Lecture/DayTimeTable";
+import Modal from "./Modal";
 
 function MyRoutes() {
   return (
@@ -22,6 +23,7 @@ function MyRoutes() {
           <Route path="lecture" element={<Lecture />} />
           <Route path="lecture/:id" element={<LectureDetail />} />
           <Route path="/lecture/day" element={<DayTimeTable />} />
+          <Route path="/modal" element={<Modal />} />
         </Route>
       </Routes>
     </>
