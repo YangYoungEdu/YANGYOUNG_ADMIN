@@ -63,10 +63,16 @@ const LectrueHeader = ({
       <CalendarHeader>
         <ArrowLeft onClick={prev} />
         <DateTitle>
-          {currentDate.toLocaleString("default", {
-            month: "long",
-            year: "numeric",
-          })}
+          {mode === "month"
+            ? currentDate.toLocaleString("default", {
+                year: "numeric",
+                month: "long",
+              })
+            : currentDate.toLocaleString("default", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
         </DateTitle>
         <ArrowRight onClick={next} />
         <Select value={mode} onChange={(e) => setMode(e.target.value)}>

@@ -25,6 +25,12 @@ const MonthCalendar = ({
     filterLecturesByDay();
   }, [currentDate, lectures]);
 
+  useEffect(() => {
+    if (isModalOpen) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [isModalOpen, isHighlight]);
+
   const renderCalendar = () => {
     const days = [];
     const totalDays = daysInMonth(currentDate);
@@ -139,6 +145,7 @@ const MonthCalendar = ({
     });
     setIsModalOpen(true);
     setLectureOfDay(lectureOfDay);
+    // window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const checkHighlightDay = (dayObj) => {

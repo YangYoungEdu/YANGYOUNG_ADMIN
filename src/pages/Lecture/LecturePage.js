@@ -63,7 +63,7 @@ const LecturePage = () => {
       case "week":
         return <WeekCalendar currentDate={currentDate} lectures={lectures} />;
       case "day":
-        return <DayCalendar currentDate={currentDate} lectures={lectures} />;
+        return <DayCalendar currentDate={currentDate} lectureOfDay={lectures} />;
       default:
         return null;
     }
@@ -74,6 +74,7 @@ const LecturePage = () => {
       <RowDiv>
         {/* 검색 필터 */}
         <LectureFilter
+          mode={mode}
           originLectures={originLectures}
           setLectures={setLectures}
         />

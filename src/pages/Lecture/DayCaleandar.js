@@ -1,7 +1,15 @@
-const DayCalendar = () => {
+import styled from "styled-components";
+import DayTimeTable from "./DayTimeTable";
+
+const DayCalendar = ({ currentDate, lectureOfDay }) => {
+  const Date = {
+    year: currentDate.getFullYear(),
+    month: currentDate.getMonth(),
+    day: currentDate.getDate(),
+  };
   return (
     <div>
-      <h1>DayCalendar</h1>
+      <DayTimeTable isHighlight={Date} lectureOfDay={lectureOfDay} />
     </div>
   );
 };

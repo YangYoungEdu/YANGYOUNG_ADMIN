@@ -8,7 +8,6 @@ import LectureItem from "./LecutreItem";
 const DayTimeTable = ({ lectureOfDay, isHighlight, setIsModalOpen }) => {
   const [orderLecture, setOrderLecture] = useState([]);
   useEffect(() => {
-    console.log(lectureOfDay);
     orderLectureByTime(lectureOfDay);
   }, [lectureOfDay]);
 

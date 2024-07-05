@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { ReactComponent as DownArrow } from "../../Assets/DownArrow.svg";
 import { ReactComponent as UpArrow } from "../../Assets/UpArrow.svg";
 
-const LectureFilter = ({ originLectures, setLectures }) => {
+const LectureFilter = ({ mode, originLectures, setLectures }) => {
   // const [isToggled, setIsToggled] = useState({
   //   teacher: false,
   // });
@@ -83,7 +83,7 @@ const LectureFilter = ({ originLectures, setLectures }) => {
 
   return (
     <SearchWrapper>
-      <Line />
+      {mode === "month" ? <Line /> : null}
       {/* 선생님 필터 */}
       <FilterSection
         title="선생님"
