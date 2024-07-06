@@ -5,6 +5,7 @@ import { getStudentByLectureAPI } from "../../API/StudentAPI";
 import { getLectureTaskAPI } from "../../API/TaskAPI";
 import { ReactComponent as Cancel } from "../../Assets/Cancel.svg";
 import { ReactComponent as Plus } from "../../Assets/Plus.svg";
+import {ReactComponent as File} from "../../Assets/File.svg";
 import { ColumnDiv, MainDiv, RowDiv } from "../../style/CommonStyle";
 import { theme } from "../../style/theme";
 
@@ -22,6 +23,7 @@ const LectureDetail = ({
     student: true,
     attendance: false,
     assignment: false,
+    material: false,
   });
 
   const taskDummy = [
@@ -83,6 +85,7 @@ const LectureDetail = ({
       student: type === "student" ? true : false,
       attendance: type === "attendance" ? true : false,
       assignment: type === "assignment" ? true : false,
+      material: type === "material" ? true : false,
     }));
   };
 
@@ -135,6 +138,13 @@ const LectureDetail = ({
             onClick={() => handleButtonClick("assignment")}
           >
             과제
+          </Button>
+          <Button
+            isActive={onClicked.material}
+            onClick={() => handleButtonClick("material")}
+          >
+            {" "}
+            자료
           </Button>
         </ButtonWrapper>
 
@@ -230,6 +240,23 @@ const LectureDetail = ({
             </TaskBox>
           </TaskWrapper>
         )}
+        {/* 강의별 자료 목록 */}
+        {onClicked.material && (
+          <TaskWrapper>
+          {taskDummy.map((task, index) => (
+            <TaskBox key={index}>
+              <TaskTitleWrapper>
+                <TaskTitle>{task.content}</TaskTitle>
+                <FileIcon />
+              </TaskTitleWrapper>
+              <TaskDate>{convertDate(task.taskDate)}</TaskDate>
+            </TaskBox>
+          ))}
+          <TaskBox>
+            <TaskPlusIcon />
+          </TaskBox>
+        </TaskWrapper>
+        )}
       </LectureDetailWrapper>
     </ThemeProvider>
   );
@@ -303,7 +330,7 @@ const ButtonWrapper = styled.div`
 `;
 
 const Button = styled.button`
-  width: 33.3%;
+  width: 25%;
   height: 100%;
   border-radius: 5px;
   margin: 0 3px;
@@ -461,8 +488,11 @@ const RadioLabel = styled.label`
   align-items: center;
 `;
 
-const TaskWrapper = styled(ColumnDiv)`
-  /* width: 90%; */
+const TaskWrapper = styled.div`
+  width: 100%;
+  /* display: flex;
+  flex-direction: column; */
+  /* align-items: center; */
   padding-left: 9.5%;
 `;
 const TaskBox = styled.div`
@@ -483,7 +513,10 @@ const TaskPlusIcon = styled(PlusIcon)`
 `;
 
 const TaskTitleWrapper = styled.div`
+  display: flex;
   padding-bottom: 9px;
+  padding-top: 2px;
+  /* height: 20px; */
 `;
 
 const TaskTitle = styled.div`
@@ -504,6 +537,12 @@ const TaskType = styled.div`
 const TaskDate = styled.div`
   font-size: ${(props) => props.theme.fontSizes.bodyText4};
   font-weight: 400;
+`;
+
+const FileIcon = styled(File)`
+  width: 10px;
+  height: 15px;
+  padding-top: 2.5px;
 `;
 
 export default LectureDetail;
