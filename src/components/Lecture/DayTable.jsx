@@ -62,12 +62,14 @@ const DayTable = ({ lectureList }) => {
 
               if (slotTime === lectureStartTime) {
                 return (
-                  <LectureItem
-                    setIsClicked={setIsClicked}
-                    setSelectedLecture={setSelectedLecture}
-                    lecture={lecture}
-                    slot={lecture.diffrenceSlot}
-                  />
+                  <LectureItemWrapper>
+                    <LectureItem
+                      setIsClicked={setIsClicked}
+                      setSelectedLecture={setSelectedLecture}
+                      lecture={lecture}
+                      slot={lecture.diffrenceSlot}
+                    />
+                  </LectureItemWrapper>
                 );
               }
 
@@ -100,7 +102,9 @@ const DayTableWrppaer = styled(MainDiv)`
   width: 90%;
 `;
 
-const HourWrapper = styled(RowDiv)``;
+const HourWrapper = styled(RowDiv)`
+  position: relative;
+`;
 
 const HourItem = styled(RowDiv)`
   justify-content: flex-start;
@@ -113,8 +117,6 @@ const Hour = styled.div`
   font-weight: 400;
   width: 50px;
   margin: -7px -80px 0px 80px;
-  /* margin-left: 80px;
-  margin-top: -7px; */
 `;
 
 const HourLine = styled.div`
@@ -122,6 +124,15 @@ const HourLine = styled.div`
   height: 1px;
   background-color: #ddd;
   margin-left: 80px;
+`;
+
+const LectureItemWrapper = styled.div`
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+  z-index:1;
 `;
 
 export default DayTable;

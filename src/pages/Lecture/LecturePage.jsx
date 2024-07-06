@@ -7,11 +7,11 @@ import {
 } from "../../API/LectureAPI";
 import { ColumnDiv, RowDiv } from "../../style/CommonStyle";
 import { theme } from "../../style/theme";
-import DayCalendar from "./DayCaleandar";
-import LectureFilter from "./LectureFilter";
-import LectureHeader from "./LectureHeader";
-import MonthCalendar from "./MonthCalendar";
-import WeekCalendar from "./WeekCalendar";
+import LectureHeader from "../../components/Lecture/LectureHeader";
+import LectureFilter from "../../components/Lecture/LectureFilter";
+import DayCalendar from "./Calendar/DayCalendar";
+import WeekCalendar from "./Calendar/WeekCalendar";
+import MonthCalendar from "./Calendar/MonthCalendar";
 
 const LecturePage = () => {
   const [mode, setMode] = useState("day");
@@ -63,7 +63,9 @@ const LecturePage = () => {
       case "week":
         return <WeekCalendar currentDate={currentDate} lectures={lectures} />;
       case "day":
-        return <DayCalendar currentDate={currentDate} lectureOfDay={lectures} />;
+        return (
+          <DayCalendar currentDate={currentDate} lectureOfDay={lectures} />
+        );
       default:
         return null;
     }

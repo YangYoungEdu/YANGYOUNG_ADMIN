@@ -1,10 +1,9 @@
 import { useState } from "react";
-import styled from "styled-components";
-import StudentAdd from "../StudentComponents/StudentModal/StudentAdd";
-import { deleteStudentAPI, hideStudentAPI } from "../../API/StudentAPI";
 import { useRecoilState } from "recoil";
+import styled from "styled-components";
 import { selectedStudentState } from "../../Atom";
 import { MainDiv } from "../../style/CommonStyle";
+import StudentAdd from "../Student/StudentModal/StudentAdd";
 import StudentHide from "./StudentModal/StudentHide";
 
 const TableMenus = ({

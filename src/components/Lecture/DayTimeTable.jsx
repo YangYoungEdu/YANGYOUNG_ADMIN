@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { ReactComponent as Cancel } from "../../Assets/Cancel.svg";
 import { MainDiv, RowDiv } from "../../style/CommonStyle";
 import { getAmPm } from "../../util/Util";
-import LectureItem from "../../components/Lecture/LecutreItem";
+import LectureItem from "./LecutreItem";
 
 const DayTimeTable = ({ lectureOfDay, isHighlight, setIsModalOpen }) => {
   const [orderLecture, setOrderLecture] = useState([]);

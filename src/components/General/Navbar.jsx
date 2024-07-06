@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styled, { ThemeProvider } from "styled-components";
-import { theme } from "../style/theme";
+import { theme } from "../../style/theme";
 
 const Navbar = () => {
   const navigate = useNavigate();

@@ -2,8 +2,8 @@ import { useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import { theme } from "../../style/theme";
 import { MainDiv } from "../../style/CommonStyle";
-import StudentSearch from "../../components/StudentComponents/StudentSearch";
-import GenericTable from "../../components/GenericTable";
+import StudentSearch from "../../components/Student/StudentSearch";
+import GenericTable from "../../components/General/GenericTable";
 
 const StudentPage = () => {
   // 편집 모드

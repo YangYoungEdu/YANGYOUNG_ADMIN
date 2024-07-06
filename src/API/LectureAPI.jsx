@@ -10,7 +10,7 @@ export const getAllLectureByMonthAPI = async (date) => {
 
   try {
     const response = await axios.get(
-      `${process.env.REACT_APP_DEV_URL}lecture/month`,
+      `${local}lecture/month`,
       {
         params: {
           year: year,
@@ -32,7 +32,7 @@ export const getAllLectureByWeekAPI = async (date) => {
 
   try {
     const response = await axios.get(
-      `${process.env.REACT_APP_DEV_URL}lecture/week`,
+      `${local}lecture/week`,
       {
         params: {
           date: fixedDate,
@@ -53,7 +53,7 @@ export const getAllLectureByDayAPI = async (date) => {
 
   try {
     const response = await axios.get(
-      `${process.env.REACT_APP_DEV_URL}lecture/day`,
+      `${local}lecture/day`,
       {
         params: {
           date: fixedDate,
@@ -71,7 +71,7 @@ export const getAllLectureByDayAPI = async (date) => {
 // 특정 학생이 수강하는 강의 조회 API
 export const getLectureByStudentAPI = async (studentId) => {
   try {
-    const response = await axios.get(`${server}lecture/student/${studentId}`);
+    const response = await axios.get(`${local}lecture/student/${studentId}`);
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -82,7 +82,7 @@ export const getLectureByStudentAPI = async (studentId) => {
 // 강의 상세 조회 API
 export const getOneLectureAPI = async (lectureId) => {
   try {
-    const response = await axios.get(`${server}lecture/${lectureId}`);
+    const response = await axios.get(`${local}lecture/${lectureId}`);
     console.log(response.data);
     return response.data;
   } catch (error) {

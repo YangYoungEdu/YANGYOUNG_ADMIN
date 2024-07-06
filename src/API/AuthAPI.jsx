@@ -35,7 +35,7 @@ export const signIn = async (username, password) => {
 // 로그아웃
 export const signOut = async () => {
   try {
-    const response = await axios.post(`${server}appUser/sign-out`);
+    const response = await axios.post(`${local}appUser/sign-out`);
     console.log("Sign out response:", response.data);
     return response.data;
   } catch (error) {

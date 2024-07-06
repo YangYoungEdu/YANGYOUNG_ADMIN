@@ -7,7 +7,7 @@ const local = process.env.REACT_APP_LOCAL_URL;
 
 export const getAllStudentAPI = async (page = 1, size = 10) => {
   try {
-    const response = await axios.get(`${server}student`, {
+    const response = await axios.get(`${local}student`, {
       params: {
         page,
         size,
@@ -23,7 +23,7 @@ export const getAllStudentAPI = async (page = 1, size = 10) => {
 // 숨김 학생 전체 조회 API
 export const getHiddenStudentAPI = async (page = 1, size = 10) => {
   try {
-    const response = await axios.get(`${server}student/hidden`, {
+    const response = await axios.get(`${local}student/hidden`, {
       params: {
         page,
         size,
@@ -47,7 +47,7 @@ export const searchStudent = async () => {
   };
 
   try {
-    const response = await axios.get(`${server}student/search`, data);
+    const response = await axios.get(`${local}student/search`, data);
     console.log(response.data);
     return response;
   } catch (error) {
@@ -68,7 +68,7 @@ export const getOneStudentAPI = async (id) => {
 //학생 정보 수정 API
 export const patchStudentAPI = async (data) => {
   try {
-    const response = await axios.patch(`${server}student`, data);
+    const response = await axios.patch(`${local}student`, data);
     console.log(data);
     return response.data;
   } catch (error) {
@@ -82,7 +82,7 @@ export const deleteStudentAPI = async (idList) => {
   try {
     const queryString = idList.map((id) => `idList=${id}`).join("&");
 
-    const response = await axios.delete(`${server}student?${queryString}`);
+    const response = await axios.delete(`${local}student?${queryString}`);
     console.log(response.data);
   } catch (error) {
     console.error(error);
@@ -110,7 +110,7 @@ export const hideStudentAPI = async (idList) => {
 // 강의별 학생 조회 API
 export const getStudentByLectureAPI = async (lectureId) => {
   try {
-    const response = await axios.get(`${server}student/lecture/${lectureId}`);
+    const response = await axios.get(`${local}student/lecture/${lectureId}`);
     return response.data;
   } catch (error) {
     console.error(error);

@@ -5,7 +5,7 @@ import { getStudentByLectureAPI } from "../../API/StudentAPI";
 import { getLectureTaskAPI } from "../../API/TaskAPI";
 import { ReactComponent as Cancel } from "../../Assets/Cancel.svg";
 import { ReactComponent as Plus } from "../../Assets/Plus.svg";
-import {ReactComponent as File} from "../../Assets/File.svg";
+import { ReactComponent as File } from "../../Assets/File.svg";
 import { ColumnDiv, MainDiv, RowDiv } from "../../style/CommonStyle";
 import { theme } from "../../style/theme";
 
@@ -16,37 +16,18 @@ const LectureDetail = ({
 }) => {
   const id = selectedLecture.id;
   const today = new Date().toLocaleDateString("en-CA");
-  const [students, setStudents] = useState(null);
-  const [attendances, setAttendances] = useState(null);
-  const [tasks, setTasks] = useState(null);
+  const [students, setStudents] = useState([]);
+  const [attendances, setAttendances] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const [materials, setMaterials] = useState([]);
   const [onClicked, setOnClicked] = useState({
     student: true,
     attendance: false,
-    assignment: false,
+    task: false,
     material: false,
   });
 
-  const taskDummy = [
-    {
-      content: "과제1",
-      taskType: "전체과제",
-      taskDate: "2021-09-01",
-    },
-    {
-      content: "과제2",
-      taskType: "전체과제",
-      taskDate: "2021-09-01",
-    },
-    {
-      content: "과제3",
-      taskType: "전체과제",
-      taskDate: "2021-09-01",
-    },
-  ];
-
   useEffect(() => {
-    console.log(selectedLecture);
-
     getStudentByLectureAPI(id).then((res) => {
       setStudents(res);
       console.log(res);
@@ -84,7 +65,7 @@ const LectureDetail = ({
       ...prevState,
       student: type === "student" ? true : false,
       attendance: type === "attendance" ? true : false,
-      assignment: type === "assignment" ? true : false,
+      task: type === "task" ? true : false,
       material: type === "material" ? true : false,
     }));
   };
@@ -134,8 +115,8 @@ const LectureDetail = ({
             출석 체크
           </Button>
           <Button
-            isActive={onClicked.assignment}
-            onClick={() => handleButtonClick("assignment")}
+            isActive={onClicked.task}
+            onClick={() => handleButtonClick("task")}
           >
             과제
           </Button>
@@ -150,7 +131,7 @@ const LectureDetail = ({
 
         {/* ToDo: 조건에 따라 정보 표시 */}
         {/* 강의별 학생 목록*/}
-        {onClicked.student && students && (
+        {onClicked.student && students && students.length > 0 && (
           <ColumnDiv>
             {students.map((student, index) => (
               <ColumnDiv key={index}>
@@ -169,8 +150,7 @@ const LectureDetail = ({
         )}
 
         {/* 강의별 출석 목록*/}
-        {onClicked.attendance && attendances && (
-          // <ColumnDiv>
+        {onClicked.attendance && students && students.length > 0 && (
           <TableWrapper>
             <AttendanceTable>
               <thead>
@@ -220,13 +200,12 @@ const LectureDetail = ({
               </tbody>
             </AttendanceTable>
           </TableWrapper>
-          // </ColumnDiv>
         )}
 
         {/* 강의별 과제 목록*/}
-        {onClicked.assignment && (
+        {onClicked.task && tasks && tasks.length > 0 && (
           <TaskWrapper>
-            {taskDummy.map((task, index) => (
+            {tasks.map((task, index) => (
               <TaskBox key={index}>
                 <TaskTitleWrapper>
                   <TaskTitle>{task.content}</TaskTitle>
@@ -240,23 +219,24 @@ const LectureDetail = ({
             </TaskBox>
           </TaskWrapper>
         )}
+
         {/* 강의별 자료 목록 */}
         {/* ToDo: 강의별 자료 목록 API 연동 */}
-        {onClicked.material && (
+        {onClicked.material && materials && materials.length > 0 && (
           <TaskWrapper>
-          {taskDummy.map((task, index) => (
-            <TaskBox key={index}>
-              <TaskTitleWrapper>
-                <TaskTitle>{task.content}</TaskTitle>
-                <FileIcon />
-              </TaskTitleWrapper>
-              <TaskDate>{convertDate(task.taskDate)}</TaskDate>
+            {materials.map((material, index) => (
+              <TaskBox key={index}>
+                <TaskTitleWrapper>
+                  {/* <TaskTitle>{task.content}</TaskTitle> */}
+                  <FileIcon />
+                </TaskTitleWrapper>
+                {/* <TaskDate>{convertDate(task.taskDate)}</TaskDate> */}
+              </TaskBox>
+            ))}
+            <TaskBox>
+              <TaskPlusIcon />
             </TaskBox>
-          ))}
-          <TaskBox>
-            <TaskPlusIcon />
-          </TaskBox>
-        </TaskWrapper>
+          </TaskWrapper>
         )}
       </LectureDetailWrapper>
     </ThemeProvider>
@@ -265,6 +245,7 @@ const LectureDetail = ({
 
 const LectureDetailWrapper = styled(MainDiv)`
   position: absolute;
+  justify-content: flex-start;
   top: 0;
   left: ${({ isClicked }) =>
     isClicked ? "25vw" : "100vw"}; // ToDo: 여백 생기는 문제 해결
@@ -276,6 +257,7 @@ const LectureDetailWrapper = styled(MainDiv)`
     isClicked ? "translateX(-50vw)" : "translateX(-100%)"};
   z-index: 2;
   background-color: white;
+  /* overflow: auto; */
 `;
 
 const InfoWrapper = styled(ColumnDiv)`
@@ -290,6 +272,7 @@ const Info = styled.div`
 const TitleWrapper = styled(RowDiv)`
   /* width: 80%; */
   padding-left: 12%;
+  padding-top: 30px;
 `;
 
 const Title = styled.div`

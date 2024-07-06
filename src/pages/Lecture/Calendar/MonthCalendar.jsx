@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
-import { theme } from "../../style/theme";
-import DayTimeTable from "./DayTimeTable";
+import { theme } from "../../../style/theme";
+import DayTimeTable from "../../../components/Lecture/DayTimeTable";
 
 const MonthCalendar = ({
   currentDate,

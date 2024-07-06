@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled, { ThemeProvider } from "styled-components";
-import { MainDiv } from "../style/CommonStyle";
-import { theme } from "../style/theme";
-import PaginationComponent from "../components/Pagination";
+import { MainDiv } from "../../style/CommonStyle";
+import { theme } from "../../style/theme";
+import PaginationComponent from "../General/Pagination";
 import { useRecoilState } from "recoil";
 import {
   currentPageState,
   totalPageState,
   dataState,
   selectedStudentState
-} from "../Atom";
+} from "../../Atom";
 
 const columns = [
   { key: "index", label: "순번" },
