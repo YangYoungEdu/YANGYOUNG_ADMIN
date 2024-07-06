@@ -241,6 +241,7 @@ const LectureDetail = ({
           </TaskWrapper>
         )}
         {/* 강의별 자료 목록 */}
+        {/* ToDo: 강의별 자료 목록 API 연동 */}
         {onClicked.material && (
           <TaskWrapper>
           {taskDummy.map((task, index) => (
