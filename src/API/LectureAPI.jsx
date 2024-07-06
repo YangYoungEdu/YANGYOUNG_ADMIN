@@ -68,8 +68,8 @@ export const getAllLectureByDayAPI = async (date) => {
   }
 };
 
-//특정 학생에게 할당된 과제 조회 API
-export const getOneStudentLectureAPI = async (studentId) => {
+// 특정 학생이 수강하는 강의 조회 API
+export const getLectureByStudentAPI = async (studentId) => {
   try {
     const response = await axios.get(`${server}lecture/student/${studentId}`);
     console.log(response.data);

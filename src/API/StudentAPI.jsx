@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const server = process.env.REACT_APP_DEV_URL;
+const local = process.env.REACT_APP_LOCAL_URL;
 
 // 학생 전체 조회 API
 
@@ -57,7 +58,7 @@ export const searchStudent = async () => {
 //학생 상세 조회 API
 export const getOneStudentAPI = async (id) => {
   try {
-    const response = await axios.get(`${server}student/${id}`);
+    const response = await axios.get(`${local}student/${id}`);
     return response.data;
   } catch (error) {
     console.error(error);

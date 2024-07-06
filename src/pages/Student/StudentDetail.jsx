@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { ReactComponent as Class } from "../../Assets/Class.svg";
 import { ReactComponent as Homework } from "../../Assets/Homework.svg";
@@ -6,18 +7,66 @@ import { ReactComponent as Student } from "../../Assets/Student.svg";
 import PersonalInfo from "../../components/StudentComponents/DetailComponents/PersonalInfo";
 import PersonalTask from "../../components/StudentComponents/DetailComponents/PersonalTask";
 import PersonalLecture from "../../components/StudentComponents/DetailComponents/PersonalLecture";
+import { getOneStudentAPI } from "../../API/StudentAPI";
+import { getOneStudentTaskAPI } from "../../API/TaskAPI";
+import { getLectureByStudentAPI } from "../../API/LectureAPI";
 
 const StudentDetail = () => {
+  const { id } = useParams();
   const [selectedMenu, setSelectedMenu] = useState("personal");
+  const [studentInfo, setStudentInfo] = useState({});
+  const [studentTask, setStudentTask] = useState([]);
+  const [studentLecture, setStudentLecture] = useState([]);
+
+  useEffect(() => {
+    const getStudent = async () => {
+      try {
+        const response = await getOneStudentAPI(id);
+        setStudentInfo(response);
+        console.log(response);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const getTask = async () => {
+      try {
+        const response = await getOneStudentTaskAPI(id);
+        setStudentTask(response);
+        console.log(response);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const getLecture = async () => {
+      try {
+        const response = await getLectureByStudentAPI(id);
+        setStudentLecture(response);
+        console.log(response);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getStudent();
+    getTask();
+    getLecture();
+  }, [id]);
 
   const renderContent = () => {
     switch (selectedMenu) {
       case "personal":
-        return <PersonalInfo />;
+        return <PersonalInfo studentInfo={studentInfo} />;
       case "homework":
-        return <PersonalTask />;
+        return (
+          <PersonalTask
+            studentTask={studentTask}
+            studentLecture={studentLecture}
+          />
+        );
       case "class":
-        return <PersonalLecture />;
+        return <PersonalLecture studentLecture={studentLecture} />;
       default:
         return null;
     }

@@ -16,7 +16,7 @@ import {
 import { ReactComponent as UnOpenBlackPolygon } from "../../../Assets/UnOpenBlackPolygon.svg";
 import { ReactComponent as BlackPolygon } from "../../../Assets/BlackPolygon.svg";
 import { ReactComponent as PlusIcon } from "../../../Assets/PlusIcon.svg";
-import { getOneStudentLectureAPI } from "../../../API/LectureAPI";
+import { getLectureByStudentAPI } from "../../../API/LectureAPI";
 
 const PersonalLecture = () => {
   const [isIngOpen, setIsIngOpen] = useState(false);
@@ -27,7 +27,7 @@ const PersonalLecture = () => {
   useEffect(() => {
     const getOneStudentLecture = async (id) => {
       try {
-        const response = await getOneStudentLectureAPI(id);
+        const response = await getLectureByStudentAPI(id);
         const inProgress = response.filter(
           (lecture) => lecture.finished === false
         );

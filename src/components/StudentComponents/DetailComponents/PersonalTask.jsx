@@ -3,17 +3,19 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { ReactComponent as UnOpenBlackPolygon } from "../../../Assets/UnOpenBlackPolygon.svg";
 import { ReactComponent as BlackPolygon } from "../../../Assets/BlackPolygon.svg";
-import { ReactComponent as PlusIcon } from "../../../Assets/PlusIcon.svg";
+import { ReactComponent as Plus } from "../../../Assets/PlusIcon.svg";
 import {
   getOneStudentTaskAPI,
   postOneStudentTaskAPI,
 } from "../../../API/TaskAPI";
+import TaskAddModal from "../StudentModal/TaskAddModal";
 
-const PersonalTask = () => {
+const PersonalTask = ({ studentTask, studentLecture }) => {
   const { id } = useParams();
 
   const [isIngOpen, setIsIngOpen] = useState(false);
   const [isEndOpen, setIsEndOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [inProgressTasks, setInProgressTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
 
@@ -46,7 +48,7 @@ const PersonalTask = () => {
             {isIngOpen ? <BlackPolygon /> : <UnOpenBlackPolygon />}
             <PolygonText>진행 중</PolygonText>
           </div>
-          <PlusIcon />
+          <PlusIcon onClick={() => setIsModalOpen(true)} />
         </BtnArea>
         {/* task 목록 */}
         {isIngOpen && (
@@ -104,6 +106,13 @@ const PersonalTask = () => {
           </div>
         )}
       </BigDiv>
+
+      {isModalOpen && (
+        <TaskAddModal
+          setIsModalOpen={setIsModalOpen}
+          studentLecture={studentLecture}
+        />
+      )}
     </TopDiv>
   );
 };
@@ -199,6 +208,10 @@ const StyledHr = styled.hr`
   width: 801px;
   height: 1px;
   background: #efefef;
+`;
+
+const PlusIcon = styled(Plus)`
+  cursor: pointer;
 `;
 
 export default PersonalTask;

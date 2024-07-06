@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const server = process.env.REACT_APP_DEV_URL;
+const local = process.env.REACT_APP_LOCAL_URL;
 
 // 로그인
 export const signIn = async (username, password) => {
@@ -10,7 +11,7 @@ export const signIn = async (username, password) => {
   };
 
   try {
-    const response = await axios.post(`${server}appUser/sign-in`, data);
+    const response = await axios.post(`${local}appUser/sign-in`, data);
     console.log("Sign in response:", response.data);
     return response.data;
   } catch (error) {
