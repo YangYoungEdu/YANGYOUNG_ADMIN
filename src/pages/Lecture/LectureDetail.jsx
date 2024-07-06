@@ -8,6 +8,10 @@ import { ReactComponent as Plus } from "../../Assets/Plus.svg";
 import { ReactComponent as File } from "../../Assets/File.svg";
 import { ColumnDiv, MainDiv, RowDiv } from "../../style/CommonStyle";
 import { theme } from "../../style/theme";
+import LectureStudent from "./LectureStudent";
+import LectureAttendance from "./LectureAttendance";
+import LectureTask from "./LectureTask";
+import LectureMaterial from "./LectureMaterial";
 
 const LectureDetail = ({
   setIsClicked,
@@ -131,113 +135,19 @@ const LectureDetail = ({
 
         {/* ToDo: 조건에 따라 정보 표시 */}
         {/* 강의별 학생 목록*/}
-        {onClicked.student && students && students.length > 0 && (
-          <ColumnDiv>
-            {students.map((student, index) => (
-              <ColumnDiv key={index}>
-                <StudentWrapper key={index}>
-                  <StudentName>{student.name}</StudentName>
-                  <SchoolAndGrade>
-                    {student.school} l {student.grade}
-                  </SchoolAndGrade>
-                </StudentWrapper>
-                <Line />
-              </ColumnDiv>
-            ))}
-            <StudentPlusIcon />
-            <Line />
-          </ColumnDiv>
-        )}
+        {onClicked.student && <LectureStudent students={students} />}
 
         {/* 강의별 출석 목록*/}
-        {onClicked.attendance && students && students.length > 0 && (
-          <TableWrapper>
-            <AttendanceTable>
-              <thead>
-                <tr>
-                  <TableHeader style={{ width: "164px" }}>이름</TableHeader>
-                  <TableHeader style={{ width: "174px" }}>
-                    학생 연락처
-                  </TableHeader>
-                  <TableHeader>출결</TableHeader>
-                </tr>
-              </thead>
-              <tbody>
-                {attendances.map((attendance, index) => (
-                  <tr key={index}>
-                    <TableCell>{attendance.name}</TableCell>
-                    <TableCell>{attendance.studentPhoneNumber}</TableCell>
-                    <TableCell>
-                      <RadioWrapper>
-                        <label>
-                          <RadioInput
-                            type="radio"
-                            name="attendance"
-                            value="출석"
-                          />
-                          출석
-                        </label>
-                        <RadioLabel>
-                          <RadioInput
-                            type="radio"
-                            name="attendance"
-                            value="지각"
-                          />
-                          지각
-                        </RadioLabel>
-                        <label>
-                          <RadioInput
-                            type="radio"
-                            name="attendance"
-                            value="결석"
-                          />
-                          결석
-                        </label>
-                      </RadioWrapper>
-                    </TableCell>
-                  </tr>
-                ))}
-              </tbody>
-            </AttendanceTable>
-          </TableWrapper>
+        {onClicked.attendance && (
+          <LectureAttendance attendances={attendances} />
         )}
 
         {/* 강의별 과제 목록*/}
-        {onClicked.task && tasks && tasks.length > 0 && (
-          <TaskWrapper>
-            {tasks.map((task, index) => (
-              <TaskBox key={index}>
-                <TaskTitleWrapper>
-                  <TaskTitle>{task.content}</TaskTitle>
-                  <TaskType>{task.taskType}</TaskType>
-                </TaskTitleWrapper>
-                <TaskDate>마감일: {convertDate(task.taskDate)}</TaskDate>
-              </TaskBox>
-            ))}
-            <TaskBox>
-              <TaskPlusIcon />
-            </TaskBox>
-          </TaskWrapper>
-        )}
+        {onClicked.task && <LectureTask tasks={tasks} />}
 
         {/* 강의별 자료 목록 */}
         {/* ToDo: 강의별 자료 목록 API 연동 */}
-        {onClicked.material && materials && materials.length > 0 && (
-          <TaskWrapper>
-            {materials.map((material, index) => (
-              <TaskBox key={index}>
-                <TaskTitleWrapper>
-                  {/* <TaskTitle>{task.content}</TaskTitle> */}
-                  <FileIcon />
-                </TaskTitleWrapper>
-                {/* <TaskDate>{convertDate(task.taskDate)}</TaskDate> */}
-              </TaskBox>
-            ))}
-            <TaskBox>
-              <TaskPlusIcon />
-            </TaskBox>
-          </TaskWrapper>
-        )}
+        {onClicked.material && <LectureMaterial materials={materials} />}
       </LectureDetailWrapper>
     </ThemeProvider>
   );
@@ -335,198 +245,6 @@ const Button = styled.button`
   &:hover {
     transform: translateY(-2px);
   }
-`;
-
-const StudentWrapper = styled(RowDiv)`
-  justify-content: flex-start;
-  padding-left: 8%;
-  margin: 9px 0;
-`;
-const StudentName = styled.div`
-  font-size: ${(props) => props.theme.fontSizes.bodyText3};
-  font-weight: 700;
-  padding-right: 18px;
-`;
-
-const SchoolAndGrade = styled.div`
-  font-size: ${(props) => props.theme.fontSizes.bodyText4};
-  font-weight: 400;
-`;
-
-const Line = styled.hr`
-  width: 90%;
-  border: none;
-  height: 1px;
-  background-color: ${(props) => props.theme.colors.gray_003};
-`;
-
-const PlusIcon = styled(Plus)`
-  width: 14px;
-  height: 14px;
-  padding-left: 48%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-`;
-
-const StudentPlusIcon = styled(PlusIcon)`
-  margin: 10px 0px 10px 0px;
-`;
-
-const TableWrapper = styled.div`
-  width: 90%;
-`;
-
-const Table = styled.table`
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  /* overflow: hidden; */
-`;
-
-const TableHeader = styled.th`
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: center;
-  background-color: #f2f2f2;
-
-  &:first-child {
-    border-top-left-radius: 10px;
-  }
-
-  &:last-child {
-    border-top-right-radius: 10px;
-  }
-`;
-
-const TableCell = styled.td`
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: center;
-`;
-
-const AttendanceTable = styled(Table)`
-  tbody tr:last-child ${TableCell}:first-child {
-    border-bottom-left-radius: 10px;
-  }
-
-  tbody tr:last-child ${TableCell}:last-child {
-    border-bottom-right-radius: 10px;
-  }
-`;
-
-const RadioWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const RadioInput = styled.input.attrs({ type: "radio" })`
-  width: 12px;
-  height: 12px;
-  border: 0.5px solid #95c25c;
-  border-radius: 50%;
-  outline: none;
-  margin-left: 16px;
-  margin-right: 3px;
-  position: relative;
-  cursor: pointer;
-
-  &::before {
-    content: "";
-    display: block;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background-color: white;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  &::after {
-    content: "";
-    display: block;
-    width: 60%;
-    height: 60%;
-    border-radius: 50%;
-    background-color: #95c25c;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0;
-  }
-
-  &:checked::after {
-    opacity: 1;
-  }
-`;
-
-const RadioLabel = styled.label`
-  display: flex;
-  align-items: center;
-`;
-
-const TaskWrapper = styled.div`
-  width: 100%;
-  /* display: flex;
-  flex-direction: column; */
-  /* align-items: center; */
-  padding-left: 9.5%;
-`;
-const TaskBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 90%;
-  height: 86px;
-  border-radius: 5px;
-  border: 1px solid #e0e0e0;
-  margin: 2.5px 0px;
-  padding: 18.5px 0 0 23px;
-  box-sizing: border-box;
-`;
-
-const TaskPlusIcon = styled(PlusIcon)`
-  margin: 20px 0px 0px -10px;
-  /* margin-top: 20px; */
-`;
-
-const TaskTitleWrapper = styled.div`
-  display: flex;
-  padding-bottom: 9px;
-  padding-top: 2px;
-  /* height: 20px; */
-`;
-
-const TaskTitle = styled.div`
-  font-size: ${(props) => props.theme.fontSizes.bodyText3};
-  font-weight: 700;
-  padding-right: 9px;
-`;
-
-const TaskType = styled.div`
-  width: 57px;
-  height: 20px;
-  background-color: ${(props) => props.theme.colors.yellow};
-  font-size: ${(props) => props.theme.fontSizes.bodyText4};
-  font-weight: 400;
-  text-align: center;
-`;
-
-const TaskDate = styled.div`
-  font-size: ${(props) => props.theme.fontSizes.bodyText4};
-  font-weight: 400;
-`;
-
-const FileIcon = styled(File)`
-  width: 10px;
-  height: 15px;
-  padding-top: 2.5px;
 `;
 
 export default LectureDetail;
