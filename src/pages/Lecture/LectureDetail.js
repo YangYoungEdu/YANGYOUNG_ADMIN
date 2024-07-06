@@ -1,22 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { getOneLectureAPI } from "../../API/LectureAPI";
+import React, { useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
-import { theme } from "../../style/theme";
+import { getAttendanceByLectureAndDateAPI } from "../../API/AttendanceAPI";
+import { getStudentByLectureAPI } from "../../API/StudentAPI";
+import { getLectureTaskAPI } from "../../API/TaskAPI";
 import { ReactComponent as Cancel } from "../../Assets/Cancel.svg";
 import { ReactComponent as Plus } from "../../Assets/Plus.svg";
-import { MainDiv, RowDiv, ColumnDiv } from "../../style/CommonStyle";
-import { getStudentByLectureAPI } from "../../API/StudentAPI";
-import { getAttendanceByLectureAndDateAPI } from "../../API/AttendanceAPI";
-import { getLectureTaskAPI } from "../../API/TaskAPI";
+import { ColumnDiv, MainDiv, RowDiv } from "../../style/CommonStyle";
+import { theme } from "../../style/theme";
 
-const LectureDetail = () => {
-  const { id } = useParams();
+const LectureDetail = ({
+  setIsClicked,
+  setSelectedLecture,
+  selectedLecture,
+}) => {
+  const id = selectedLecture.id;
   const today = new Date().toLocaleDateString("en-CA");
-  const [lecture, setLecture] = useState({});
-  const [students, setStudents] = useState([]);
-  const [attendances, setAttendances] = useState([]);
-  const [tasks, setTasks] = useState([]);
+  const [students, setStudents] = useState(null);
+  const [attendances, setAttendances] = useState(null);
+  const [tasks, setTasks] = useState(null);
   const [onClicked, setOnClicked] = useState({
     student: true,
     attendance: false,
@@ -42,32 +43,21 @@ const LectureDetail = () => {
   ];
 
   useEffect(() => {
-    getOneLectureAPI(id).then((res) => {
-      setLecture(res);
+    console.log(selectedLecture);
+
+    getStudentByLectureAPI(id).then((res) => {
+      setStudents(res);
       console.log(res);
     });
-  }, [id]);
-
-  useEffect(() => {
-    if (onClicked.student) {
-      getStudentByLectureAPI(id).then((res) => {
-        setStudents(res);
-        console.log(res);
-      });
-    }
-    if (onClicked.attendance) {
-      getAttendanceByLectureAndDateAPI(id, today).then((res) => {
-        setAttendances(res);
-        console.log(res);
-      });
-    }
-    if (onClicked.assignment) {
-      getLectureTaskAPI(id).then((res) => {
-        setTasks(res);
-        console.log(res);
-      });
-    }
-  }, [onClicked]);
+    getAttendanceByLectureAndDateAPI(id, today).then((res) => {
+      setAttendances(res);
+      console.log(res);
+    });
+    getLectureTaskAPI(id).then((res) => {
+      setTasks(res);
+      console.log(res);
+    });
+  }, [selectedLecture]);
 
   // 오전/오후 구분 함수
   const convertTime = (time) => {
@@ -96,13 +86,18 @@ const LectureDetail = () => {
     }));
   };
 
+  const handleCancelIsClicked = () => {
+    setIsClicked(false);
+    setSelectedLecture(null);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <LectureDetailWrapper>
         {/* 수업 정보 */}
         <TitleWrapper>
-          <Title>{lecture.name}</Title>
-          <X />
+          <Title>{selectedLecture.name}</Title>
+          <X onClick={() => handleCancelIsClicked()} />
         </TitleWrapper>
         <InfoWrapper>
           <Info>
@@ -113,11 +108,11 @@ const LectureDetail = () => {
           </Info>
           <Info>
             <Key>선생님</Key>
-            <Value>{lecture.teacher}</Value>
+            <Value>{selectedLecture.teacher}</Value>
           </Info>
           <Info>
             <Key>강의실</Key>
-            <Value>{lecture.room}</Value>
+            <Value>{selectedLecture.room}</Value>
           </Info>
         </InfoWrapper>
 
@@ -143,8 +138,9 @@ const LectureDetail = () => {
           </Button>
         </ButtonWrapper>
 
+        {/* ToDo: 조건에 따라 정보 표시 */}
         {/* 강의별 학생 목록*/}
-        {onClicked.student && (
+        {onClicked.student && students && (
           <ColumnDiv>
             {students.map((student, index) => (
               <ColumnDiv key={index}>
@@ -163,14 +159,16 @@ const LectureDetail = () => {
         )}
 
         {/* 강의별 출석 목록*/}
-        {onClicked.attendance && (
+        {onClicked.attendance && attendances && (
           // <ColumnDiv>
           <TableWrapper>
             <AttendanceTable>
               <thead>
                 <tr>
-                  <TableHeader style={{width: "164px"}}>이름</TableHeader>
-                  <TableHeader style={{width: "174px"}}>학생 연락처</TableHeader>
+                  <TableHeader style={{ width: "164px" }}>이름</TableHeader>
+                  <TableHeader style={{ width: "174px" }}>
+                    학생 연락처
+                  </TableHeader>
                   <TableHeader>출결</TableHeader>
                 </tr>
               </thead>
@@ -218,7 +216,7 @@ const LectureDetail = () => {
         {/* 강의별 과제 목록*/}
         {onClicked.assignment && (
           <TaskWrapper>
-            {tasks.map((task, index) => (
+            {taskDummy.map((task, index) => (
               <TaskBox key={index}>
                 <TaskTitleWrapper>
                   <TaskTitle>{task.content}</TaskTitle>
@@ -238,13 +236,21 @@ const LectureDetail = () => {
 };
 
 const LectureDetailWrapper = styled(MainDiv)`
-  width: 50%;
+  position: absolute;
+  top: 0;
+  left: ${({ isClicked }) =>
+    isClicked ? "25vw" : "100vw"}; // ToDo: 여백 생기는 문제 해결
+  width: 50vw;
+  height: 100%; // ToDo: 높이 확인 필요
+  border: 1px solid ${({ theme }) => theme.colors.gray_004};
+  transition: left 0.5s ease-in-out;
+  transform: ${({ isClicked }) =>
+    isClicked ? "translateX(-50vw)" : "translateX(-100%)"};
+  z-index: 2;
+  background-color: white;
 `;
 
-const InfoWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
+const InfoWrapper = styled(ColumnDiv)`
   padding-left: 12%;
 `;
 
@@ -254,7 +260,7 @@ const Info = styled.div`
 `;
 
 const TitleWrapper = styled(RowDiv)`
-  width: 100%;
+  /* width: 80%; */
   padding-left: 12%;
 `;
 
@@ -268,12 +274,9 @@ const Title = styled.div`
 `;
 
 const X = styled(Cancel)`
-  width: 100%;
   display: flex;
   justify-content: flex-end;
-  padding-right: 13%;
-  width: 16.5px;
-  height: 18px;
+  margin-right: 13%;
   cursor: pointer;
 `;
 
@@ -358,7 +361,6 @@ const PlusIcon = styled(Plus)`
 
 const StudentPlusIcon = styled(PlusIcon)`
   margin: 10px 0px 10px 0px;
-
 `;
 
 const TableWrapper = styled.div`
@@ -383,7 +385,7 @@ const TableHeader = styled.th`
   &:first-child {
     border-top-left-radius: 10px;
   }
-  
+
   &:last-child {
     border-top-right-radius: 10px;
   }
@@ -396,10 +398,10 @@ const TableCell = styled.td`
 `;
 
 const AttendanceTable = styled(Table)`
-tbody tr:last-child ${TableCell}:first-child {
+  tbody tr:last-child ${TableCell}:first-child {
     border-bottom-left-radius: 10px;
   }
-  
+
   tbody tr:last-child ${TableCell}:last-child {
     border-bottom-right-radius: 10px;
   }

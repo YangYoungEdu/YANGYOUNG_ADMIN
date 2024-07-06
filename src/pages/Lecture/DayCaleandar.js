@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import DayTimeTable from "./DayTimeTable";
+import { MainDiv } from "../../style/CommonStyle";
+import DayTable from "../../components/Lecture/DayTable";
 
 const DayCalendar = ({ currentDate, lectureOfDay }) => {
   const Date = {
@@ -8,9 +9,9 @@ const DayCalendar = ({ currentDate, lectureOfDay }) => {
     day: currentDate.getDate(),
   };
   return (
-    <div>
-      <DayTimeTable isHighlight={Date} lectureOfDay={lectureOfDay} />
-    </div>
+    <>
+      <DayTable lectureList={lectureOfDay}/>
+    </>
   );
 };
 

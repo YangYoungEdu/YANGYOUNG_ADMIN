@@ -14,7 +14,7 @@ import MonthCalendar from "./MonthCalendar";
 import WeekCalendar from "./WeekCalendar";
 
 const LecturePage = () => {
-  const [mode, setMode] = useState("month");
+  const [mode, setMode] = useState("day");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [originLectures, setOriginLectures] = useState([]);
   const [lectures, setLectures] = useState([]);

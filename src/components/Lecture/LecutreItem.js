@@ -1,10 +1,15 @@
 import styled from "styled-components";
-import { MainDiv, ColumnDiv, RowDiv } from "../../style/CommonStyle";
+import { ColumnDiv, RowDiv } from "../../style/CommonStyle";
 import { getTime } from "../../util/Util";
 
-const LectureItem = ({ lecture }) => {
+const LectureItem = ({ setIsClicked, setSelectedLecture, lecture, slot }) => {
+  const handleChangeIsClicked = () => {
+    setIsClicked(true);
+    setSelectedLecture(lecture);
+  };
+
   return (
-    <LectureItemWrapper>
+    <LectureItemWrapper onClick={() => handleChangeIsClicked()}>
       <Left>&nbsp;</Left>
       <Content>
         <Time>
@@ -16,18 +21,20 @@ const LectureItem = ({ lecture }) => {
   );
 };
 
+// ToDo: 위치 조정(화면 축소, 확대 시)
 const LectureItemWrapper = styled(RowDiv)`
-  width: 80%;
-  height: ${(props) => (props.slot * 4.5) / 12}vh;
-  z-index: 1;
-  margin-left: 55px;
   position: absolute;
+  justify-content: none;
+  z-index: 1;
+  width: 81%;
+  height: ${(props) => (props.slot * 4.5) / 12}vh;
   border-radius: 5px;
+
+  cursor: pointer;
 `;
 
 const Left = styled.div`
   width: 1%;
-  /* height: ${(props) => (props.slot * 50) / 12}px; */
   height: ${(props) => (props.slot * 4.5) / 12}vh;
   background-color: #95c25c;
   border-radius: 5px 0 0 5px;

@@ -7,6 +7,7 @@ export const MainDiv = styled.div`
   align-items: center;
   width: 100%;
 `;
+
 export const ColumnDiv = styled.div`
   display: flex;
   flex-direction: column;
