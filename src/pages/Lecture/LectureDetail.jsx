@@ -1,68 +1,28 @@
 import React, { useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
-import { getAttendanceByLectureAndDateAPI } from "../../API/AttendanceAPI";
-import { getStudentByLectureAPI } from "../../API/StudentAPI";
-import { getLectureTaskAPI } from "../../API/TaskAPI";
+import { getFilesAPI } from "../../API/MaterialAPI";
 import { ReactComponent as Cancel } from "../../Assets/Cancel.svg";
-import { ReactComponent as Plus } from "../../Assets/Plus.svg";
-import { ReactComponent as File } from "../../Assets/File.svg";
 import { ColumnDiv, MainDiv, RowDiv } from "../../style/CommonStyle";
 import { theme } from "../../style/theme";
-import LectureStudent from "./LectureStudent";
 import LectureAttendance from "./LectureAttendance";
-import LectureTask from "./LectureTask";
 import LectureMaterial from "./LectureMaterial";
+import LectureStudent from "./LectureStudent";
+import LectureTask from "./LectureTask";
 
 const LectureDetail = ({
+  currentDate,
   setIsClicked,
   setSelectedLecture,
   selectedLecture,
 }) => {
   const id = selectedLecture.id;
-  const today = new Date().toLocaleDateString("en-CA");
-  const [students, setStudents] = useState([]);
-  const [attendances, setAttendances] = useState([]);
-  const [tasks, setTasks] = useState([]);
-  const [materials, setMaterials] = useState([]);
+  const today = currentDate.toLocaleDateString("en-CA");
   const [onClicked, setOnClicked] = useState({
     student: true,
     attendance: false,
     task: false,
     material: false,
   });
-
-  useEffect(() => {
-    getStudentByLectureAPI(id).then((res) => {
-      setStudents(res);
-      console.log(res);
-    });
-    getAttendanceByLectureAndDateAPI(id, today).then((res) => {
-      setAttendances(res);
-      console.log(res);
-    });
-    getLectureTaskAPI(id).then((res) => {
-      setTasks(res);
-      console.log(res);
-    });
-  }, [selectedLecture]);
-
-  // 오전/오후 구분 함수
-  const convertTime = (time) => {
-    const [hour, minute] = time.split(":");
-    const hourNum = parseInt(hour, 10);
-
-    if (hourNum < 12) {
-      return `오전${time}`;
-    } else {
-      const adjustedHour = hourNum === 12 ? 12 : hourNum - 12;
-      return `오후${adjustedHour}:${minute}`;
-    }
-  };
-
-  const convertDate = (date) => {
-    const [year, month, day] = date.split("-");
-    return `${month}월 ${day}일`;
-  };
 
   const handleButtonClick = (type) => {
     setOnClicked((prevState) => ({
@@ -135,19 +95,23 @@ const LectureDetail = ({
 
         {/* ToDo: 조건에 따라 정보 표시 */}
         {/* 강의별 학생 목록*/}
-        {onClicked.student && <LectureStudent students={students} />}
+        {onClicked.student && <LectureStudent id={id} />}
 
         {/* 강의별 출석 목록*/}
-        {onClicked.attendance && (
-          <LectureAttendance attendances={attendances} />
-        )}
+        {onClicked.attendance && <LectureAttendance id={id} date={today}/>}
 
         {/* 강의별 과제 목록*/}
-        {onClicked.task && <LectureTask tasks={tasks} />}
+        {onClicked.task && <LectureTask id={id} />}
 
         {/* 강의별 자료 목록 */}
         {/* ToDo: 강의별 자료 목록 API 연동 */}
-        {onClicked.material && <LectureMaterial materials={materials} />}
+        {onClicked.material && (
+          <LectureMaterial
+            id={id}
+            lecture={selectedLecture.name}
+            date={today}
+          />
+        )}
       </LectureDetailWrapper>
     </ThemeProvider>
   );

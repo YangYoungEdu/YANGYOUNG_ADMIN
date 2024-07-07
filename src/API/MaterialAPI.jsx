@@ -5,25 +5,37 @@ const local = process.env.REACT_APP_LOCAL_URL;
 
 // 강의자료 업로드 API
 export const uploadFilesAPI = async (fileList, lecture, date) => {
-  const request = {
-    fileList: fileList,
-    lecture: lecture,
-    date: date,
-  };
+  if (!fileList || !lecture || !date) {
+    alert("Please fill in all fields.");
+    return;
+  }
+
+  const formData = new FormData();
+  for (let i = 0; i < fileList.length; i++) {
+    formData.append("files", fileList[i]);
+  }
+  formData.append("lecture", lecture);
+  formData.append("date", date);
 
   try {
-    const response = await axios.post(`${local}file/upload`, request);
-    return response.data;
+    const response = await axios.post(`${local}file/upload`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    console.log(response.data);
+    alert("File upload completed.");
   } catch (error) {
-    console.error(error);
-    throw error;
+    console.error("Error uploading files:", error);
   }
 };
-
 // 강의자료 조회 API
 export const getFilesAPI = async (lecture, date) => {
+  console.log("lecture:", lecture);
+  console.log("date:", date);
+
   try {
-    const response = await axios.get(`${local}file/list`, {
+    const response = await axios.get(`${local}file`, {
       params: {
         lecture: lecture,
         date: date,

@@ -1,7 +1,18 @@
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { ReactComponent as Plus } from "../../Assets/Plus.svg";
+import { getLectureTaskAPI } from "../../API/TaskAPI";
 
-const LectureTask = ({ tasks }) => {
+const LectureTask = ({id}) => {
+
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    getLectureTaskAPI(id).then((res) => {
+      setTasks(res);
+    });
+  }, []);
+
   const convertDate = (date) => {
     const [year, month, day] = date.split("-");
     return `${month}월 ${day}일`;

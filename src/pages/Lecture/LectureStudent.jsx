@@ -1,8 +1,19 @@
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { ColumnDiv, RowDiv } from "../../style/CommonStyle";
 import { ReactComponent as Plus } from "../../Assets/Plus.svg";
+import { getStudentByLectureAPI } from "../../API/StudentAPI";
 
-const LectureStudent = ({ students }) => {
+const LectureStudent = ({id}) => {
+
+  const [students, setStudents] = useState([]);
+
+  useEffect(() => {
+    getStudentByLectureAPI(id).then((res) => {
+      setStudents(res);
+    });
+  }, []);
+
   return (
     <ColumnDiv>
       {students.map((student, index) => (

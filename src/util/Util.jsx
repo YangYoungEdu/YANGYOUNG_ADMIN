@@ -20,10 +20,16 @@ export const getTime = (time) => {
 };
 
 // yyyy년 MM달 dd일 형식 변환 메소드
-export const formatDate = (date) =>{
+export const formatDateYMD = (date) => {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
 
   return `${year}년 ${month}월 ${day}일`;
-}
+};
+
+export const formateDateMD = (date) => {
+  const [year, month, day] = date.split("-");
+
+  return `${month}월 ${day}일`;
+};

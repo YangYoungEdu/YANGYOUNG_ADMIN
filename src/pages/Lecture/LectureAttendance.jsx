@@ -1,6 +1,16 @@
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { getAttendanceByLectureAndDateAPI } from "../../API/AttendanceAPI";
 
-const LectureAttendance = ({ attendances }) => {
+const LectureAttendance = ({ id, date }) => {
+  const [attendances, setAttendances] = useState([]);
+
+  useEffect(() => {
+    getAttendanceByLectureAndDateAPI(id, date).then((res) => {
+      setAttendances(res);
+    });
+  }, []);
+
   return (
     <TableWrapper>
       <AttendanceTable>

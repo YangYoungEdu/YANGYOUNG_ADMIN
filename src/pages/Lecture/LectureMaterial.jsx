@@ -1,34 +1,55 @@
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { ReactComponent as Plus } from "../../Assets/Plus.svg";
 import { ReactComponent as File } from "../../Assets/File.svg";
 import { RowDiv } from "../../style/CommonStyle";
+import { formateDateMD } from "../../util/Util";
+import { uploadFilesAPI } from "../../API/MaterialAPI";
+import { getFilesAPI } from "../../API/MaterialAPI";
 
-const LectureMaterial = ({ materials }) => {
+const LectureMaterial = ({ id, lecture, date }) => {
+  const [materials, setMaterials] = useState([]);
   const [addBoxes, setAddBoxes] = useState([]);
   const [selectedFile, setSelectedFile] = useState([]);
+  const [isUploaded, setIsUploaded] = useState(false);
+  const [isProgress, setIsProgress] = useState(false);
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    getFilesAPI(lecture, date).then((res) => {
+      setMaterials(res);
+    });
+  }, [isUploaded]);
+
+  const uploadMaterials = async () => {
+    setIsProgress(true);
+    try {
+      const res = await uploadFilesAPI(selectedFile, lecture, date);
+      console.log(res);
+      setIsProgress(false);
+      setIsUploaded(true);
+      setSelectedFile([]);
+      setAddBoxes([]);
+      fileInputRef(null);
+    } catch (error) {
+      console.error("Error uploading files:", error);
+    }
+  };
 
   const handleFileUploadClick = () => {
     fileInputRef.current.click();
   };
 
   const handleFileChange = (event) => {
-
     const file = event.target.files;
     console.log("선택된 파일:", file);
-    
-    if(file.length !== 0 && addBoxes.length === 1){
+
+    if (file.length !== 0 && addBoxes.length === 1) {
       // file 길이 만큼 addBoxes를 추가합니다.
       const newTaskBoxes = [...addBoxes, ...Array(file.length - 1).fill({})];
       setAddBoxes(newTaskBoxes);
       setSelectedFile(file);
     }
-    // const file = event.target.files[0];
-    // if (file) {
-    //   console.log("선택된 파일:", file);
-    //   setSelectedFile(file);
-    // }
   };
 
   const handleAddTaskBox = () => {
@@ -43,16 +64,16 @@ const LectureMaterial = ({ materials }) => {
         materials.map((material, index) => (
           <TaskBox key={index}>
             <TaskTitleWrapper>
-              {/* <TaskTitle>{material.content}</TaskTitle> */}
+              <TaskTitle>{material.name}</TaskTitle>
               <FileIcon />
             </TaskTitleWrapper>
-            {/* <TaskDate>{convertDate(material.taskDate)}</TaskDate> */}
+            <TaskDate>{formateDateMD(material.date)}</TaskDate>
           </TaskBox>
         ))}
       {addBoxes.map((addBox, index) => (
         <TaskBox key={index}>
           <AddMaterialWrapper>
-            {selectedFile ? (
+            {selectedFile && selectedFile.length > 0 ? (
               <input
                 type="text"
                 placeholder="자료 이름을 입력하세요"
@@ -72,7 +93,7 @@ const LectureMaterial = ({ materials }) => {
               <input
                 type="file"
                 ref={fileInputRef}
-                style={{ display: 'none' }}
+                style={{ display: "none" }}
                 onChange={handleFileChange}
                 multiple
               />
@@ -83,6 +104,13 @@ const LectureMaterial = ({ materials }) => {
       <TaskBox>
         <TaskPlusIcon onClick={handleAddTaskBox} />
       </TaskBox>
+      <UploadButton>
+        {isProgress ? (
+          <UploadButtonText>업로드 중...</UploadButtonText>
+        ) : (
+          <UploadButtonText onClick={uploadMaterials}>업로드</UploadButtonText>
+        )}
+      </UploadButton>
     </TaskWrapper>
   );
 };
@@ -93,6 +121,7 @@ const TaskWrapper = styled.div`
   flex-direction: column; */
   /* align-items: center; */
   padding-left: 9.5%;
+  overflow: auto;
 `;
 const TaskBox = styled.div`
   display: flex;
@@ -183,9 +212,19 @@ const FileUploadPlusIcon = styled(Plus)`
   padding-left: 4px;
 `;
 
-const FileUploadInput = styled.input.attrs({ type: "file" })`
-  display: none;
-  z-index: 1;
+const UploadButton = styled(TaskBox)`
+  background-color: #15521d;
+  justify-content: center;
+  align-items: center;
+  /* padding-top: -10px; */
+  cursor: pointer;
+`;
+
+const UploadButtonText = styled.div`
+  color: white;
+  font-size: 20px;
+  margin-top: -12px;
+  margin-left: -35px;
 `;
 
 export default LectureMaterial;

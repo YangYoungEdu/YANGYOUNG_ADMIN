@@ -5,7 +5,7 @@ import { getAmPm } from "../../util/Util";
 import LectureItem from "./LecutreItem";
 import LectureDeatil from "../../pages/Lecture/LectureDetail";
 
-const DayTable = ({ lectureList }) => {
+const DayTable = ({ currentDate, lectureList }) => {
   const [filteredLectureList, setFilteredLectureList] = useState([]);
   const [isClicked, setIsClicked] = useState(false);
   const [selectedLecture, setSelectedLecture] = useState(null);
@@ -86,6 +86,7 @@ const DayTable = ({ lectureList }) => {
       {isClicked && selectedLecture && (
         // <div>{selectedLecture.name}</div>
         <LectureDeatil
+          currentDate={currentDate}
           setIsClicked={setIsClicked}
           setSelectedLecture={setSelectedLecture}
           selectedLecture={selectedLecture}
