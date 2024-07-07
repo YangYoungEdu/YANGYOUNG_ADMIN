@@ -13,6 +13,20 @@ export const getAttendanceByLectureAndDateAPI = async (lectureId, date) => {
         date: date,
       },
     });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+// 출석 정보 업데이트 API
+export const updateAttendanceAPI = async (attendanceList) => {
+  console.log(attendanceList.length);
+  try {
+    const response = await axios.patch(`${local}attendance`, attendanceList);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(error);

@@ -1,15 +1,51 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { getAttendanceByLectureAndDateAPI } from "../../../API/AttendanceAPI";
+import {
+  getAttendanceByLectureAndDateAPI,
+  updateAttendanceAPI,
+} from "../../../API/AttendanceAPI";
+import { RowDiv } from "../../../style/CommonStyle";
 
 const LectureAttendance = ({ id, date }) => {
   const [attendances, setAttendances] = useState([]);
+  const [isUpdated, setIsUpdated] = useState(false);
 
   useEffect(() => {
     getAttendanceByLectureAndDateAPI(id, date).then((res) => {
       setAttendances(res);
     });
-  }, []);
+  }, [isUpdated]);
+
+  const updateAttendance = async () => {
+    console.log(attendances);
+
+    const updateRequest = attendances
+      .filter((attendance) => attendance.attendanceType !== null) // Filter out entries where attendanceType is null
+      .map((attendance) => ({
+        id: attendance.id,
+        studentId: attendance.studentId,
+        lectureId: id,
+        attendanceType: attendance.attendanceType,
+      }));
+
+    try {
+      await updateAttendanceAPI(updateRequest);
+      setIsUpdated(true);
+      alert("출석 정보가 변경되었습니다.");
+    } catch (error) {
+      console.error("Error updating attendance:", error);
+    }
+  };
+
+  const handleOptionChange = (e, studentId) => {
+    const { value } = e.target;
+    const updatedAttendances = attendances.map((attendance) =>
+      attendance.studentId === studentId
+        ? { ...attendance, attendanceType: value }
+        : attendance
+    );
+    setAttendances(updatedAttendances);
+  };
 
   return (
     <TableWrapper>
@@ -29,15 +65,39 @@ const LectureAttendance = ({ id, date }) => {
               <TableCell>
                 <RadioWrapper>
                   <label>
-                    <RadioInput type="radio" name="attendance" value="출석" />
+                    <RadioInput
+                      type="radio"
+                      name={`attendance-${attendance.studentId}`} // 고유한 name 속성 부여
+                      value="ATTENDANCE"
+                      checked={attendance.attendanceType === "ATTENDANCE"}
+                      onChange={(e) =>
+                        handleOptionChange(e, attendance.studentId)
+                      }
+                    />
                     출석
                   </label>
-                  <RadioLabel>
-                    <RadioInput type="radio" name="attendance" value="지각" />
-                    지각
-                  </RadioLabel>
                   <label>
-                    <RadioInput type="radio" name="attendance" value="결석" />
+                    <RadioInput
+                      type="radio"
+                      name={`attendance-${attendance.studentId}`} // 고유한 name 속성 부여
+                      value="LATE"
+                      checked={attendance.attendanceType === "LATE"}
+                      onChange={(e) =>
+                        handleOptionChange(e, attendance.studentId)
+                      }
+                    />
+                    지각
+                  </label>
+                  <label>
+                    <RadioInput
+                      type="radio"
+                      name={`attendance-${attendance.studentId}`} // 고유한 name 속성 부여
+                      value="ABSENCE"
+                      checked={attendance.attendanceType === "ABSENCE"}
+                      onChange={(e) =>
+                        handleOptionChange(e, attendance.studentId)
+                      }
+                    />
                     결석
                   </label>
                 </RadioWrapper>
@@ -46,6 +106,9 @@ const LectureAttendance = ({ id, date }) => {
           ))}
         </tbody>
       </AttendanceTable>
+      <UploadButton onClick={updateAttendance}>
+        <UploadButtonText>저장 사항 변경</UploadButtonText>
+      </UploadButton>
     </TableWrapper>
   );
 };
@@ -143,9 +206,28 @@ const RadioInput = styled.input.attrs({ type: "radio" })`
   }
 `;
 
-const RadioLabel = styled.label`
+const TaskBox = styled(RowDiv)`
   display: flex;
+  height: 50px;
+  border-radius: 5px;
+  border: 1px solid #e0e0e0;
+  margin: 2.5px 0px;
+  /* padding: 18.5px 0 0 23px; */
+  box-sizing: border-box;
+`;
+
+const UploadButton = styled(TaskBox)`
+  background-color: #15521d;
+  justify-content: center;
   align-items: center;
+  /* padding-top: -10px; */
+  cursor: pointer;
+`;
+
+const UploadButtonText = styled.div`
+  color: white;
+  font-size: 20px;
+  margin-left: -35px;
 `;
 
 export default LectureAttendance;
