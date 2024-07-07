@@ -2,10 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { ReactComponent as Plus } from "../../Assets/Plus.svg";
 import { ReactComponent as File } from "../../Assets/File.svg";
-import { RowDiv } from "../../style/CommonStyle";
+import { ReactComponent as Delete } from "../../Assets/Delete.svg";
+import { ColumnDiv, RowDiv } from "../../style/CommonStyle";
 import { formateDateMD } from "../../util/Util";
 import { uploadFilesAPI } from "../../API/MaterialAPI";
-import { getFilesAPI } from "../../API/MaterialAPI";
+import { getFilesAPI, deleteFileAPI } from "../../API/MaterialAPI";
 
 const LectureMaterial = ({ id, lecture, date }) => {
   const [materials, setMaterials] = useState([]);
@@ -13,13 +14,14 @@ const LectureMaterial = ({ id, lecture, date }) => {
   const [selectedFile, setSelectedFile] = useState([]);
   const [isUploaded, setIsUploaded] = useState(false);
   const [isProgress, setIsProgress] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
     getFilesAPI(lecture, date).then((res) => {
       setMaterials(res);
     });
-  }, [isUploaded]);
+  }, [isUploaded, isDeleted]);
 
   const uploadMaterials = async () => {
     setIsProgress(true);
@@ -33,6 +35,15 @@ const LectureMaterial = ({ id, lecture, date }) => {
       fileInputRef(null);
     } catch (error) {
       console.error("Error uploading files:", error);
+    }
+  };
+
+  const deleteMaterial = async (fileName) => {
+    try {
+      await deleteFileAPI(lecture, date, fileName);
+      setIsDeleted(true);
+    } catch (error) {
+      console.error("Error deleting file:", error);
     }
   };
 
@@ -63,25 +74,32 @@ const LectureMaterial = ({ id, lecture, date }) => {
         materials.length > 0 &&
         materials.map((material, index) => (
           <TaskBox key={index}>
-            <TaskTitleWrapper>
-              <TaskTitle>{material.name}</TaskTitle>
-              <FileIcon />
-            </TaskTitleWrapper>
-            <TaskDate>{formateDateMD(material.date)}</TaskDate>
+            <TaskContentWrapper>
+              <TaskTitleWrapper>
+                <TaskTitle>{material.name}</TaskTitle>
+                <FileIcon />
+              </TaskTitleWrapper>
+              <TaskDate>{formateDateMD(material.date)}</TaskDate>
+            </TaskContentWrapper>
+            <DeleteIcon
+              onClick={() => {
+                deleteMaterial(material.name);
+              }}
+            />
           </TaskBox>
         ))}
       {addBoxes.map((addBox, index) => (
         <TaskBox key={index}>
           <AddMaterialWrapper>
             {selectedFile && selectedFile.length > 0 ? (
-              <input
+              <FileUploadInput
                 type="text"
                 placeholder="자료 이름을 입력하세요"
                 value={selectedFile[index].name}
                 readOnly
               />
             ) : (
-              <input
+              <FileUploadInput
                 type="text"
                 placeholder="자료 이름을 입력하세요"
                 value=""
@@ -99,6 +117,7 @@ const LectureMaterial = ({ id, lecture, date }) => {
               />
             </FileUploadWrapper>
           </AddMaterialWrapper>
+          <UploadingFileDeleteIcon />
         </TaskBox>
       ))}
       <TaskBox>
@@ -123,15 +142,15 @@ const TaskWrapper = styled.div`
   padding-left: 9.5%;
   overflow: auto;
 `;
-const TaskBox = styled.div`
+const TaskBox = styled(RowDiv)`
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   width: 90%;
   height: 86px;
   border-radius: 5px;
   border: 1px solid #e0e0e0;
   margin: 2.5px 0px;
-  padding: 18.5px 0 0 23px;
+  /* padding: 18.5px 0 0 23px; */
   box-sizing: border-box;
 `;
 
@@ -146,7 +165,7 @@ const PlusIcon = styled(Plus)`
 `;
 
 const TaskPlusIcon = styled(PlusIcon)`
-  margin: 20px 0px 0px -10px;
+  margin: 37px 360px 0px -10px;
   /* margin-top: 20px; */
 `;
 
@@ -163,13 +182,10 @@ const TaskTitle = styled.div`
   padding-right: 9px;
 `;
 
-const TaskType = styled.div`
-  width: 57px;
-  height: 20px;
-  background-color: ${(props) => props.theme.colors.yellow};
-  font-size: ${(props) => props.theme.fontSizes.bodyText4};
-  font-weight: 400;
-  text-align: center;
+const TaskContentWrapper = styled(ColumnDiv)`
+  width: 80%;
+  margin-left: 5px;
+  margin-right: 45px;
 `;
 
 const TaskDate = styled.div`
@@ -185,15 +201,25 @@ const FileIcon = styled(File)`
 
 const AddMaterialWrapper = styled(RowDiv)`
   justify-content: flex-start;
-  padding-top: 10px;
-  cursor: pointer;
+  width: 80%;
+  padding-left: 8px;
+  padding-right: 60px;
 `;
 
 const FileUploadWrapper = styled(RowDiv)`
   width: 80px;
   height: 30px;
+  margin-top: 26px;
   background-color: #f1f1f1;
   border-radius: 3px;
+  cursor: pointer;
+`;
+
+const FileUploadInput = styled.input.attrs({ type: "text" })`
+  /* width: auto;
+  display: inline-block; */
+  padding-left: 13px;
+  padding-bottom: 6px;
 `;
 
 const FileUploadText = styled.div`
@@ -225,6 +251,18 @@ const UploadButtonText = styled.div`
   font-size: 20px;
   margin-top: -12px;
   margin-left: -35px;
+`;
+
+const DeleteIcon = styled(Delete)`
+  padding-top: 31px;
+  /* margin-right: -30px; */
+  cursor: pointer;
+`;
+
+const UploadingFileDeleteIcon = styled(DeleteIcon)`
+  width: 20px;
+  height: 20px;
+  padding-right: 20px;
 `;
 
 export default LectureMaterial;

@@ -88,8 +88,8 @@ const LectureDetail = ({
             isActive={onClicked.material}
             onClick={() => handleButtonClick("material")}
           >
-            {" "}
-            자료
+            {/* {" "} */}
+            수업 자료
           </Button>
         </ButtonWrapper>
 

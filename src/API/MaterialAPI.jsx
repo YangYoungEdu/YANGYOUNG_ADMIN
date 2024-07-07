@@ -64,3 +64,26 @@ export const downloadFileAPI = async (lecture, date, fileName) => {
     throw error;
   }
 };
+
+// 강의자료 삭제 API
+export const deleteFileAPI = async (lecture, date, fileName) => {
+
+  console.log("lecture:", lecture);
+  console.log("date:", date);
+  console.log("fileName:", fileName);
+  
+  try {
+    const response = await axios.get(`${local}file/delete`, {
+      params: {
+        lecture: lecture,
+        date: date,
+        fileName: fileName,
+      },
+    });
+    console.log(response.data);
+    alert("File deleted.");
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
