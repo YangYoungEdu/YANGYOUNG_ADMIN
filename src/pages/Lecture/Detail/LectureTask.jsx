@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { ColumnDiv } from "../../../style/CommonStyle";
 import { ReactComponent as Plus } from "../../../Assets/Plus.svg";
-import { getLectureTaskAPI } from "../../../API/TaskAPI";
+import { ReactComponent as Delete } from "../../../Assets/Delete.svg";
+import { getLectureTaskAPI, deleteTaskAPI } from "../../../API/TaskAPI";
 import LectureTaskAddModal from "./LectureTaskAddModal";
 
 const LectureTask = ({ id }) => {
@@ -16,6 +18,15 @@ const LectureTask = ({ id }) => {
     });
   }, [isUploaded, isDeleted]);
 
+  const deleteTask = async (taskId) => {
+    try {
+      await deleteTaskAPI(taskId);
+      setIsDeleted(true);
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
+  };
+
   const convertDate = (date) => {
     const [year, month, day] = date.split("-");
     return `${month}월 ${day}일`;
@@ -27,20 +38,27 @@ const LectureTask = ({ id }) => {
         tasks.length > 0 &&
         tasks.map((task, index) => (
           <TaskBox key={index}>
-            <TaskTitleWrapper>
-              <TaskTitle>{task.content}</TaskTitle>
-              <TaskType>{task.taskType}</TaskType>
-            </TaskTitleWrapper>
-            <TaskDate>마감일: {convertDate(task.taskDate)}</TaskDate>
+            <TaskContentWrapper>
+              <TaskTitleWrapper>
+                <TaskTitle>{task.content}</TaskTitle>
+                <TaskType>{task.taskType}</TaskType>
+              </TaskTitleWrapper>
+              <TaskDate>마감일: {convertDate(task.taskDate)}</TaskDate>
+            </TaskContentWrapper>
+            <DeleteIcon onClick={() => deleteTask(task.id)} />
           </TaskBox>
         ))}
       <TaskBox>
         <TaskPlusIcon onClick={() => setIsModalOpen(true)} />
       </TaskBox>
 
-      {isModalOpen && <LectureTaskAddModal 
-      setIsUploaded={setIsUploaded}
-      setIsModalOpen={setIsModalOpen} id={id}/>}
+      {isModalOpen && (
+        <LectureTaskAddModal
+          setIsUploaded={setIsUploaded}
+          setIsModalOpen={setIsModalOpen}
+          id={id}
+        />
+      )}
     </TaskWrapper>
   );
 };
@@ -52,7 +70,7 @@ const TaskWrapper = styled.div`
 
 const TaskBox = styled.div`
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   width: 90%;
   height: 86px;
   border-radius: 5px;
@@ -60,6 +78,12 @@ const TaskBox = styled.div`
   margin: 2.5px 0px;
   padding: 18.5px 0 0 23px;
   box-sizing: border-box;
+`;
+
+const TaskContentWrapper = styled(ColumnDiv)`
+  width: 80%;
+  margin-top: -20px;
+  margin-left: 15px;
 `;
 
 const PlusIcon = styled(Plus)`
@@ -102,6 +126,12 @@ const TaskType = styled.div`
 const TaskDate = styled.div`
   font-size: ${(props) => props.theme.fontSizes.bodyText4};
   font-weight: 400;
+`;
+
+const DeleteIcon = styled(Delete)`
+  cursor: pointer;
+  padding-top: 13px;
+  padding-left: 70px;
 `;
 
 export default LectureTask;

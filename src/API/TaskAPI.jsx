@@ -21,12 +21,12 @@ export const getOneStudentTaskAPI = async (studentId) => {
   // console.log (studentId);
   try {
     const response = await axios.get(`${local}task/${studentId}`);
-    console.log (response.data);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(error);
   }
-}
+};
 
 //수업별 과제 등록
 export const addLectureTaskAPI = async (data) => {
@@ -54,6 +54,21 @@ export const getLectureTaskAPI = async (lectureId) => {
     const response = await axios.get(`${local}task/lecture/${lectureId}`);
     console.log(response.data);
     return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// 과제 삭제 - 1개
+export const deleteTaskAPI = async (taskId) => {
+  try {
+    const response = await axios.delete(`${local}task/single`, {
+      params: {
+        taskId: taskId,
+      },
+    });
+    console.log(response.data);
+    alert("과제가 삭제되었습니다.");
   } catch (error) {
     console.error(error);
   }
