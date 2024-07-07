@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import Layout from "./Layout";
 import Attendance from "./pages/Attendance/AttendancePage";
-import LectureDetail from "./pages/Lecture/LectureDetail";
+import LectureDetail from "./pages/Lecture/Detail/LectureDetail";
 import Lecture from "./pages/Lecture/LecturePage";
 import SignIn from "./pages/SignIn/SignInPage";
 import StudentDetail from "./pages/Student/StudentDetail";

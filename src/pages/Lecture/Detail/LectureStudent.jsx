@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { ColumnDiv, RowDiv } from "../../style/CommonStyle";
-import { ReactComponent as Plus } from "../../Assets/Plus.svg";
-import { getStudentByLectureAPI } from "../../API/StudentAPI";
+import { ColumnDiv, RowDiv } from "../../../style/CommonStyle";
+import { ReactComponent as Plus } from "../../../Assets/Plus.svg";
+import { getStudentByLectureAPI } from "../../../API/StudentAPI";
 
 const LectureStudent = ({id}) => {
 

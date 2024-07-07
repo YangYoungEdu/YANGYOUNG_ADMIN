@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
-import { getFilesAPI } from "../../API/MaterialAPI";
-import { ReactComponent as Cancel } from "../../Assets/Cancel.svg";
-import { ColumnDiv, MainDiv, RowDiv } from "../../style/CommonStyle";
-import { theme } from "../../style/theme";
+import { ColumnDiv, MainDiv, RowDiv } from "../../../style/CommonStyle";
+import { theme } from "../../../style/theme";
+import { ReactComponent as Cancel } from "../../../Assets/Cancel.svg";
 import LectureAttendance from "./LectureAttendance";
 import LectureMaterial from "./LectureMaterial";
 import LectureStudent from "./LectureStudent";

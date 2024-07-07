@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { getAttendanceByLectureAndDateAPI } from "../../API/AttendanceAPI";
+import { getAttendanceByLectureAndDateAPI } from "../../../API/AttendanceAPI";
 
 const LectureAttendance = ({ id, date }) => {
   const [attendances, setAttendances] = useState([]);

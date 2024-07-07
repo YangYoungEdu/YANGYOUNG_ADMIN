@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { MainDiv, RowDiv } from "../../style/CommonStyle";
 import { getAmPm } from "../../util/Util";
 import LectureItem from "./LecutreItem";
-import LectureDeatil from "../../pages/Lecture/LectureDetail";
+import LectureDeatil from "../../pages/Lecture/Detail/LectureDetail";
 
 const DayTable = ({ currentDate, lectureList }) => {
   const [filteredLectureList, setFilteredLectureList] = useState([]);

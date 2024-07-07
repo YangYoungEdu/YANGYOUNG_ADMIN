@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { ReactComponent as Plus } from "../../Assets/Plus.svg";
-import { ReactComponent as File } from "../../Assets/File.svg";
-import { ReactComponent as Delete } from "../../Assets/Delete.svg";
-import { ColumnDiv, RowDiv } from "../../style/CommonStyle";
-import { formateDateMD } from "../../util/Util";
-import { uploadFilesAPI } from "../../API/MaterialAPI";
-import { getFilesAPI, deleteFileAPI } from "../../API/MaterialAPI";
+import { ReactComponent as Plus } from "../../../Assets/Plus.svg";
+import { ReactComponent as File } from "../../../Assets/File.svg";
+import { ReactComponent as Delete } from "../../../Assets/Delete.svg";
+import { ColumnDiv, RowDiv } from "../../../style/CommonStyle";
+import { formateDateMD } from "../../../util/Util";
+import { uploadFilesAPI } from "../../../API/MaterialAPI";
+import { getFilesAPI, deleteFileAPI } from "../../../API/MaterialAPI";
 
 const LectureMaterial = ({ id, lecture, date }) => {
   const [materials, setMaterials] = useState([]);
@@ -249,7 +249,6 @@ const UploadButton = styled(TaskBox)`
 const UploadButtonText = styled.div`
   color: white;
   font-size: 20px;
-  margin-top: -12px;
   margin-left: -35px;
 `;
 

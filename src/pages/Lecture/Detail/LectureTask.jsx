@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { ReactComponent as Plus } from "../../Assets/Plus.svg";
-import { getLectureTaskAPI } from "../../API/TaskAPI";
+import { ReactComponent as Plus } from "../../../Assets/Plus.svg";
+import { getLectureTaskAPI } from "../../../API/TaskAPI";
+import LectureTaskAddModal from "./LectureTaskAddModal";
 
-const LectureTask = ({id}) => {
-
+const LectureTask = ({ id }) => {
   const [tasks, setTasks] = useState([]);
+  const [isUploaded, setIsUploaded] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     getLectureTaskAPI(id).then((res) => {
       setTasks(res);
     });
-  }, []);
+  }, [isUploaded, isDeleted]);
 
   const convertDate = (date) => {
     const [year, month, day] = date.split("-");
@@ -32,8 +35,12 @@ const LectureTask = ({id}) => {
           </TaskBox>
         ))}
       <TaskBox>
-        <TaskPlusIcon />
+        <TaskPlusIcon onClick={() => setIsModalOpen(true)} />
       </TaskBox>
+
+      {isModalOpen && <LectureTaskAddModal 
+      setIsUploaded={setIsUploaded}
+      setIsModalOpen={setIsModalOpen} id={id}/>}
     </TaskWrapper>
   );
 };

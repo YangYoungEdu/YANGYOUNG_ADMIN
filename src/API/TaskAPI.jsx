@@ -28,6 +28,16 @@ export const getOneStudentTaskAPI = async (studentId) => {
   }
 }
 
+//수업별 과제 등록
+export const addLectureTaskAPI = async (data) => {
+  try {
+    const response = await axios.post(`${local}task/lecture`, data);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 //특정 학생 과제 등록
 export const postOneStudentTaskAPI = async (data) => {
   try {
