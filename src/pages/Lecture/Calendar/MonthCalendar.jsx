@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import { theme } from "../../../style/theme";
 import DayTimeTable from "../../../components/Lecture/DayTimeTable";
+import { getDay } from "../../../util/Util";
 
 const MonthCalendar = ({
   currentDate,
@@ -118,18 +119,53 @@ const MonthCalendar = ({
     const filteredLectures = {};
 
     lectures.forEach((lecture) => {
-      lecture.dateList.forEach((date) => {
-        const [year, month, day] = date.split("-");
-        const dateKey = `${year}-${month}-${day}`;
+      const dayList = lecture.dayList;
+      const dateList = lecture.dateList;
 
-        if (!filteredLectures[dateKey]) {
-          filteredLectures[dateKey] = [];
-        }
-        filteredLectures[dateKey].push(lecture);
-      });
+      if (dayList && dayList.length > 0) {
+        dayList.forEach((day) => {
+          const [year, month, dayOfMonth] = dateList[0].split("-");
+          console.log(year, month, dayOfMonth);
+          const dateListByDay = findAllWeekdaysOfMonth(year, month, getDay(day));
+
+          dateListByDay.forEach((date) => {
+            const dateKey = date.toLocaleDateString("ko-KR"); // 날짜를 문자열로 변환하여 키로 사용
+            if (!filteredLectures[dateKey]) {
+              filteredLectures[dateKey] = [];
+            }
+            filteredLectures[dateKey].push(lecture);
+          });
+        });
+      } else {
+        dateList.forEach((date) => {
+          // const [year, month, day] = date.split("-");
+          // const dateKey = `${year}-${month}-${day}`;
+
+          if (!filteredLectures[date]) {
+            filteredLectures[date] = [];
+          }
+          filteredLectures[date].push(lecture);
+        });
+      }
     });
 
+    console.log("filteredLectures: ", filteredLectures);
     setFilteredLectures(filteredLectures);
+  };
+
+  const findAllWeekdaysOfMonth = (year, month, weekday) => {
+    const resultDates = [];
+    const date = new Date(year, month - 1, 1); // month는 0부터 시작하므로 month - 1
+    const day = parseInt(weekday);
+    
+    while (date.getMonth() === month - 1) {
+      if (date.getDay() === day) {
+        resultDates.push(new Date(date)); // 새로운 Date 객체로 복사하여 추가
+      }
+      date.setDate(date.getDate() + 1); // 다음 날짜로 이동
+    }
+
+    return resultDates;
   };
 
   const filterLecturesByTeacher = (lectureList = [], teacher) => {
@@ -309,9 +345,9 @@ const Teacher = styled.div`
     switch (teacher.name) {
       case "김삼유":
         return "#95C25C";
-      case "홍길동":
+      case "장영해":
         return "#FFC14B";
-      case "김수지":
+      case "전재우":
         return "#A6773F";
       default:
         return "#95C25C";

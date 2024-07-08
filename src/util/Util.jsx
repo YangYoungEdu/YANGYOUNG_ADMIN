@@ -33,3 +33,26 @@ export const formateDateMD = (date) => {
 
   return `${month}월 ${day}일`;
 };
+
+export const formatDate = (date) => {
+  return date.toISOString().slice(0, 10);
+};
+
+export const getDay = (day) => {
+  switch (day) {
+    case "월요일":
+      return "1";
+    case "화요일":
+      return "2";
+    case "수요일":
+      return "3";
+    case "목요일":
+      return "4";
+    case "금요일":
+      return "5";
+    case "토요일":
+      return "6";
+    default:
+      return "0";
+  }
+};
