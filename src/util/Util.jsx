@@ -34,8 +34,21 @@ export const formateDateMD = (date) => {
   return `${month}월 ${day}일`;
 };
 
-export const formatDate = (date) => {
-  return date.toISOString().slice(0, 10);
+export const formatDate = (dateStr) => {
+  const date = dateStr.toLocaleDateString("ko-KR");
+  const match = date.match(/(\d+)\. (\d+)\. (\d+)\./);
+
+  if (!match) {
+    throw new Error('Invalid date format'); // 예외 처리: 올바르지 않은 날짜 형식일 경우 에러 처리
+  }
+
+  let [, year, month, day] = match; // 배열 해체 할당으로 각 부분 추출
+
+  // 월과 일이 한 자리 숫자일 경우 두 자리로 만들기
+  month = month.padStart(2, '0');
+  day = day.padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
 };
 
 export const getDay = (day) => {

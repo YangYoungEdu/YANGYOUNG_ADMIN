@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import { theme } from "../../../style/theme";
 import DayTimeTable from "../../../components/Lecture/DayTimeTable";
-import { getDay } from "../../../util/Util";
+import { getDay, formatDate } from "../../../util/Util";
 
 const MonthCalendar = ({
   currentDate,
@@ -17,8 +17,8 @@ const MonthCalendar = ({
   const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
   const teacherList = [
     { name: "김삼유", color: "#95C25C" },
-    { name: "홍길동", color: "#FFC14B" },
-    { name: "김수지", color: "#A6773F" },
+    { name: "장영해", color: "#FFC14B" },
+    { name: "전재우", color: "#A6773F" },
   ];
 
   useEffect(() => {
@@ -51,7 +51,6 @@ const MonthCalendar = ({
   const addPreviousMonthDays = (days, currentYear, currentMonth, startDay) => {
     const prevMonth = new Date(currentYear, currentMonth, 0);
     const prevMonthTotalDays = prevMonth.getDate();
-    console.log("prevMonth: ", prevMonth.getMonth());
 
     for (
       let i = prevMonthTotalDays - startDay + 1;
@@ -63,6 +62,7 @@ const MonthCalendar = ({
         prevMonth.getMonth() + 1 < 10
           ? `0${prevMonth.getMonth() + 1}`
           : `${prevMonth.getMonth() + 1}`;
+      console.log("prevMonth: ", month);
       const day = i < 10 ? `0${i}` : `${i}`;
 
       days.push({
@@ -79,6 +79,7 @@ const MonthCalendar = ({
       const year = currentMonth === 0 ? currentYear - 1 : currentYear;
       const month =
         currentMonth < 10 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
+      console.log("currentMonth: ", month);
       const day = i < 10 ? `0${i}` : `${i}`;
 
       days.push({
@@ -91,11 +92,12 @@ const MonthCalendar = ({
   };
 
   const addNextMonthDays = (days, currentYear, currentMonth, totalCells) => {
+    const nextMonth = new Date(currentYear, currentMonth + 1, 0);
     const remainingCells = totalCells - days.length;
     for (let i = 1; i <= remainingCells; i++) {
       const year = currentMonth === 0 ? currentYear - 1 : currentYear;
       const month =
-        currentMonth < 9 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
+        nextMonth + 1 < 10 ? `0${nextMonth + 1}` : `${nextMonth + 1}`;
       const day = i < 10 ? `0${i}` : `${i}`;
 
       days.push({
@@ -119,34 +121,14 @@ const MonthCalendar = ({
     const filteredLectures = {};
 
     lectures.forEach((lecture) => {
-      const dayList = lecture.dayList;
       const dateList = lecture.dateList;
 
-      if (dayList && dayList.length > 0) {
-        dayList.forEach((day) => {
-          const [year, month, dayOfMonth] = dateList[0].split("-");
-          console.log(year, month, dayOfMonth);
-          const dateListByDay = findAllWeekdaysOfMonth(year, month, getDay(day));
-
-          dateListByDay.forEach((date) => {
-            const dateKey = date.toLocaleDateString("ko-KR"); // 날짜를 문자열로 변환하여 키로 사용
-            if (!filteredLectures[dateKey]) {
-              filteredLectures[dateKey] = [];
-            }
-            filteredLectures[dateKey].push(lecture);
-          });
-        });
-      } else {
-        dateList.forEach((date) => {
-          // const [year, month, day] = date.split("-");
-          // const dateKey = `${year}-${month}-${day}`;
-
-          if (!filteredLectures[date]) {
-            filteredLectures[date] = [];
-          }
-          filteredLectures[date].push(lecture);
-        });
-      }
+      dateList.forEach((date) => {
+        if (!filteredLectures[date]) {
+          filteredLectures[date] = [];
+        }
+        filteredLectures[date].push(lecture);
+      });
     });
 
     console.log("filteredLectures: ", filteredLectures);
@@ -157,7 +139,7 @@ const MonthCalendar = ({
     const resultDates = [];
     const date = new Date(year, month - 1, 1); // month는 0부터 시작하므로 month - 1
     const day = parseInt(weekday);
-    
+
     while (date.getMonth() === month - 1) {
       if (date.getDay() === day) {
         resultDates.push(new Date(date)); // 새로운 Date 객체로 복사하여 추가
