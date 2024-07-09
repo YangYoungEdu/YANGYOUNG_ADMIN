@@ -6,6 +6,7 @@ const LectureItem = ({ setIsClicked, setSelectedLecture, lecture, slot }) => {
   const handleChangeIsClicked = () => {
     setIsClicked(true);
     setSelectedLecture(lecture);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -23,18 +24,14 @@ const LectureItem = ({ setIsClicked, setSelectedLecture, lecture, slot }) => {
 
 // ToDo: 위치 조정(화면 축소, 확대 시)
 const LectureItemWrapper = styled.div`
-  width:81%;
-  display: flex;
-  flex-direction: row;
-  /* padding-left: 2%; */
-  /* position: absolute;
-  justify-content: none;
-  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 9%;
   width: 81%;
-  height: ${(props) => (props.slot * 4.5) / 12}vh;
-  border-radius: 5px;
-
-  cursor: pointer; */
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1;
 `;
 
 const Left = styled.div`

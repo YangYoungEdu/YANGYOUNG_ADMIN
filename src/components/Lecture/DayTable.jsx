@@ -62,14 +62,14 @@ const DayTable = ({ currentDate, lectureList }) => {
 
               if (slotTime === lectureStartTime) {
                 return (
-                  <LectureItemWrapper>
+                  // <LectureItemWrapper>
                     <LectureItem
                       setIsClicked={setIsClicked}
                       setSelectedLecture={setSelectedLecture}
                       lecture={lecture}
                       slot={lecture.diffrenceSlot}
                     />
-                  </LectureItemWrapper>
+                  // </LectureItemWrapper>
                 );
               }
 
@@ -129,6 +129,8 @@ const HourLine = styled.div`
 
 const LectureItemWrapper = styled.div`
   position: absolute;
+  top: 0;
+  left: 10px;
   width: 100%;
   display: flex;
   justify-content: center;
