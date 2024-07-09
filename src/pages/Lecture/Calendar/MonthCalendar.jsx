@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
-import { theme } from "../../../style/theme";
 import DayTimeTable from "../../../components/Lecture/DayTimeTable";
-import { getDay, formatDate } from "../../../util/Util";
+import { theme } from "../../../style/theme";
 
 const MonthCalendar = ({
   currentDate,
@@ -22,6 +21,17 @@ const MonthCalendar = ({
   ];
 
   useEffect(() => {
+    const year = currentDate.getFullYear();
+    const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
+    const day = currentDate.getDate().toString().padStart(2, "0");
+
+    setIsHighlight({
+      year: year,
+      month: month,
+      day: day,
+      isHighlight: true,
+    });
+
     renderCalendar();
     filterLecturesByDay();
   }, [currentDate, lectures]);
@@ -135,21 +145,6 @@ const MonthCalendar = ({
     setFilteredLectures(filteredLectures);
   };
 
-  const findAllWeekdaysOfMonth = (year, month, weekday) => {
-    const resultDates = [];
-    const date = new Date(year, month - 1, 1); // month는 0부터 시작하므로 month - 1
-    const day = parseInt(weekday);
-
-    while (date.getMonth() === month - 1) {
-      if (date.getDay() === day) {
-        resultDates.push(new Date(date)); // 새로운 Date 객체로 복사하여 추가
-      }
-      date.setDate(date.getDate() + 1); // 다음 날짜로 이동
-    }
-
-    return resultDates;
-  };
-
   const filterLecturesByTeacher = (lectureList = [], teacher) => {
     return lectureList.filter((lecture) => lecture.teacher === teacher);
   };
@@ -163,10 +158,12 @@ const MonthCalendar = ({
     });
     setIsModalOpen(true);
     setLectureOfDay(lectureOfDay);
-    // window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const checkHighlightDay = (dayObj) => {
+    console.log("isHighlight: ", isHighlight);
+    console.log("dayObj: ", dayObj);
+
     return (
       isHighlight.day === dayObj.day &&
       isHighlight.month === dayObj.month &&

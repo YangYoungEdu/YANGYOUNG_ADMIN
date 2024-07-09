@@ -49,11 +49,15 @@ const LectrueHeader = ({
   };
 
   const setToday = () => {
+    const year = currentDate.getFullYear();
+    const month = (currentDate.getMonth()+1).toString().padStart(2, "0");
+    const day = currentDate.getDate().toString().padStart(2, "0");
+
     setIsToday(true);
     setIsHighlight({
-      year: currentDate.getFullYear(),
-      month: currentDate.getMonth(),
-      day: currentDate.getDate(),
+      year: year,
+      month: month,
+      day: day,
       isHighlight: true,
     });
   };
@@ -77,13 +81,13 @@ const LectrueHeader = ({
         <ArrowRight onClick={next} />
         <Select value={mode} onChange={(e) => setMode(e.target.value)}>
           <option value="month">&nbsp;&nbsp;&nbsp;월</option>
-          <option value="week">&nbsp;&nbsp;&nbsp;주</option>
+          {/* <option value="week">&nbsp;&nbsp;&nbsp;주</option> */}
           <option value="day">&nbsp;&nbsp;&nbsp;일</option>
         </Select>
         <TodayButton onClick={setToday}>오늘</TodayButton>
         <UploadButton>
-          <PlusIcon />
-          파일 업로드
+          {/* <PlusIcon /> */}
+          동기화
         </UploadButton>
       </CalendarHeader>
     </>
@@ -146,6 +150,7 @@ const UploadButton = styled.button`
   cursor: pointer;
   margin-left: auto;
   padding-right: 5px;
+  text-align: center;
 `;
 
 const PlusIcon = styled(Plus)`

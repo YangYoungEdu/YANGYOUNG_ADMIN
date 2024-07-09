@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ColumnDiv, RowDiv } from "../../style/CommonStyle";
+import { ColumnDiv } from "../../style/CommonStyle";
 import { getTime } from "../../util/Util";
 
 const LectureItem = ({ setIsClicked, setSelectedLecture, lecture, slot }) => {

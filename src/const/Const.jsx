@@ -1,19 +1,19 @@
-export const TeacherList = [
+export const teacherList = [
   {
     name: "김삼유",
-    color: "#95C25C",
+    color: "prof_kim",
   },
   {
-    name: "홍길동",
-    color: "#FFC14B",
+    name: "장영해",
+    color: "prof_jang",
   },
   {
-    name: "김수지",
-    color: "#A6773F",
+    name: "전재우",
+    color: "prof_jeon",
   },
 ];
 
-export const RoomList = [
+export const roomList = [
   {
     name: "101",
     color: "#95C25C",

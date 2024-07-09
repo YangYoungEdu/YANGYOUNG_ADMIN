@@ -62,14 +62,12 @@ const DayTable = ({ currentDate, lectureList }) => {
 
               if (slotTime === lectureStartTime) {
                 return (
-                  // <LectureItemWrapper>
                     <LectureItem
                       setIsClicked={setIsClicked}
                       setSelectedLecture={setSelectedLecture}
                       lecture={lecture}
                       slot={lecture.diffrenceSlot}
                     />
-                  // </LectureItemWrapper>
                 );
               }
 

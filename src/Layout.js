@@ -41,12 +41,12 @@ const Layout = () => {
           {/* 헤더바 2 */}
           {showSecondHeader && (
             <SecondHeader>
-              <NavLink
+              {/* <NavLink
                 to={`/attendance`}
                 style={({ isActive }) => (isActive ? activeStyle : undefined)}
               >
                 출결 관리
-              </NavLink>
+              </NavLink> */}
               <NavLink
                 to={`/student`}
                 style={({ isActive }) => (isActive ? activeStyle : undefined)}

@@ -2,25 +2,10 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { ReactComponent as DownArrow } from "../../Assets/DownArrow.svg";
 import { ReactComponent as UpArrow } from "../../Assets/UpArrow.svg";
+import { teacherList } from "../../const/Const";
 
 const LectureFilter = ({ mode, originLectures, setLectures }) => {
-  // const [isToggled, setIsToggled] = useState({
-  //   teacher: false,
-  // });
   const [checkedTeachers, setCheckedTeachers] = useState({});
-
-  // todo: API로 받아오기
-  const teacherList = [
-    { id: 1, name: "김삼유", color: "prof_kim" },
-    { id: 2, name: "장영해", color: "prof_hong" },
-    { id: 3, name: "전재우", color: "prof_lee" },
-  ];
-  const gradeList = [
-    { id: 1, name: "고1", color: "primary_normal" },
-    { id: 2, name: "고2", color: "primary_normal" },
-    { id: 3, name: "고3", color: "primary_normal" },
-  ];
-
   useEffect(() => {
     filterLecturesByCheckedTeachers();
   }, [checkedTeachers]);

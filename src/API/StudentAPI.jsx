@@ -4,7 +4,6 @@ const server = process.env.REACT_APP_DEV_URL;
 const local = process.env.REACT_APP_LOCAL_URL;
 
 // 학생 전체 조회 API
-
 export const getAllStudentAPI = async (page = 1, size = 10) => {
   try {
     const response = await axios.get(`${local}student`, {
