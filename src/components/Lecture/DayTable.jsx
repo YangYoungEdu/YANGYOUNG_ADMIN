@@ -56,23 +56,24 @@ const DayTable = ({ currentDate, lectureList }) => {
               </HourItem>
             )}
 
-            {filteredLectureList.map((lecture) => {
-              const slotTime = `${slot.hour}:${slot.minute}`;
-              const lectureStartTime = lecture.startTime;
+            <LectureItemContainer>
+              {filteredLectureList.map((lecture) => {
+                const slotTime = `${slot.hour}:${slot.minute}`;
+                const lectureStartTime = lecture.startTime;
 
-              if (slotTime === lectureStartTime) {
-                return (
+                if (slotTime === lectureStartTime) {
+                  return (
                     <LectureItem
                       setIsClicked={setIsClicked}
                       setSelectedLecture={setSelectedLecture}
                       lecture={lecture}
-                      slot={lecture.diffrenceSlot}
                     />
-                );
-              }
+                  );
+                }
 
-              return null;
-            })}
+                return null;
+              })}
+            </LectureItemContainer>
           </HourWrapper>
         ))}
         <HourItem>
@@ -125,15 +126,9 @@ const HourLine = styled.div`
   margin-left: 80px;
 `;
 
-const LectureItemWrapper = styled.div`
-  position: absolute;
-  top: 0;
-  left: 10px;
+const LectureItemContainer = styled(RowDiv)`
   width: 100%;
-  display: flex;
-  justify-content: center;
-  cursor: pointer;
-  z-index:1;
+  flex: 1;
 `;
 
 export default DayTable;

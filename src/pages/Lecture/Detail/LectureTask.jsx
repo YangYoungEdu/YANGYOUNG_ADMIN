@@ -66,6 +66,7 @@ const LectureTask = ({ id }) => {
 const TaskWrapper = styled.div`
   width: 100%;
   padding-left: 9.5%;
+  overflow: auto;
 `;
 
 const TaskBox = styled.div`

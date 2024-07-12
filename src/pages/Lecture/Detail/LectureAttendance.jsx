@@ -115,6 +115,7 @@ const LectureAttendance = ({ id, date }) => {
 
 const TableWrapper = styled.div`
   width: 90%;
+  overflow: auto;
 `;
 
 const Table = styled.table`

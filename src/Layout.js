@@ -4,14 +4,13 @@ import styled, { ThemeProvider } from "styled-components";
 import { theme } from "./style/theme";
 import { useRecoilState } from "recoil";
 import { loginCheck } from "./Atom";
+import { signOut } from "./API/AuthAPI";
 
 const Layout = () => {
   const [loginState, setLoginState] = useRecoilState(loginCheck);
   const [showLogoutButton, setShowLogoutButton] = useState(true);
   const [showSecondHeader, setShowSecondHeader] = useState(true);
   const [showFooter, setShowFooter] = useState(true);
-
-  const accessToken = localStorage.getItem("accessToken");
 
   //로그인 상태에 따라 로그아웃 버튼, 헤더바2, 푸터 표시 여부 변경
   useEffect(() => {
@@ -35,7 +34,7 @@ const Layout = () => {
           {/* 헤더바 1 */}
           <FirstHeader isLoggedIn={loginState}>
             <Logo isLoggedIn={loginState}>양영학원 고등부 영어과</Logo>
-            {showLogoutButton && <LogOut>로그아웃</LogOut>}
+            {showLogoutButton && <LogOut onClick={signOut}>로그아웃</LogOut>}
           </FirstHeader>
 
           {/* 헤더바 2 */}

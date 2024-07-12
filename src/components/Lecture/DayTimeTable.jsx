@@ -4,9 +4,18 @@ import { ReactComponent as Cancel } from "../../Assets/Cancel.svg";
 import { MainDiv, RowDiv } from "../../style/CommonStyle";
 import { getAmPm } from "../../util/Util";
 import LectureItem from "./LecutreItem";
+import LectureDeatil from "../../pages/Lecture/Detail/LectureDetail";
 
-const DayTimeTable = ({ lectureOfDay, isHighlight, setIsModalOpen }) => {
+const DayTimeTable = ({
+  currentDate,
+  lectureOfDay,
+  isHighlight,
+  setIsModalOpen,
+}) => {
   const [orderLecture, setOrderLecture] = useState([]);
+  const [isClicked, setIsClicked] = useState(false);
+  const [selectedLecture, setSelectedLecture] = useState(null);
+
   useEffect(() => {
     orderLectureByTime(lectureOfDay);
   }, [lectureOfDay]);
@@ -42,44 +51,65 @@ const DayTimeTable = ({ lectureOfDay, isHighlight, setIsModalOpen }) => {
   };
 
   return (
-    <DayTimeTableWrapper>
-      <HeaderWrapper>
-        <Title>{isHighlight.year}년 {isHighlight.month}월 {isHighlight.day}일</Title>
-        <CancelIcon onClick={()=>setIsModalOpen(false)}/>
-      </HeaderWrapper>
-      {timeSlot.map((slot, index) => (
-        <HourWrapper>
-          {slot.minute === 0 && (
-            <HourItem>
-              <Hour>{getAmPm(slot.hour)}</Hour>
-              <HourLine />
-            </HourItem>
-          )}
+    <>
+      <DayTimeTableWrapper>
+        <HeaderWrapper>
+          <Title>
+            {isHighlight.year}년 {isHighlight.month}월 {isHighlight.day}일
+          </Title>
+          <CancelIcon onClick={() => setIsModalOpen(false)} />
+        </HeaderWrapper>
+        {timeSlot.map((slot, index) => (
+          <HourWrapper>
+            {slot.minute === 0 && (
+              <HourItem>
+                <Hour>{getAmPm(slot.hour)}</Hour>
+                <HourLine />
+              </HourItem>
+            )}
 
-          {orderLecture.map((lecture) => {
-            const slotTime = `${slot.hour}:${slot.minute}`;
-            const lectureStartTime = lecture.startTime;
+            {orderLecture.map((lecture) => {
+              const slotTime = `${slot.hour}:${slot.minute}`;
+              const lectureStartTime = lecture.startTime;
 
-            if (slotTime === lectureStartTime) {
-              return (
-                <LectureItem lecture={lecture} slot={lecture.diffrenceSlot} />
-              );
-            }
+              if (slotTime === lectureStartTime) {
+                return (
+                  <LectureItem
+                    setIsClicked={setIsClicked}
+                    setSelectedLecture={setSelectedLecture}
+                    lecture={lecture}
+                    slot={lecture.diffrenceSlot}
+                  />
+                );
+              }
 
-            return null;
-          })}
-        </HourWrapper>
-      ))}
-      <HourItem>
-        <Hour>&nbsp;</Hour>
-        <HourLine />
-      </HourItem>
-    </DayTimeTableWrapper>
+              return null;
+            })}
+          </HourWrapper>
+        ))}
+        <HourItem>
+          <Hour>&nbsp;</Hour>
+          <HourLine />
+        </HourItem>
+      </DayTimeTableWrapper>
+
+      {/* {isClicked && selectedLecture && (
+        <LectureDeatilWrapper>
+          <LectureDeatil
+            currentDate={currentDate}
+            setIsClicked={setIsClicked}
+            setSelectedLecture={setSelectedLecture}
+            selectedLecture={selectedLecture}
+          />
+        </LectureDeatilWrapper>
+      )} */}
+    </>
   );
 };
 
 const DayTimeTableWrapper = styled(MainDiv)`
   background-color: white;
+  position: relative;
 `;
 
 const HeaderWrapper = styled(RowDiv)`
@@ -121,6 +151,14 @@ const HourLine = styled.div`
   height: 1px;
   background-color: #ddd;
   /* margin-top: 6px; */
+`;
+
+const LectureDeatilWrapper = styled(MainDiv)`
+  position: absolute;
+  top: 0;
+  left: -50vw;
+  z-index: 3;
+  background-color: black;
 `;
 
 export default DayTimeTable;

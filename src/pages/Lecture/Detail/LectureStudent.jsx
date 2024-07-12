@@ -15,7 +15,7 @@ const LectureStudent = ({id}) => {
   }, []);
 
   return (
-    <ColumnDiv>
+    <LectureStudentWrapper>
       {students.map((student, index) => (
         <ColumnDiv key={index}>
           <StudentWrapper key={index}>
@@ -29,15 +29,20 @@ const LectureStudent = ({id}) => {
       ))}
       <StudentPlusIcon />
       <Line />
-    </ColumnDiv>
+    </LectureStudentWrapper>
   );
 };
+
+const LectureStudentWrapper = styled(ColumnDiv)`
+  overflow: auto;
+`;
 
 const StudentWrapper = styled(RowDiv)`
   justify-content: flex-start;
   padding-left: 8%;
   margin: 9px 0;
 `;
+
 const StudentName = styled.div`
   font-size: ${(props) => props.theme.fontSizes.bodyText3};
   font-weight: 700;

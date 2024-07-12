@@ -223,6 +223,7 @@ const MonthCalendar = ({
       {isModalOpen && (
         <DayTimeTableWrapper>
           <DayTimeTable
+            currentDate={currentDate}
             setIsModalOpen={setIsModalOpen}
             lectureOfDay={lectureOfDay ? lectureOfDay : []}
             isHighlight={isHighlight}

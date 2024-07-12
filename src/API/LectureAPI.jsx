@@ -10,6 +10,9 @@ export const getAllLectureByMonthAPI = async (date) => {
 
   try {
     const response = await axios.get(`${local}lecture/month`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
       params: {
         year: year,
         month: month,
@@ -29,6 +32,9 @@ export const getAllLectureByWeekAPI = async (date) => {
 
   try {
     const response = await axios.get(`${local}lecture/week`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
       params: {
         date: fixedDate,
       },

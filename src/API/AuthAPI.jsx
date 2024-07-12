@@ -34,9 +34,17 @@ export const signIn = async (username, password) => {
 
 // 로그아웃
 export const signOut = async () => {
+  const accessToken = localStorage.getItem("accessToken");
+  const refreshToken = localStorage.getItem("refreshToken");
+
   try {
-    const response = await axios.post(`${local}appUser/sign-out`);
+    const response = await axios.post(`${local}appUser/sign-out`, {
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    });
     console.log("Sign out response:", response.data);
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     return response.data;
   } catch (error) {
     const errorMessage = error.response.data.message;

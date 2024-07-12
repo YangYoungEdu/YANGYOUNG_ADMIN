@@ -1,18 +1,27 @@
+import { useEffect } from "react";
 import styled from "styled-components";
 import { ColumnDiv } from "../../style/CommonStyle";
 import { getTime } from "../../util/Util";
 
-const LectureItem = ({ setIsClicked, setSelectedLecture, lecture, slot }) => {
+const LectureItem = ({ setIsClicked, setSelectedLecture, lecture }) => {
+  useEffect(() => {
+    console.log(lecture);
+  }, []);
+
+  const teacher = lecture.teacher;
+  const slot = lecture.differenceSlot;
+
   const handleChangeIsClicked = () => {
+    console.log("clicked");
     setIsClicked(true);
     setSelectedLecture(lecture);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
-    <LectureItemWrapper onClick={() => handleChangeIsClicked()}>
-      <Left>&nbsp;</Left>
-      <Content>
+    <LectureItemWrapper slot={slot} onClick={() => handleChangeIsClicked()}>
+      <Left teacher={teacher}>&nbsp;</Left>
+      <Content teacher={teacher}>
         <Time>
           {getTime(lecture.startTime)} ~ {getTime(lecture.endTime)}
         </Time>
@@ -24,10 +33,10 @@ const LectureItem = ({ setIsClicked, setSelectedLecture, lecture, slot }) => {
 
 // ToDo: 위치 조정(화면 축소, 확대 시)
 const LectureItemWrapper = styled.div`
+  flex:1;
   position: absolute;
-  top: 0;
-  left: 9%;
   width: 81%;
+  height: ${(props) => (props.slot * 4.5) / 12}vh;
   display: flex;
   justify-content: center;
   cursor: pointer;
@@ -36,17 +45,43 @@ const LectureItemWrapper = styled.div`
 
 const Left = styled.div`
   width: 1%;
-  height: ${(props) => (props.slot * 4.5) / 12}vh;
-  background-color: #95c25c;
+  /* height: ${(props) => (props.slot * 4.5) / 12}vh; */
   border-radius: 5px 0 0 5px;
+
+  /* background-color: #95c25c; */
+  background-color: ${(props) => {
+    switch (props.teacher) {
+      case "김삼유":
+        return "#95c25c";
+      case "장영해":
+        return "#FFC14B";
+      case "전재우":
+        return "#A6773F";
+      default:
+        return "#95c25c";
+    }
+  }};
 `;
 
 const Content = styled(ColumnDiv)`
   height: 90%;
-  background-color: #95c25c4d;
   opacity: 0.7;
   border-radius: 0 5px 5px 0;
   padding-left: 12px;
+
+  background-color: ${(props) => {
+    switch (props.teacher) {
+      case "김삼유":
+        return "#95c25c";
+      case "장영해":
+        return "#FFC14B";
+      case "전재우":
+        return "#A6773F";
+      default:
+        return "#95c25c";
+    }
+  }};
+  opacity: 0.3;
 `;
 
 const Time = styled.div`
