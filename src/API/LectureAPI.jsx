@@ -21,6 +21,10 @@ export const getAllLectureByMonthAPI = async (date) => {
     console.log(response.data);
     return response.data;
   } catch (error) {
+    if(error.response.status === 403){
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
     console.error(error);
     throw error;
   }
@@ -42,6 +46,10 @@ export const getAllLectureByWeekAPI = async (date) => {
     console.log(response.data);
     return response.data;
   } catch (error) {
+    if(error.response.status === 403){
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
     console.error(error);
     throw error;
   }
@@ -82,6 +90,10 @@ export const getLectureByStudentAPI = async (studentId) => {
     console.log(response.data);
     return response.data;
   } catch (error) {
+    if(error.response.status === 403){
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
     console.error(error);
   }
 };
@@ -97,6 +109,10 @@ export const getOneLectureAPI = async (lectureId) => {
     console.log(response.data);
     return response.data;
   } catch (error) {
+    if(error.response.status === 403){
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
     console.error(error);
   }
 };

@@ -16,8 +16,9 @@ export const addTaskAPI = async (data) => {
     console.log(response.data);
     alert("과제가 등록되었습니다.");
   } catch (error) {
-    if(error.response.status === 403){
-      alert("로그인 후 이용해주세요!");
+    if (error.response.status === 403) {
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
     }
     console.error(error);
   }
@@ -35,6 +36,10 @@ export const getOneStudentTaskAPI = async (studentId) => {
     console.log(response.data);
     return response.data;
   } catch (error) {
+    if (error.response.status === 403) {
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
     console.error(error);
   }
 };
@@ -49,6 +54,10 @@ export const addLectureTaskAPI = async (data) => {
     });
     console.log(response.data);
   } catch (error) {
+    if (error.response.status === 403) {
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
     console.error(error);
   }
 };
@@ -63,6 +72,10 @@ export const postOneStudentTaskAPI = async (data) => {
     });
     console.log(response.data);
   } catch (error) {
+    if (error.response.status === 403) {
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
     console.error(error);
   }
 };
@@ -78,6 +91,10 @@ export const getLectureTaskAPI = async (lectureId) => {
     console.log(response.data);
     return response.data;
   } catch (error) {
+    if (error.response.status === 403) {
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
     console.error(error);
   }
 };
@@ -96,6 +113,10 @@ export const deleteTaskAPI = async (taskId) => {
     console.log(response.data);
     alert("과제가 삭제되었습니다.");
   } catch (error) {
+    if (error.response.status === 403) {
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
     console.error(error);
   }
 };

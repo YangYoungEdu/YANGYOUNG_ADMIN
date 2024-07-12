@@ -45,6 +45,7 @@ export const signOut = async () => {
     console.log("Sign out response:", response.data);
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+    window.location.href = "/";
     return response.data;
   } catch (error) {
     const errorMessage = error.response.data.message;

@@ -3,12 +3,14 @@ import axios from "axios";
 const server = process.env.REACT_APP_DEV_URL;
 const local = process.env.REACT_APP_LOCAL_URL;
 
+const accessToken = localStorage.getItem("accessToken");
+
 // 학생 전체 조회 API
 export const getAllStudentAPI = async (page = 1, size = 10) => {
   try {
     const response = await axios.get(`${local}student`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       params: {
         page,
@@ -17,6 +19,10 @@ export const getAllStudentAPI = async (page = 1, size = 10) => {
     });
     return response.data;
   } catch (error) {
+    if(error.response.status === 403){
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
     console.error(error);
     throw error;
   }
@@ -27,7 +33,7 @@ export const getHiddenStudentAPI = async (page = 1, size = 10) => {
   try {
     const response = await axios.get(`${local}student/hidden`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       params: {
         page,
@@ -37,6 +43,10 @@ export const getHiddenStudentAPI = async (page = 1, size = 10) => {
     console.log(response.data);
     return response.data;
   } catch (error) {
+    if(error.response.status === 403){
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
     console.error(error);
   }
 };
@@ -54,12 +64,16 @@ export const searchStudent = async () => {
   try {
     const response = await axios.get(`${local}student/search`, data,{
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
     console.log(response.data);
     return response;
   } catch (error) {
+    if(error.response.status === 403){
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
     console.error(error);
   }
 };
@@ -69,11 +83,15 @@ export const getOneStudentAPI = async (id) => {
   try {
     const response = await axios.get(`${local}student/${id}`,{
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
     return response.data;
   } catch (error) {
+    if(error.response.status === 403){
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
     console.error(error);
   }
 };
@@ -83,12 +101,16 @@ export const patchStudentAPI = async (data) => {
   try {
     const response = await axios.patch(`${local}student`, data,{
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
     console.log(data);
     return response.data;
   } catch (error) {
+    if(error.response.status === 403){
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
     console.error(error);
   }
 };
@@ -101,11 +123,15 @@ export const deleteStudentAPI = async (idList) => {
 
     const response = await axios.delete(`${local}student?${queryString}`,{
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
     console.log(response.data);
   } catch (error) {
+    if(error.response.status === 403){
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
     console.error(error);
   }
 };
@@ -121,13 +147,17 @@ export const hideStudentAPI = async (idList) => {
       `${server}student/hidden`,
       studentIdList,{
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       }
     );
     console.log(response);
     alert("선택한 학생이 퇴원처리 되었습니다.");
   } catch (error) {
+    if(error.response.status === 403){
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
     console.error(error);
   }
 };
@@ -137,11 +167,15 @@ export const getStudentByLectureAPI = async (lectureId) => {
   try {
     const response = await axios.get(`${local}student/lecture/${lectureId}`,{
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
     return response.data;
   } catch (error) {
+    if(error.response.status === 403){
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
     console.error(error);
   }
 };

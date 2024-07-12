@@ -27,6 +27,10 @@ export const uploadFilesAPI = async (fileList, lecture, date) => {
     console.log(response.data);
     alert("File upload completed.");
   } catch (error) {
+    if(error.response.status === 403){
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
     console.error("Error uploading files:", error);
   }
 };
@@ -47,6 +51,10 @@ export const getFilesAPI = async (lecture, date) => {
     });
     return response.data;
   } catch (error) {
+    if(error.response.status === 403){
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
     console.error(error);
     throw error;
   }
@@ -64,6 +72,10 @@ export const downloadFileAPI = async (lecture, date, fileName) => {
     });
     return response.data;
   } catch (error) {
+    if(error.response.status === 403){
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
     console.error(error);
     throw error;
   }
@@ -89,6 +101,10 @@ export const deleteFileAPI = async (lecture, date, fileName) => {
     console.log(response.data);
     alert("File deleted.");
   } catch (error) {
+    if(error.response.status === 403){
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
     console.error(error);
     throw error;
   }
