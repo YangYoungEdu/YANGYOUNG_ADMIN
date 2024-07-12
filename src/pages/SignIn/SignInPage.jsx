@@ -29,14 +29,14 @@ function SignIn() {
   const handleLoginClick = async () => {
     signIn(username, password).then((res) => {
       setLoginState(true);
-      localStorage.setItem("accessToken", res.accessToken);
-      localStorage.setItem("refreshToken", res.refreshToken);
+      localStorage.setItem("accessToken", res.jwtToken.accessToken);
+      localStorage.setItem("refreshToken", res.jwtToken.refreshToken);
       navigate("/lecture");
     });
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleLoginClick();
     }
   };

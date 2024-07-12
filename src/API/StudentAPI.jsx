@@ -7,6 +7,9 @@ const local = process.env.REACT_APP_LOCAL_URL;
 export const getAllStudentAPI = async (page = 1, size = 10) => {
   try {
     const response = await axios.get(`${local}student`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
       params: {
         page,
         size,
@@ -23,6 +26,9 @@ export const getAllStudentAPI = async (page = 1, size = 10) => {
 export const getHiddenStudentAPI = async (page = 1, size = 10) => {
   try {
     const response = await axios.get(`${local}student/hidden`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
       params: {
         page,
         size,
@@ -46,7 +52,11 @@ export const searchStudent = async () => {
   };
 
   try {
-    const response = await axios.get(`${local}student/search`, data);
+    const response = await axios.get(`${local}student/search`, data,{
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
     console.log(response.data);
     return response;
   } catch (error) {
@@ -57,7 +67,11 @@ export const searchStudent = async () => {
 //학생 상세 조회 API
 export const getOneStudentAPI = async (id) => {
   try {
-    const response = await axios.get(`${local}student/${id}`);
+    const response = await axios.get(`${local}student/${id}`,{
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error(error);
@@ -67,7 +81,11 @@ export const getOneStudentAPI = async (id) => {
 //학생 정보 수정 API
 export const patchStudentAPI = async (data) => {
   try {
-    const response = await axios.patch(`${local}student`, data);
+    const response = await axios.patch(`${local}student`, data,{
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
     console.log(data);
     return response.data;
   } catch (error) {
@@ -81,7 +99,11 @@ export const deleteStudentAPI = async (idList) => {
   try {
     const queryString = idList.map((id) => `idList=${id}`).join("&");
 
-    const response = await axios.delete(`${local}student?${queryString}`);
+    const response = await axios.delete(`${local}student?${queryString}`,{
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
     console.log(response.data);
   } catch (error) {
     console.error(error);
@@ -97,7 +119,11 @@ export const hideStudentAPI = async (idList) => {
   try {
     const response = await axios.patch(
       `${server}student/hidden`,
-      studentIdList
+      studentIdList,{
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      }
     );
     console.log(response);
     alert("선택한 학생이 퇴원처리 되었습니다.");
@@ -109,7 +135,11 @@ export const hideStudentAPI = async (idList) => {
 // 강의별 학생 조회 API
 export const getStudentByLectureAPI = async (lectureId) => {
   try {
-    const response = await axios.get(`${local}student/lecture/${lectureId}`);
+    const response = await axios.get(`${local}student/lecture/${lectureId}`,{
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error(error);

@@ -8,6 +8,9 @@ export const getAttendanceByLectureAndDateAPI = async (lectureId, date) => {
   console.log(lectureId, date);
   try {
     const response = await axios.get(`${local}attendance/lecture`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
       params: {
         lectureId: lectureId,
         date: date,
@@ -25,7 +28,11 @@ export const getAttendanceByLectureAndDateAPI = async (lectureId, date) => {
 export const updateAttendanceAPI = async (attendanceList) => {
   console.log(attendanceList.length);
   try {
-    const response = await axios.patch(`${local}attendance`, attendanceList);
+    const response = await axios.patch(`${local}attendance`, attendanceList, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
     console.log(response.data);
     return response.data;
   } catch (error) {

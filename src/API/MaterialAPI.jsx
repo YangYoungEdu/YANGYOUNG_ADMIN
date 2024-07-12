@@ -21,6 +21,7 @@ export const uploadFilesAPI = async (fileList, lecture, date) => {
     const response = await axios.post(`${local}file/upload`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     });
     console.log(response.data);
@@ -36,6 +37,9 @@ export const getFilesAPI = async (lecture, date) => {
 
   try {
     const response = await axios.get(`${local}file`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
       params: {
         lecture: lecture,
         date: date,
@@ -67,13 +71,15 @@ export const downloadFileAPI = async (lecture, date, fileName) => {
 
 // 강의자료 삭제 API
 export const deleteFileAPI = async (lecture, date, fileName) => {
-
   console.log("lecture:", lecture);
   console.log("date:", date);
   console.log("fileName:", fileName);
-  
+
   try {
     const response = await axios.get(`${local}file/delete`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
       params: {
         lecture: lecture,
         date: date,

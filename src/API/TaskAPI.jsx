@@ -8,10 +8,17 @@ export const addTaskAPI = async (data) => {
   console.log(data);
 
   try {
-    const response = await axios.post(`${local}task`, data);
+    const response = await axios.post(`${local}task`, data, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
     console.log(response.data);
     alert("과제가 등록되었습니다.");
   } catch (error) {
+    if(error.response.status === 403){
+      alert("로그인 후 이용해주세요!");
+    }
     console.error(error);
   }
 };
@@ -20,7 +27,11 @@ export const addTaskAPI = async (data) => {
 export const getOneStudentTaskAPI = async (studentId) => {
   // console.log (studentId);
   try {
-    const response = await axios.get(`${local}task/${studentId}`);
+    const response = await axios.get(`${local}task/${studentId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -31,7 +42,11 @@ export const getOneStudentTaskAPI = async (studentId) => {
 //수업별 과제 등록
 export const addLectureTaskAPI = async (data) => {
   try {
-    const response = await axios.post(`${local}task/lecture`, data);
+    const response = await axios.post(`${local}task/lecture`, data, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
     console.log(response.data);
   } catch (error) {
     console.error(error);
@@ -41,7 +56,11 @@ export const addLectureTaskAPI = async (data) => {
 //특정 학생 과제 등록
 export const postOneStudentTaskAPI = async (data) => {
   try {
-    const response = await axios.post(`${local}task/student`, data);
+    const response = await axios.post(`${local}task/student`, data, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
     console.log(response.data);
   } catch (error) {
     console.error(error);
@@ -51,7 +70,11 @@ export const postOneStudentTaskAPI = async (data) => {
 // 강의별 과제 조회
 export const getLectureTaskAPI = async (lectureId) => {
   try {
-    const response = await axios.get(`${local}task/lecture/${lectureId}`);
+    const response = await axios.get(`${local}task/lecture/${lectureId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -63,6 +86,9 @@ export const getLectureTaskAPI = async (lectureId) => {
 export const deleteTaskAPI = async (taskId) => {
   try {
     const response = await axios.delete(`${local}task/single`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
       params: {
         taskId: taskId,
       },
