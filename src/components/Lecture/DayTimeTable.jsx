@@ -15,7 +15,7 @@ const DayTimeTable = ({
   const [orderLecture, setOrderLecture] = useState([]);
   const [isClicked, setIsClicked] = useState(false);
   const [selectedLecture, setSelectedLecture] = useState(null);
-
+  
   useEffect(() => {
     orderLectureByTime(lectureOfDay);
   }, [lectureOfDay]);
@@ -48,6 +48,17 @@ const DayTimeTable = ({
     });
 
     setOrderLecture(orderLecture);
+  };
+
+  const handleCloseModal = () => {
+    setIsClicked(false);
+    setSelectedLecture(null);
+  };
+
+  const handleOutsideClick = (event) => {
+    if (event.target === event.currentTarget) {
+      handleCloseModal();
+    }
   };
 
   return (
@@ -93,21 +104,22 @@ const DayTimeTable = ({
         </HourItem>
       </DayTimeTableWrapper>
 
-      {/* {isClicked && selectedLecture && (
-        <LectureDeatilWrapper>
+      {isClicked && selectedLecture && (
+        <LectureDeatilWrapper onClick={handleOutsideClick}>
           <LectureDeatil
             currentDate={currentDate}
             setIsClicked={setIsClicked}
             setSelectedLecture={setSelectedLecture}
             selectedLecture={selectedLecture}
           />
-        </LectureDeatilWrapper>
-      )} */}
+        // </LectureDeatilWrapper>
+      )}
     </>
   );
 };
 
 const DayTimeTableWrapper = styled(MainDiv)`
+  /* background-color: aliceblue; */
   background-color: white;
   position: relative;
 `;
@@ -118,8 +130,7 @@ const HeaderWrapper = styled(RowDiv)`
   margin-bottom: 50px;
 `;
 
-const HourWrapper = styled(RowDiv)`
-`;
+const HourWrapper = styled(RowDiv)``;
 
 const Title = styled.div`
   font-size: ${(props) => props.theme.fontSizes.title2};
@@ -155,11 +166,12 @@ const HourLine = styled.div`
 `;
 
 const LectureDeatilWrapper = styled(MainDiv)`
+  height: 100%;
   position: absolute;
   top: 0;
   left: -50vw;
   z-index: 3;
-  background-color: black;
+  background-color: transparent;
 `;
 
 export default DayTimeTable;
