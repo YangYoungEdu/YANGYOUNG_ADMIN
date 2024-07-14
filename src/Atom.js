@@ -42,5 +42,4 @@ export const dataState = atom({
 export const selectedStudentState = atom({
   key: "selectedStudentState",
   default: [],
-  // effects_UNSTABLE: [persistAtom],
 });
