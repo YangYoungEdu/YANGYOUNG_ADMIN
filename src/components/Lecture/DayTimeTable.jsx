@@ -118,7 +118,8 @@ const HeaderWrapper = styled(RowDiv)`
   margin-bottom: 50px;
 `;
 
-const HourWrapper = styled(RowDiv)``;
+const HourWrapper = styled(RowDiv)`
+`;
 
 const Title = styled.div`
   font-size: ${(props) => props.theme.fontSizes.title2};

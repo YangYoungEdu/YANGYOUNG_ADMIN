@@ -9,7 +9,7 @@ export const getAllLectureByMonthAPI = async (date) => {
   const month = date.getMonth() + 1;
 
   try {
-    const response = await axios.get(`${local}lecture/month`, {
+    const response = await axios.get(`${server}lecture/month`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
@@ -35,7 +35,7 @@ export const getAllLectureByWeekAPI = async (date) => {
   const fixedDate = new Date(date).toLocaleDateString("en-CA");
 
   try {
-    const response = await axios.get(`${local}lecture/week`, {
+    const response = await axios.get(`${server}lecture/week`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
@@ -60,7 +60,7 @@ export const getAllLectureByDayAPI = async (date) => {
   const fixedDate = new Date(date).toLocaleDateString("en-CA");
 
   try {
-    const response = await axios.get(`${local}lecture/day`, {
+    const response = await axios.get(`${server}lecture/day`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
@@ -82,7 +82,7 @@ export const getAllLectureByDayAPI = async (date) => {
 // 특정 학생이 수강하는 강의 조회 API
 export const getLectureByStudentAPI = async (studentId) => {
   try {
-    const response = await axios.get(`${local}lecture/student/${studentId}`, {
+    const response = await axios.get(`${server}lecture/student/${studentId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
@@ -101,7 +101,7 @@ export const getLectureByStudentAPI = async (studentId) => {
 // 강의 상세 조회 API
 export const getOneLectureAPI = async (lectureId) => {
   try {
-    const response = await axios.get(`${local}lecture/${lectureId}`, {
+    const response = await axios.get(`${server}lecture/${lectureId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },

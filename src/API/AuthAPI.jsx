@@ -11,7 +11,7 @@ export const signIn = async (username, password) => {
   };
 
   try {
-    const response = await axios.post(`${local}appUser/sign-in`, data);
+    const response = await axios.post(`${server}appUser/sign-in`, data);
     console.log("Sign in response:", response.data);
     return response.data;
   } catch (error) {
@@ -38,7 +38,7 @@ export const signOut = async () => {
   const refreshToken = localStorage.getItem("refreshToken");
 
   try {
-    const response = await axios.post(`${local}appUser/sign-out`, {
+    const response = await axios.post(`${server}appUser/sign-out`, {
       accessToken: accessToken,
       refreshToken: refreshToken,
     });

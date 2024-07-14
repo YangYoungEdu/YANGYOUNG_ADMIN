@@ -120,6 +120,7 @@ const Hour = styled.div`
 `;
 
 const HourLine = styled.div`
+  /* width: 100%; */
   width: 80.5%;
   height: 1px;
   background-color: #ddd;
@@ -127,7 +128,7 @@ const HourLine = styled.div`
 `;
 
 const LectureItemContainer = styled(RowDiv)`
-  width: 100%;
+  width: 80.5%;
   flex: 1;
 `;
 

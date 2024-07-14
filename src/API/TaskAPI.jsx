@@ -8,7 +8,7 @@ export const addTaskAPI = async (data) => {
   console.log(data);
 
   try {
-    const response = await axios.post(`${local}task`, data, {
+    const response = await axios.post(`${server}task`, data, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
@@ -28,7 +28,7 @@ export const addTaskAPI = async (data) => {
 export const getOneStudentTaskAPI = async (studentId) => {
   // console.log (studentId);
   try {
-    const response = await axios.get(`${local}task/${studentId}`, {
+    const response = await axios.get(`${server}task/${studentId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
@@ -47,7 +47,7 @@ export const getOneStudentTaskAPI = async (studentId) => {
 //수업별 과제 등록
 export const addLectureTaskAPI = async (data) => {
   try {
-    const response = await axios.post(`${local}task/lecture`, data, {
+    const response = await axios.post(`${server}task/lecture`, data, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
@@ -65,7 +65,7 @@ export const addLectureTaskAPI = async (data) => {
 //특정 학생 과제 등록
 export const postOneStudentTaskAPI = async (data) => {
   try {
-    const response = await axios.post(`${local}task/student`, data, {
+    const response = await axios.post(`${server}task/student`, data, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
@@ -83,7 +83,7 @@ export const postOneStudentTaskAPI = async (data) => {
 // 강의별 과제 조회
 export const getLectureTaskAPI = async (lectureId) => {
   try {
-    const response = await axios.get(`${local}task/lecture/${lectureId}`, {
+    const response = await axios.get(`${server}task/lecture/${lectureId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
@@ -102,7 +102,7 @@ export const getLectureTaskAPI = async (lectureId) => {
 // 과제 삭제 - 1개
 export const deleteTaskAPI = async (taskId) => {
   try {
-    const response = await axios.delete(`${local}task/single`, {
+    const response = await axios.delete(`${server}task/single`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },

@@ -18,7 +18,7 @@ export const uploadFilesAPI = async (fileList, lecture, date) => {
   formData.append("date", date);
 
   try {
-    const response = await axios.post(`${local}file/upload`, formData, {
+    const response = await axios.post(`${server}file/upload`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -40,7 +40,7 @@ export const getFilesAPI = async (lecture, date) => {
   console.log("date:", date);
 
   try {
-    const response = await axios.get(`${local}file`, {
+    const response = await axios.get(`${server}file`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
@@ -63,7 +63,7 @@ export const getFilesAPI = async (lecture, date) => {
 // 강의자료 다운로드 API - 여러파일 다운로드 시 그냥 여러번 호출 해야 함(왜 안되는지 모르겠음)
 export const downloadFileAPI = async (lecture, date, fileName) => {
   try {
-    const response = await axios.get(`${local}file/download`, {
+    const response = await axios.get(`${server}file/download`, {
       params: {
         lecture: lecture,
         date: date,
@@ -88,7 +88,7 @@ export const deleteFileAPI = async (lecture, date, fileName) => {
   console.log("fileName:", fileName);
 
   try {
-    const response = await axios.get(`${local}file/delete`, {
+    const response = await axios.get(`${server}file/delete`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },

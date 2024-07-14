@@ -7,7 +7,7 @@ const local = process.env.REACT_APP_LOCAL_URL;
 export const getAttendanceByLectureAndDateAPI = async (lectureId, date) => {
   console.log(lectureId, date);
   try {
-    const response = await axios.get(`${local}attendance/lecture`, {
+    const response = await axios.get(`${server}attendance/lecture`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
@@ -32,7 +32,7 @@ export const getAttendanceByLectureAndDateAPI = async (lectureId, date) => {
 export const updateAttendanceAPI = async (attendanceList) => {
   console.log(attendanceList.length);
   try {
-    const response = await axios.patch(`${local}attendance`, attendanceList, {
+    const response = await axios.patch(`${server}attendance`, attendanceList, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },

@@ -33,8 +33,9 @@ const LectureItem = ({ setIsClicked, setSelectedLecture, lecture }) => {
 
 // ToDo: 위치 조정(화면 축소, 확대 시)
 const LectureItemWrapper = styled.div`
-  flex:1;
+  flex: 1;
   position: absolute;
+  left: 127px;
   width: 81%;
   height: ${(props) => (props.slot * 4.5) / 12}vh;
   display: flex;
@@ -64,6 +65,7 @@ const Left = styled.div`
 `;
 
 const Content = styled(ColumnDiv)`
+  display: flex;
   height: 90%;
   opacity: 0.7;
   border-radius: 0 5px 5px 0;

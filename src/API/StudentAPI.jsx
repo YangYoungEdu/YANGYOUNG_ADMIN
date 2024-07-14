@@ -8,7 +8,7 @@ const accessToken = localStorage.getItem("accessToken");
 // 학생 전체 조회 API
 export const getAllStudentAPI = async (page = 1, size = 10) => {
   try {
-    const response = await axios.get(`${local}student`, {
+    const response = await axios.get(`${server}student`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -31,7 +31,7 @@ export const getAllStudentAPI = async (page = 1, size = 10) => {
 // 숨김 학생 전체 조회 API
 export const getHiddenStudentAPI = async (page = 1, size = 10) => {
   try {
-    const response = await axios.get(`${local}student/hidden`, {
+    const response = await axios.get(`${server}student/hidden`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -62,7 +62,7 @@ export const searchStudent = async () => {
   };
 
   try {
-    const response = await axios.get(`${local}student/search`, data,{
+    const response = await axios.get(`${server}student/search`, data,{
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -81,7 +81,7 @@ export const searchStudent = async () => {
 //학생 상세 조회 API
 export const getOneStudentAPI = async (id) => {
   try {
-    const response = await axios.get(`${local}student/${id}`,{
+    const response = await axios.get(`${server}student/${id}`,{
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -99,7 +99,7 @@ export const getOneStudentAPI = async (id) => {
 //학생 정보 수정 API
 export const patchStudentAPI = async (data) => {
   try {
-    const response = await axios.patch(`${local}student`, data,{
+    const response = await axios.patch(`${server}student`, data,{
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -121,7 +121,7 @@ export const deleteStudentAPI = async (idList) => {
   try {
     const queryString = idList.map((id) => `idList=${id}`).join("&");
 
-    const response = await axios.delete(`${local}student?${queryString}`,{
+    const response = await axios.delete(`${server}student?${queryString}`,{
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -165,7 +165,7 @@ export const hideStudentAPI = async (idList) => {
 // 강의별 학생 조회 API
 export const getStudentByLectureAPI = async (lectureId) => {
   try {
-    const response = await axios.get(`${local}student/lecture/${lectureId}`,{
+    const response = await axios.get(`${server}student/lecture/${lectureId}`,{
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
