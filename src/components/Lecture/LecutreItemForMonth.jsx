@@ -35,8 +35,7 @@ const LectureItemForMonth = ({ setIsClicked, setSelectedLecture, lecture }) => {
 const LectureItemWrapper = styled.div`
   flex: 1;
   position: absolute;
-  margin-left: 48px;
-  width: 82%;
+  width: 80%;
   height: ${(props) => (props.slot * 4.5) / 12}vh;
   display: flex;
   justify-content: center;
@@ -46,7 +45,8 @@ const LectureItemWrapper = styled.div`
 
 const Left = styled.div`
   width: 1%;
-  height: ${(props) => (props.slot * 4.5) / 12}vh;
+  height: 100%;
+ 
   border-radius: 5px 0 0 5px;
 
   /* background-color: #95c25c; */
@@ -66,7 +66,7 @@ const Left = styled.div`
 
 const Content = styled(ColumnDiv)`
   display: flex;
-  height: 90%;
+  height: 100%;
   opacity: 0.7;
   border-radius: 0 5px 5px 0;
   padding-left: 12px;

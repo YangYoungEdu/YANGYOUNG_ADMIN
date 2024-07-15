@@ -46,10 +46,9 @@ const LectureItemWrapper = styled.div`
 
 const Left = styled.div`
   width: 1%;
-  /* height: ${(props) => (props.slot * 4.5) / 12}vh; */
+  height: 90%;
   border-radius: 5px 0 0 5px;
-
-  /* background-color: #95c25c; */
+  
   background-color: ${(props) => {
     switch (props.teacher) {
       case "김삼유":

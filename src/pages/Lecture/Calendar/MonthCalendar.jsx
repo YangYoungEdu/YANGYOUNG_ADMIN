@@ -354,10 +354,10 @@ const LectureSize = styled.div`
 
 const DayTimeTableWrapper = styled.div`
   position: absolute;
-  top: 0;
+  top: 115px;
   left: ${({ isModalOpen }) => (isModalOpen ? "25vw" : "100vw")};
-  width: 50vw;
-  height: 125.5%;
+  width: 50%;
+  height: 140vh;
   transition: left 0.5s ease-in-out;
   transform: ${({ isModalOpen }) =>
     isModalOpen ? "translateX(-50vw)" : "translateX(-100%)"};

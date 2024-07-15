@@ -40,7 +40,7 @@ const LectureStudentWrapper = styled(ColumnDiv)`
 const StudentWrapper = styled(RowDiv)`
   justify-content: flex-start;
   padding-left: 8%;
-  /* margin: 9px 0; */
+  margin: 9px 0;
 `;
 
 const StudentName = styled.div`

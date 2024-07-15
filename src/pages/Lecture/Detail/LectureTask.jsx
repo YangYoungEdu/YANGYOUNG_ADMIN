@@ -64,64 +64,64 @@ const LectureTask = ({ id }) => {
 };
 
 const TaskWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  padding-left: 9.5%;
+  justify-content: center;
+  align-items: center;
   overflow: auto;
+  gap: 5px;
 `;
 
 const TaskBox = styled.div`
   display: flex;
-  /* flex-direction: column; */
   width: 90%;
-  height: 86px;
+  height: 84px;
   border-radius: 5px;
   border: 1px solid #e0e0e0;
-  margin: 2.5px 0px;
-  padding: 18.5px 0 0 23px;
+  padding: 3%;
   box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
 `;
 
 const TaskContentWrapper = styled(ColumnDiv)`
-  width: 80%;
-  margin-top: -20px;
-  margin-left: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 `;
 
 const PlusIcon = styled(Plus)`
   width: 14px;
   height: 14px;
-  padding-left: 48%;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
 `;
 
-const TaskPlusIcon = styled(PlusIcon)`
-  margin: 20px 0px 0px -10px;
-  /* margin-top: 20px; */
-`;
+const TaskPlusIcon = styled(PlusIcon)``;
 
 const TaskTitleWrapper = styled.div`
   display: flex;
-  padding-bottom: 9px;
-  padding-top: 2px;
-  /* height: 20px; */
+  gap: 9px;
 `;
 
 const TaskTitle = styled.div`
   font-size: ${(props) => props.theme.fontSizes.bodyText3};
   font-weight: 700;
-  padding-right: 9px;
 `;
 
 const TaskType = styled.div`
+  display: flex;
   width: 57px;
   height: 20px;
+  border-radius: 3px;
   background-color: ${(props) => props.theme.colors.yellow};
   font-size: ${(props) => props.theme.fontSizes.bodyText4};
   font-weight: 400;
-  text-align: center;
+  align-items: center;
+  justify-content: center;
 `;
 
 const TaskDate = styled.div`
@@ -131,8 +131,6 @@ const TaskDate = styled.div`
 
 const DeleteIcon = styled(Delete)`
   cursor: pointer;
-  padding-top: 13px;
-  padding-left: 70px;
 `;
 
 export default LectureTask;

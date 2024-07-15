@@ -107,7 +107,7 @@ const LectureAttendance = ({ id, date }) => {
         </tbody>
       </AttendanceTable>
       <UploadButton onClick={updateAttendance}>
-        <UploadButtonText>저장 사항 변경</UploadButtonText>
+        저장 사항 변경
       </UploadButton>
     </TableWrapper>
   );
@@ -116,6 +116,9 @@ const LectureAttendance = ({ id, date }) => {
 const TableWrapper = styled.div`
   width: 90%;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const Table = styled.table`
@@ -128,11 +131,12 @@ const Table = styled.table`
 `;
 
 const TableHeader = styled.th`
-  border: 1px solid #ddd;
-  padding: 8px;
+  box-sizing: border-box;
+  width: 176px;
+  height: 48px;
+  padding: 10px;
   text-align: center;
-  background-color: #f2f2f2;
-
+  background-color: ${(props) => props.theme.colors.gray_001};
   &:first-child {
     border-top-left-radius: 10px;
   }
@@ -143,7 +147,11 @@ const TableHeader = styled.th`
 `;
 
 const TableCell = styled.td`
-  border: 1px solid #ddd;
+  box-sizing: border-box;
+  width: 176px;
+  height: 50px;
+  border: 1px solid;
+  border-color: ${(props) => props.theme.colors.gray_002};
   padding: 8px;
   text-align: center;
 `;
@@ -208,27 +216,25 @@ const RadioInput = styled.input.attrs({ type: "radio" })`
 `;
 
 const TaskBox = styled(RowDiv)`
-  display: flex;
-  /* height: 50px; */
+
   border-radius: 5px;
   border: 1px solid #e0e0e0;
-  /* margin: 2.5px 0px; */
-  /* padding: 18.5px 0 0 23px; */
   box-sizing: border-box;
 `;
 
 const UploadButton = styled(TaskBox)`
-  background-color: #15521d;
-  justify-content: center;
-  align-items: center;
-  /* padding-top: -10px; */
-  cursor: pointer;
-`;
+  box-sizing: border-box;
+  background-color: #95c25c;
 
-const UploadButtonText = styled.div`
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 10px;
+  margin-top: 10px;
+  width: 50%;
+
   color: white;
   font-size: 20px;
-  margin-left: -35px;
+
 `;
 
 export default LectureAttendance;

@@ -124,7 +124,7 @@ const LectureDetailWrapper = styled(MainDiv)`
     isClicked ? "25vw" : "100vw"}; // ToDo: 여백 생기는 문제 해결
   width: 50vw;
   height: 100%; // ToDo: 높이 확인 필요
-  border: 1px solid ${({ theme }) => theme.colors.gray_004};
+  box-shadow: 0px 4px 4px 0px #00000040;
   transition: left 0.5s ease-in-out;
   transform: ${({ isClicked }) =>
     isClicked ? "translateX(-50vw)" : "translateX(-100%)"};
@@ -153,6 +153,7 @@ const Title = styled.div`
   display: flex;
   justify-content: flex-start;
   font-size: ${(props) => props.theme.fontSizes.title2};
+  color: ${(props) => props.theme.colors.gray_006};
   font-weight: 700;
   margin-bottom: 30px;
 `;
@@ -188,7 +189,7 @@ const ButtonWrapper = styled.div`
 
 const Button = styled.button`
   width: 25%;
-  height: 100%;
+  height: 37px;
   border-radius: 5px;
   margin: 0 3px;
   font-size: ${(props) => props.theme.fontSizes.bodyText3};
