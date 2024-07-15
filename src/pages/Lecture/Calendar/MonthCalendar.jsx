@@ -318,18 +318,15 @@ const DateText = styled.div`
 `;
 
 const Lecture = styled.div`
-  /* margin-bottom: 5px; */
   display: flex;
   align-items: center;
-  /* gap: 5px; */
-  gap: -7px;
 `;
 
 const Teacher = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 70px;
+  width: 100px;
   height: 25px;
   padding: 15px;
   box-sizing: border-box;

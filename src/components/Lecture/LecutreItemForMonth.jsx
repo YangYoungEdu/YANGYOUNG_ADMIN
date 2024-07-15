@@ -35,8 +35,8 @@ const LectureItemForMonth = ({ setIsClicked, setSelectedLecture, lecture }) => {
 const LectureItemWrapper = styled.div`
   flex: 1;
   position: absolute;
-  margin-left: 60px;
-  width: 81%;
+  margin-left: 48px;
+  width: 82%;
   height: ${(props) => (props.slot * 4.5) / 12}vh;
   display: flex;
   justify-content: center;
@@ -55,9 +55,9 @@ const Left = styled.div`
       case "김삼유":
         return "#95c25c";
       case "장영해":
-        return "#FFC14B";
+        return "#D8CD63";
       case "전재우":
-        return "#A6773F";
+        return "#BCD7EA";
       default:
         return "#95c25c";
     }
@@ -76,9 +76,9 @@ const Content = styled(ColumnDiv)`
       case "김삼유":
         return "#95c25c";
       case "장영해":
-        return "#FFC14B";
+        return "#D8CD63";
       case "전재우":
-        return "#A6773F";
+        return "#BCD7EA";
       default:
         return "#95c25c";
     }

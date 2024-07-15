@@ -63,9 +63,9 @@ const Layout = () => {
         </Header>
 
         {/* 컨텐츠 */}
-        <main>
+        <Main>
           <Outlet />
-        </main>
+        </Main>
 
         {/* 푸터 */}
         {showFooter && (
@@ -85,6 +85,10 @@ const Layout = () => {
 const Header = styled.header`
   display: flex;
   flex-direction: column;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-indeX: 10;
 `;
 
 const FirstHeader = styled.div`
@@ -120,6 +124,9 @@ const SecondHeader = styled.div`
   }
 `;
 
+const Main = styled.main`
+margin-top: 117px;
+`;
 const Logo = styled.div`
   white-space: nowrap;
   color: ${(props) => (props.isLoggedIn ? "#fff" : "#000")};
