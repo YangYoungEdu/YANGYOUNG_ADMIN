@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { ReactComponent as DownArrow } from "../../Assets/DownArrow.svg";
 import { ReactComponent as UpArrow } from "../../Assets/UpArrow.svg";
 import { teacherList } from "../../const/Const";
+import { ReactComponent as Check } from "../../Assets/Check.svg";
 
 const LectureFilter = ({ mode, originLectures, setLectures }) => {
   const [checkedTeachers, setCheckedTeachers] = useState({});
@@ -77,12 +78,15 @@ const LectureFilter = ({ mode, originLectures, setLectures }) => {
       >
         {teacherList.map((teacher) => (
           <OptionLabel key={teacher.id}>
-            <CheckBox
-              type="checkbox"
-              checked={checkedTeachers[teacher.name] || false}
-              onChange={() => handleCheckboxChange(teacher.name)}
-              checkColor={teacher.color}
-            />
+            <CheckboxWrapper>
+              <CheckBox
+                type="checkbox"
+                checked={checkedTeachers[teacher.name] || false}
+                onChange={() => handleCheckboxChange(teacher.name)}
+                checkColor={teacher.color}
+              />
+              <CheckIcon />
+            </CheckboxWrapper>
             {teacher.name}
           </OptionLabel>
         ))}
@@ -95,14 +99,12 @@ const SearchWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 15%;
-  padding-top: 56px;
+  padding-left: 37px;
 `;
 
 const Line = styled.hr`
   border: none;
-  border-top: 1px solid ${(props) => props.theme.colors.gray_004};
   width: 100%;
-  margin-top: 49.5px;
 `;
 
 const ArrowUp = styled(UpArrow)`
@@ -119,19 +121,30 @@ const FilterWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin: 0px 15px 0px 15px;
+  margin-bottom: 10px;
 `;
 
 const FilterTitle = styled.div`
   font-size: ${(props) => props.theme.fontSizes.subTitle2};
   font-weight: 600;
-  margin: 5px 0px 10px 5px;
+  color: ${(props) => props.theme.colors.gray_006};
 `;
 
 const OptionLabel = styled.label`
+  display: flex;
+  align-items: center;
   font-size: ${(props) => props.theme.fontSizes.bodyText3};
+  color: ${(props) => props.theme.colors.gray_006};
   font-weight: 400;
-  margin-bottom: 10px;
+  gap: 8px;
+  margin-bottom: 7px;
+    cursor: pointer;
+`;
+const CheckboxWrapper = styled.div`
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+
 `;
 
 const CheckBox = styled.input.attrs({ type: "checkbox" })`
@@ -139,11 +152,18 @@ const CheckBox = styled.input.attrs({ type: "checkbox" })`
   border: 1px solid ${(props) => props.theme.colors.gray_004};
   border-radius: 2px;
   font-size: 16px;
-  margin: 5px 5px -5px 30px;
   cursor: pointer;
 
   &:checked {
     background-color: ${(props) => props.theme.colors[props.checkColor]};
+  }
+`;
+
+const CheckIcon = styled(Check)`
+  position: absolute;
+  display: none;
+  ${CheckBox}:checked + & {
+    display: block;
   }
 `;
 

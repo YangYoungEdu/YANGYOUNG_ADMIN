@@ -35,7 +35,7 @@ export const theme = {
     yellow: "#FFF4DE",
     yellow_001: "#EAC784",
     prof_kim: "#95C25C",
-    prof_jang: "#FFC14B",
-    prof_jeon: "#A6773F",
+    prof_jang: "#D8CD63",
+    prof_jeon: "#BCD7EA",
   },
 };

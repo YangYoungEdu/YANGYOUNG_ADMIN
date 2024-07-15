@@ -73,29 +73,29 @@ const LecturePage = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <RowDiv>
-        {/* 검색 필터 */}
-        <LectureFilter
+      <ColumnDiv>
+        {/* 캘린더 헤더 */}
+        <LectureHeader
           mode={mode}
-          originLectures={originLectures}
+          setMode={setMode}
+          currentDate={currentDate}
+          setCurrentDate={setCurrentDate}
           setLectures={setLectures}
+          setIsHighlight={setIsHighlight}
+          isToday={isToday}
+          setIsToday={setIsToday}
         />
-        <ColumnDiv>
-          {/* 캘린더 헤더 */}
-          <LectureHeader
+        <RowDiv>
+          {/* 검색 필터 */}
+          <LectureFilter
             mode={mode}
-            setMode={setMode}
-            currentDate={currentDate}
-            setCurrentDate={setCurrentDate}
+            originLectures={originLectures}
             setLectures={setLectures}
-            setIsHighlight={setIsHighlight}
-            isToday={isToday}
-            setIsToday={setIsToday}
           />
           {/* 캘린더 */}
           {renderCalendar()}
-        </ColumnDiv>
-      </RowDiv>
+        </RowDiv>
+      </ColumnDiv>
     </ThemeProvider>
   );
 };

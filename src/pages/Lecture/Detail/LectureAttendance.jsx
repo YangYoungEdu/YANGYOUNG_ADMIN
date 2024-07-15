@@ -209,10 +209,10 @@ const RadioInput = styled.input.attrs({ type: "radio" })`
 
 const TaskBox = styled(RowDiv)`
   display: flex;
-  height: 50px;
+  /* height: 50px; */
   border-radius: 5px;
   border: 1px solid #e0e0e0;
-  margin: 2.5px 0px;
+  /* margin: 2.5px 0px; */
   /* padding: 18.5px 0 0 23px; */
   box-sizing: border-box;
 `;

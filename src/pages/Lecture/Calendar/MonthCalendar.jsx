@@ -16,8 +16,8 @@ const MonthCalendar = ({
   const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
   const teacherList = [
     { name: "김삼유", color: "#95C25C" },
-    { name: "장영해", color: "#FFC14B" },
-    { name: "전재우", color: "#A6773F" },
+    { name: "장영해", color: "#D8CD63" },
+    { name: "전재우", color: "#BCD7EA" },
   ];
 
   useEffect(() => {
@@ -172,10 +172,6 @@ const MonthCalendar = ({
     );
   };
 
-  // useEffect(() => {
-  //   if ()
-  // }, [isHighlight]);
-
   return (
     <ThemeProvider theme={theme}>
       <MonthCalendarWrapper>
@@ -208,12 +204,14 @@ const MonthCalendar = ({
 
                     return (
                       teacherLectures.length > 0 && (
+   
                         <Lecture>
-                          <Teacher teacher={teacher}>{teacher.name}</Teacher>
-                          <LectureSize>
+                          <Teacher teacher={teacher}> {`${teacher.name} (${teacherLectures.length})`}</Teacher>
+                          {/* <LectureSize>
                             수업 {teacherLectures.length}개
-                          </LectureSize>
+                          </LectureSize> */}
                         </Lecture>
+
                       )
                     );
                   })}
@@ -239,21 +237,25 @@ const MonthCalendar = ({
 };
 
 const MonthCalendarWrapper = styled.div`
-  width: 90%;
+  width: 95%;
   align-items: flex-start;
   display: flex;
   flex-direction: column;
+  gap: 15px;
+  margin-right: 7%;
 `;
 
 const CalendarBody = styled.div`
   width: 100%;
   display: flex;
   flex-wrap: wrap;
+  margin-bottom: 150px;
 `;
 
 const DayCell = styled.div`
   width: calc(100% / 7);
-  height: 0;
+  aspect-ratio: 1;
+  gap: 3px;
   padding-bottom: calc(100% / 7);
   border: 1px solid #ddd;
   display: flex;
@@ -263,6 +265,7 @@ const DayCell = styled.div`
   justify-content: flex-start;
   box-sizing: border-box;
   position: relative;
+  overflow: hidden;
 `;
 
 const DayWrapper = styled.div`
@@ -281,8 +284,8 @@ const DayText = styled.div`
 
 const DateText = styled.div`
   cursor: pointer;
-  margin-top: 5px;
-  margin-bottom: 10px;
+  margin-top: 3%;
+  margin-bottom: 3%;
   font-size: ${(props) => props.theme.fontSizes.bodyText4};
   font-weight: 400;
   width: 33px;
@@ -290,6 +293,7 @@ const DateText = styled.div`
   border-radius: 50%;
   text-align: center;
   line-height: 30px;
+  box-sizing: border-box;
 
   color: ${({ color, theme }) =>
     color === "gray_005" ? "#BABABA" : theme.colors.black};
@@ -299,40 +303,48 @@ const DateText = styled.div`
     `
       color: ${theme.colors.primary_normal};
       border-color: ${theme.colors.primary_normal};
-      border: 1px solid;
+      box-shadow: 0 0 0 1px inset;
     `}
 
   &:hover {
+    color: ${({ theme }) => theme.colors.black};
+    background-color: ${({ theme }) => theme.colors.gray_001};
+  }
+    
+  &:active {
     color: ${({ theme }) => theme.colors.white};
-    background-color: ${({ theme }) => theme.colors.primary_normal};
-    border-color: ${({ theme }) => theme.colors.primary_normal};
-    border: 1px solid;
+    background-color: ${({theme}) => theme.colors.primary_normal };
   }
 `;
 
 const Lecture = styled.div`
-  margin-bottom: 5px;
+  /* margin-bottom: 5px; */
   display: flex;
   align-items: center;
+  /* gap: 5px; */
+  gap: -7px;
 `;
 
 const Teacher = styled.div`
-  width: 57px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
   height: 25px;
-  padding-top: 5px;
-  margin-right: 5px;
+  padding: 15px;
+  box-sizing: border-box;
   font-size: ${(props) => props.theme.fontSizes.bodyText3};
   color: ${(props) => props.theme.colors.white};
   border-radius: 100px;
-
+  white-space: nowrap;
   background-color: ${({ teacher }) => {
     switch (teacher.name) {
       case "김삼유":
         return "#95C25C";
       case "장영해":
-        return "#FFC14B";
+        return "#D8CD63";
       case "전재우":
-        return "#A6773F";
+        return "#BCD7EA";
       default:
         return "#95C25C";
     }
@@ -341,7 +353,6 @@ const Teacher = styled.div`
 
 const LectureSize = styled.div`
   font-size: ${(props) => props.theme.fontSizes.bodyText3};
-  padding-top: 5.5px;
 `;
 
 const DayTimeTableWrapper = styled.div`
@@ -349,11 +360,12 @@ const DayTimeTableWrapper = styled.div`
   top: 0;
   left: ${({ isModalOpen }) => (isModalOpen ? "25vw" : "100vw")};
   width: 50vw;
-  height: 99.7%;
-  border: 1px solid ${({ theme }) => theme.colors.gray_004};
+  height: 125.5%;
   transition: left 0.5s ease-in-out;
   transform: ${({ isModalOpen }) =>
     isModalOpen ? "translateX(-50vw)" : "translateX(-100%)"};
+  background-color: ${(props) => props.theme.colors.white};
+  box-shadow: 0px 4px 4px 0px #00000040;
 `;
 
 export default MonthCalendar;

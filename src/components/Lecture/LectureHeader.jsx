@@ -50,7 +50,7 @@ const LectrueHeader = ({
 
   const setToday = () => {
     const year = currentDate.getFullYear();
-    const month = (currentDate.getMonth()+1).toString().padStart(2, "0");
+    const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
     const day = currentDate.getDate().toString().padStart(2, "0");
 
     setIsToday(true);
@@ -65,41 +65,59 @@ const LectrueHeader = ({
   return (
     <>
       <CalendarHeader>
-        <ArrowLeft onClick={prev} />
-        <DateTitle>
-          {mode === "month"
-            ? currentDate.toLocaleString("default", {
-                year: "numeric",
-                month: "long",
-              })
-            : currentDate.toLocaleString("default", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-        </DateTitle>
-        <ArrowRight onClick={next} />
-        <Select value={mode} onChange={(e) => setMode(e.target.value)}>
-          <option value="month">&nbsp;&nbsp;&nbsp;월</option>
-          {/* <option value="week">&nbsp;&nbsp;&nbsp;주</option> */}
-          <option value="day">&nbsp;&nbsp;&nbsp;일</option>
-        </Select>
-        <TodayButton onClick={setToday}>오늘</TodayButton>
-        <UploadButton>
-          {/* <PlusIcon /> */}
-          동기화
-        </UploadButton>
+        <DatePicker>
+          <ArrowLeft onClick={prev} />
+          <DateTitle>
+            {mode === "month"
+              ? currentDate.toLocaleString("default", {
+                  year: "numeric",
+                  month: "long",
+                })
+              : currentDate.toLocaleString("default", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+          </DateTitle>
+          <ArrowRight onClick={next} />
+        </DatePicker>
+        <ButtonArea>
+          <LeftButtons>
+            <Select value={mode} onChange={(e) => setMode(e.target.value)}>
+              <option value="month">&nbsp;&nbsp;&nbsp;월</option>
+              {/* <option value="week">&nbsp;&nbsp;&nbsp;주</option> */}
+              <option value="day">&nbsp;&nbsp;&nbsp;일</option>
+            </Select>
+            <TodayButton onClick={setToday}>오늘</TodayButton>
+          </LeftButtons>
+          <UploadButton>
+            {/* <PlusIcon /> */}
+            구글 시트 동기화
+          </UploadButton>
+        </ButtonArea>
       </CalendarHeader>
     </>
   );
 };
 
 const CalendarHeader = styled(RowDiv)`
-  width: 90%;
+  display: flex;
   justify-content: flex-start;
-  padding: 30px 0px 17px 0px;
+  box-sizing: border-box;
+  margin-top: 41px;
+  padding-bottom: 21px;
+  margin-bottom: 14px;
+  padding-left: 15%;
+  padding-right: 7%;
+  border-bottom: 1px solid #e0e0e0;
 `;
 
+const DatePicker = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  white-space: nowrap;
+`;
 const TodayButton = styled.button`
   width: 60px;
   height: 31px;
@@ -113,44 +131,60 @@ const TodayButton = styled.button`
 
 const ArrowLeft = styled(LeftArrow)`
   cursor: pointer;
-  padding: 5px 0px 0px 9px;
+  padding: 0px 0px 0px 9px;
 `;
 
 const ArrowRight = styled(RightArrow)`
   cursor: pointer;
-  padding: 5px 9px 0px 0px;
+  padding: 0px 9px 0px 0px;
 `;
 
 const DateTitle = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 20px;
   font-weight: 500;
-  padding: 2px 6px 0px 6px;
+  padding: 0 6px 0 6px;
+`;
+
+const ButtonArea = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
 `;
 
 const Select = styled.select`
+  display: flex;
   width: 60px;
   height: 31px;
   border-radius: 5px;
   border: 1px solid ${(props) => props.theme.colors.gray_004};
   appearance: none;
   background: url(${SelectArrow}) no-repeat right 17.5px center;
-  /* text-align-last: center;
-  text-align: center; */
   padding-right: 5px;
   line-height: 31px;
   cursor: pointer;
 `;
 
+const LeftButtons = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
 const UploadButton = styled.button`
-  width: 108px;
+  box-sizing: border-box;
+  width: 130px;
   height: 31px;
   border-radius: 5px;
   border: 1px solid ${(props) => props.theme.colors.gray_004};
   background-color: #ffffff;
   cursor: pointer;
-  margin-left: auto;
-  padding-right: 5px;
   text-align: center;
+  white-space: nowrap;
+  padding-left: 11px;
+  padding-right: 11px;
 `;
 
 const PlusIcon = styled(Plus)`
