@@ -10,6 +10,7 @@ import {
   getAttendanceByLectureAndDateAPI,
   updateAttendanceAPI,
 } from "../../API/AttendanceAPI";
+import {ReactComponent as Rect} from "../../Assets/Rect.svg";
 
 const AttendanceSelect = () => {
   const [date, setDate] = useState(new Date());
@@ -46,30 +47,47 @@ const AttendanceSelect = () => {
     }
   };
 
-  // 데이터를 가공하여 시간대와 수업 이름을 반환
-  const formatLectures = () => {
-    const timeSlotMap = new Map();
+  
+// 데이터를 가공하여 시간대와 수업 이름을 반환
+const formatLectures = () => {
+  const timeSlotMap = new Map();
 
-    // console.log("Lectures for formatting:", lectures); // lectures 상태 확인
+  (lectures || []).forEach((lecture) => {
+    // 24시간제 형식의 시간을 moment 객체로 변환
+    const startTime = moment(lecture.startTime, 'HH:mm', true);
+    const endTime = moment(lecture.endTime, 'HH:mm', true);
 
-    (lectures || []).forEach((lecture) => {
-      // console.log("Processing lecture:", lecture); // 디버깅 메시지
-      const timeSlot = `${lecture.startTime} ~ ${lecture.endTime}`;
-      if (!timeSlotMap.has(timeSlot)) {
-        timeSlotMap.set(timeSlot, []);
-      }
-      timeSlotMap.get(timeSlot).push({ name: lecture.name, id: lecture.id });
-    });
+    // 유효한 날짜인지 확인
+    if (!startTime.isValid() || !endTime.isValid()) {
+      console.error('Invalid date format:', { startTime: lecture.startTime, endTime: lecture.endTime });
+      return; // 유효하지 않은 날짜는 무시
+    }
 
-    // 디버깅 메시지: timeSlotMap의 내용을 확인
-    const formattedLectures = Array.from(timeSlotMap.entries());
-    // console.log("Formatted Lectures:", formattedLectures);
+    // 12시간제로 변환하고 한국식 오전/오후 표기 추가
+    const formattedStartTime = formatTime(startTime);
+    const formattedEndTime = formatTime(endTime);
+    const timeSlot = `${formattedStartTime} ~ ${formattedEndTime}`;
+    
+    if (!timeSlotMap.has(timeSlot)) {
+      timeSlotMap.set(timeSlot, []);
+    }
+    timeSlotMap.get(timeSlot).push({ name: lecture.name, id: lecture.id });
+  });
 
-    return formattedLectures;
-  };
+  const formattedLectures = Array.from(timeSlotMap.entries());
+  return formattedLectures;
+};
 
-  const formattedLectures = formatLectures();
+// 시간에 따라 오전/오후를 붙이는 함수
+const formatTime = (time) => {
+  const hour = time.hour();
+  const minute = time.minute();
+  const period = hour < 12 ? '오전' : '오후';
+  const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+  return `${period} ${hour12}:${minute < 10 ? `0${minute}` : minute}`;
+};
 
+const formattedLectures = formatLectures();
   // 강의를 선택하면 학생 출결 테이블
   const handleLectureSelect = async (lectureId) => {
     try {
@@ -133,7 +151,10 @@ const AttendanceSelect = () => {
           {formattedLectures.length > 0 ? (
             formattedLectures.map(([timeSlot, names]) => (
               <LectureSlot key={timeSlot}>
+                <TimeSlotArea>
+                <Rect />
                 <TimeSlot>{timeSlot}</TimeSlot>
+                </TimeSlotArea>
                 {lectures.map((lecture) => (
                   <LectureName
                     key={lecture.id}
@@ -277,6 +298,12 @@ const LectureSlot = styled.div`
   display: flex;
   flex-direction: column;
   margin-bottom: 39px;
+`;
+
+const TimeSlotArea = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 `;
 
 const TimeSlot = styled.div`
