@@ -63,7 +63,7 @@ const StudentSearch = ({ isEditing, setIsEditing }) => {
       }
     };
     fetchTableData();
-  }, [currentPage]);
+  }, [currentPage, totalElements]);
 
   useEffect(() => {
     const combinedKeywords = [...studentKeywords, ...schoolKeywords, ...gradeKeywords];
