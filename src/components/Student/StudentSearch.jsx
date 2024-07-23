@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import Select from "react-select";
-import { MainDiv } from "../../style/CommonStyle";
+import { MainDiv, RowDiv } from "../../style/CommonStyle";
 import { ReactComponent as DOpen } from "../../Assets/DropdownOpened.svg";
 import { ReactComponent as DClose } from "../../Assets/DropdownClosed.svg";
-import { ReactComponent as DBtn } from "../../Assets/DropdownBtn.svg";
+import { ReactComponent as Cancel } from "../../Assets/Cancel.svg";
 import {
   getAllStudentAPI,
   getHiddenStudentAPI,
-  searchStudent,
+  searchStudentAPI,
 } from "../../API/StudentAPI";
 import { useRecoilState } from "recoil";
 import {
@@ -33,15 +33,18 @@ const StudentSearch = ({ isEditing, setIsEditing }) => {
   const [totalPage, setTotalPage] = useRecoilState(totalPageState);
   const [isHidden, setIsHidden] = useRecoilState(isHiddenState);
   const [data, setData] = useRecoilState(dataState);
-
+  const [searchKewords, setSearchKeywords] = useState([]);
+  const [studentKeywords, setStudentKeywords] = useState([]);
+  const [studentKeyword, setStudentKeyword] = useState("");
+  const [schoolKeywords, setSchoolKeywords] = useState([]);
+  const [schoolKeyword, setSchoolKeyword] = useState("");
+  const [gradeKeywords, setGradeKeywords] = useState([]);
+  const [gradeKeyword, setGradeKeyword] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
-  useEffect(() => {
-    searchStudent();
-  }, []);
   useEffect(() => {
     const fetchTableData = async () => {
       try {
@@ -62,16 +65,98 @@ const StudentSearch = ({ isEditing, setIsEditing }) => {
     fetchTableData();
   }, [currentPage]);
 
+  useEffect(() => {
+    const combinedKeywords = [...studentKeywords, ...schoolKeywords, ...gradeKeywords];
+    setSearchKeywords(combinedKeywords);
+    if (combinedKeywords.length > 0) {
+      searchStudent();
+    }
+  }, [studentKeywords, schoolKeywords, gradeKeywords]);
+
+  const searchStudent = async () => {
+    const nameList = studentKeywords.join(",");
+    const schoolList = schoolKeywords.join(",");
+    const gradeList = gradeKeywords.join(",");
+    try {
+      const response = await searchStudentAPI(nameList, schoolList, gradeList);
+      setData(response.content);
+      setTotalPage(response.totalPages);
+      setTotalElements(response.totalElements);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const addKeywordByType = () => {
+    if (studentKeyword !== "")
+      setStudentKeywords([...studentKeywords, studentKeyword]);
+    setStudentKeyword("");
+    if (schoolKeyword !== "")
+      setSchoolKeywords([...schoolKeywords, schoolKeyword]);
+    setSchoolKeyword("");
+    if (gradeKeyword !== "") setGradeKeywords([...gradeKeywords, gradeKeyword]);
+    setGradeKeyword("");
+
+    setSearchKeywords([
+      ...studentKeywords,
+      ...schoolKeywords,
+      ...gradeKeywords,
+    ]);
+  };
+
+  const resetKeywords = () => {
+    setStudentKeywords([]);
+    setSchoolKeywords([]);
+    setGradeKeywords([]);
+    setSearchKeywords([]);
+  };
+
+  const removeKeyword = (keywordToRemove) => {
+    const updateKeywords = (keywords) => keywords.filter(keyword => keyword !== keywordToRemove);
+  
+    setStudentKeywords(prevKeywords => updateKeywords(prevKeywords));
+    setSchoolKeywords(prevKeywords => updateKeywords(prevKeywords));
+    setGradeKeywords(prevKeywords => updateKeywords(prevKeywords));
+    setSearchKeywords(prevKeywords => updateKeywords(prevKeywords));
+  };
+  
+  const handleChangeKeyword = (type, value) => {
+    switch (type) {
+      case "student":
+        setStudentKeyword(value);
+        break;
+      case "school":
+        setSchoolKeyword(value);
+        break;
+      case "grade":
+        setGradeKeyword(value);
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <MainDiv>
       <DropdownContainer>
         {/* 버튼 박스 */}
         {!isHidden && (
-          <DropdownButton isOpen={isOpen} onClick={toggleDropdown}>
-            학생 검색하기
+          <DropdownButtonContainer isOpen={isOpen} onClick={toggleDropdown}>
+            {searchKewords.length > 0 ? (
+              <SearchKewordWrapper>
+                {searchKewords.map((keyword, index) => (
+                  <SearchKeword key={index}>
+                    {keyword}
+                    <CancelIcon onClick={()=>removeKeyword(keyword)} />
+                  </SearchKeword>
+                ))}
+              </SearchKewordWrapper>
+            ) : (
+              <div>학생 검색하기</div>
+            )}
             {/* 아이콘 */}
-            {isOpen ? <DOpen /> : <DClose />}
-          </DropdownButton>
+            <OpenCloseIcon>{isOpen ? <DOpen /> : <DClose />}</OpenCloseIcon>
+          </DropdownButtonContainer>
         )}
         {/* isOpen인 경우 드롭다운 형식으로 서치박스 나타남 */}
         {isOpen && (
@@ -79,10 +164,14 @@ const StudentSearch = ({ isEditing, setIsEditing }) => {
             <SearchArea>
               <SearchOptions>
                 <SearchField>
-                  <div>힉생 이름</div>
+                  <div>학생 이름</div>
                   <SearchInput
                     type="text"
                     placeholder="학생 이름을 입력해주세요"
+                    value={studentKeyword}
+                    onChange={(e) =>
+                      handleChangeKeyword("student", e.target.value)
+                    }
                   />
                 </SearchField>
                 <SearchField>
@@ -90,21 +179,20 @@ const StudentSearch = ({ isEditing, setIsEditing }) => {
                   <SearchInput
                     type="text"
                     placeholder="학교 이름을 입력해주세요"
+                    value={schoolKeyword}
+                    onChange={(e) =>
+                      handleChangeKeyword("school", e.target.value)
+                    }
                   />
                 </SearchField>
                 <SearchField>
                   <div>학년</div>
-                  <CustomSelect options={options} />
-                  {/* <SelectField>
-                    <option value="none" disabled selected>
-                      학년 선택
-                    </option>
-                    <option value="M3">중3</option>
-                    <option value="H1">고1</option>
-                    <option value="H2">고2</option>
-                    <option value="H3">고3</option>
-                    <DBtn />
-                  </SelectField> */}
+                  <CustomSelect
+                    options={options}
+                    onChange={(e) =>
+                      handleChangeKeyword("grade", options.value)
+                    }
+                  />
                 </SearchField>
               </SearchOptions>
 
@@ -112,10 +200,18 @@ const StudentSearch = ({ isEditing, setIsEditing }) => {
               <ButtonArea>
                 <div />
                 <ButtonGap>
-                  <StyledButton background={"#F1F1F1"} color={"black"}>
+                  <StyledButton
+                    onClick={resetKeywords}
+                    background={"#F1F1F1"}
+                    color={"black"}
+                  >
                     초기화
                   </StyledButton>
-                  <StyledButton background={"#15521D"} color={"white"}>
+                  <StyledButton
+                    background={"#15521D"}
+                    color={"white"}
+                    onClick={addKeywordByType}
+                  >
                     검색
                   </StyledButton>
                 </ButtonGap>
@@ -154,7 +250,7 @@ const DropdownContainer = styled.div`
   display: inline-block;
 `;
 
-const DropdownButton = styled.div`
+const DropdownButtonContainer = styled.div`
   width: 1050px;
   height: 58px;
   box-sizing: border-box;
@@ -292,26 +388,6 @@ const CustomSelect = styled(Select)`
     }
   }
 `;
-const SelectField = styled.select`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  box-sizing: border-box;
-  width: 101px;
-  height: 42px;
-  padding: 10px 15px 10px 15px;
-  gap: 8px;
-  border-radius: 100px;
-  border: 1px;
-  background: #fbfbfd;
-  border: 1px solid #e0e0e0;
-  &:focus {
-    border: 1px solid #15521d;
-  }
-  font-family: Pretendard Variable;
-  font-size: 14px;
-  font-weight: 400;
-`;
 
 const SearchInput = styled.input`
   box-sizing: border-box;
@@ -365,6 +441,37 @@ const StyledButton = styled.button`
   }
   font-size: 14px;
   font-weight: 400;
+`;
+
+const SearchKewordWrapper = styled.div`
+  display: flex;
+  margin-left: -20px;
+`;
+
+const SearchKeword = styled(RowDiv)`
+  align-items: center;
+  width: 106px;
+  height: 40px;
+  border-radius: 100px;
+  background-color: ${(props) => props.theme.colors.primary_light};
+  margin-right: 8px;
+
+  font-size: 14px;
+  font-weight: 400;
+  color: #000000;
+`;
+
+const CancelIcon = styled(Cancel)`
+  padding-left: 11px;
+  width: 11.67px;
+  height: 11.67px;
+  fill: black;
+  cursor: pointer;
+`;
+
+const OpenCloseIcon = styled.div`
+  display: flex;
+  justify-self: flex-end;
 `;
 
 export default StudentSearch;
