@@ -31,6 +31,7 @@ export const getAttendanceByLectureAndDateAPI = async (lectureId, date) => {
 // 출석 정보 업데이트 API
 export const updateAttendanceAPI = async (attendanceList) => {
   console.log(attendanceList.length);
+  console.log (attendanceList);
   try {
     const response = await axios.patch(`${server}attendance`, attendanceList, {
       headers: {

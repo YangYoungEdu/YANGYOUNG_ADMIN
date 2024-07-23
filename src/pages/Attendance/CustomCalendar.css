@@ -49,12 +49,10 @@ src/CustomCalendar.css .react-calendar {
   font-size: 16px;
   font-weight: 400;
   color: #555555;
-  background-color: gainsboro;
   box-sizing: border-box;
 }
 
 .react-calendar__month-view__days__day {
-  background-color: aliceblue;
   width: 35px !important;
   height: 35px !important;
 }
