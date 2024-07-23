@@ -57,7 +57,7 @@ const PersonalLecture = () => {
             {isIngOpen ? <BlackPolygon /> : <UnOpenBlackPolygon />}
             <PolygonText>진행 중인 수업</PolygonText>
           </div>
-          <PlusIcon />
+          {/* <PlusIcon /> */}
         </BtnArea>
         {isIngOpen && (
           <div>
@@ -94,7 +94,7 @@ const PersonalLecture = () => {
           {isEndOpen ? <BlackPolygon /> : <UnOpenBlackPolygon />}
           <PolygonText>지난 수업</PolygonText>
         </div>
-        <PlusIcon />
+        {/* <PlusIcon /> */}
       </BtnArea>
       {isEndOpen && (
         <div>
