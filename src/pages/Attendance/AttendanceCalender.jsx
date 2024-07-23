@@ -11,6 +11,8 @@ import {
   updateAttendanceAPI,
 } from "../../API/AttendanceAPI";
 import {ReactComponent as Rect} from "../../Assets/Rect.svg";
+import {ReactComponent as Prev} from "../../Assets/Prev.svg";
+import {ReactComponent as Next} from "../../Assets/Next.svg";
 
 const AttendanceSelect = () => {
   const [date, setDate] = useState(new Date());
@@ -145,6 +147,9 @@ const formattedLectures = formatLectures();
             value={date}
             locale={ko}
             formatDay={(locale, date) => moment(date).format("DD")}
+            nextLabel={<Next />}
+            prevLabel={<Prev />}
+
           />
         </CalendarWrapper>
         <LecturesWrapper>
