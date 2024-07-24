@@ -1,9 +1,10 @@
+import AttendanceSelect from "./AttendanceCalender";
 import AttendanceCalender from "./AttendanceCalender";
 
 const AttendancePage = () => {
   return (
     <div>
-      <AttendanceCalender />
+      <AttendanceSelect />
     </div>
   );
 };
