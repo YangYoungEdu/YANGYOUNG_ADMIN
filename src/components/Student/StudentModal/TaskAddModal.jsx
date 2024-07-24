@@ -4,29 +4,26 @@ import styled from "styled-components";
 import { RowDiv, ColumnDiv } from "../../../style/CommonStyle";
 import { ReactComponent as XIcon } from "../../../Assets/XIcon.svg";
 import ClockIcon from "../../../Assets/Clock.svg";
-import { addTaskAPI } from "../../../API/TaskAPI";
-
+// import { addTaskAPI } from "../../../API/TaskAPI";
+import {postOneStudentTaskAPI} from "../../../API/TaskAPI";
 const TaskAddModal = ({ setIsModalOpen, studentLecture }) => {
   const { id } = useParams();
   const [newTask, setNewTask] = useState({
     studentId: parseInt(id),
     content: "",
-    lectureId: "",
-    taskType: "",
     taskDate: "",
   });
 
   const postTask = async () => {
     if (
       newTask.content === "" ||
-      newTask.taskType === "" ||
       newTask.taskDate === ""
     ) {
       alert("모든 항목을 입력해주세요.");
       return;
     }
 
-    addTaskAPI(newTask).then(() => {
+    postOneStudentTaskAPI(newTask).then(() => {
       setIsModalOpen(false);
     });
   };
@@ -57,20 +54,21 @@ const TaskAddModal = ({ setIsModalOpen, studentLecture }) => {
     <Overlay>
       <Modal>
         <HeaderWrapper>
-          <Title1>과제 등록</Title1>
+          <Title1>개인 과제 등록</Title1>
           <CancelIcon onClick={() => setIsModalOpen(false)} />
         </HeaderWrapper>
 
-        <ColumnWrapper>
+        <InputDiv>
+        <ColumnDiv>
           <SubTitle2>과제 이름</SubTitle2>
           <NameInput
             type="text"
             placeholder="입력"
             onChange={(e) => handleChangeInput(e, "content")}
           />
-        </ColumnWrapper>
+        </ColumnDiv>
 
-        <RowWrapper>
+        {/* <RowWrapper>
           <ColumnDiv>
             <SubTitle2>수업</SubTitle2>
             <LectureSelect>
@@ -101,7 +99,7 @@ const TaskAddModal = ({ setIsModalOpen, studentLecture }) => {
               </TypeButton>
             </TypeButtonWrapper>
           </ColumnDiv>
-        </RowWrapper>
+        </RowWrapper> */}
 
         <ColumnDiv>
           <SubTitle2>마감일</SubTitle2>
@@ -112,6 +110,7 @@ const TaskAddModal = ({ setIsModalOpen, studentLecture }) => {
         </ColumnDiv>
 
         <SaveButton onClick={() => postTask()}>저장</SaveButton>
+        </InputDiv>
       </Modal>
     </Overlay>
   );
@@ -131,8 +130,8 @@ const Overlay = styled.div`
 `;
 
 const Modal = styled.div`
-  width: 885px;
-  height: 757px;
+  width: 711px;
+  height: 40%;
   border-radius: 10px;
   background: #fff;
   display: flex;
@@ -142,17 +141,22 @@ const Modal = styled.div`
   z-index: 999;
 `;
 
+const InputDiv = styled.div`
+display: flex;
+flex-direction: column;
+gap: 15px;
+`;
+
 const HeaderWrapper = styled(RowDiv)`
   justify-content: space-between;
   margin-bottom: 30px;
 `;
 
-const ColumnWrapper = styled(ColumnDiv)`
-  margin-bottom: 37px;
-`;
 
 const RowWrapper = styled(RowDiv)`
+  width: 80%;
   margin-bottom: 37px;
+  gap: 32px;
 `;
 
 const CancelIcon = styled(XIcon)`
@@ -160,7 +164,7 @@ const CancelIcon = styled(XIcon)`
 `;
 
 const Title1 = styled.div`
-  font-size: 30px;
+  font-size: 20px;
   font-weight: 700;
 `;
 
@@ -171,18 +175,22 @@ const SubTitle2 = styled.div`
 `;
 
 const NameInput = styled.input.attrs({ type: "text" })`
-  width: 576px;
+  width: 80%;
   height: 42px;
   border: 1px solid #e0e0e0;
   border-radius: 5px;
   padding-left: 12px;
+  box-sizing: border-box;
 `;
 
 const LectureSelect = styled.select`
+  display: flex;
+  align-items: center;
   width: 272px;
   height: 42px;
   border: 1px solid #e0e0e0;
   border-radius: 5px;
+  padding-left: 12px;
 `;
 
 const TypeButtonWrapper = styled(RowDiv)`
@@ -190,6 +198,7 @@ const TypeButtonWrapper = styled(RowDiv)`
 `;
 
 const TypeButton = styled.button`
+box-sizing: border-box;
   width: 77px;
   height: 42px;
   border: 1px solid #e0e0e0;
@@ -200,10 +209,12 @@ const TypeButton = styled.button`
   font-weight: 400;
   text-align: center;
 
-  &:focus {
+  &:focus,
+  &:hover {
     background-color: #e9f2eb;
     color: #15521d;
   }
+  cursor: pointer;
 `;
 
 //ToDo: 커스텀 캘린더 아이콘 추가
@@ -212,8 +223,9 @@ const DueDateInput = styled.input.attrs({ type: "date" })`
   height: 42px;
   border: 1px solid #e0e0e0;
   border-radius: 5px;
-  margin-bottom: 286px;
   padding-left: 15px;
+  padding-right: 10px;
+  box-sizing: border-box;
 
   /* background: url(${ClockIcon}) no-repeat right 20px center; 
   appearance: none;  
@@ -225,14 +237,15 @@ const DueDateInput = styled.input.attrs({ type: "date" })`
 
 const SaveButton = styled.button`
   width: 106px;
-  height: 51px;
+  height: 41px;
   font-size: 16px;
   font-weight: 500;
   color: white;
   background-color: #15521d;
   border-radius: 5px;
   text-align: center;
-  margin-left: 650px;
+  align-self: flex-end;
+  /* margin-left: 650px; */
   cursor: pointer;
 `;
 
