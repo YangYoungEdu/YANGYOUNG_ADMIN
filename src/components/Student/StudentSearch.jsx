@@ -1,24 +1,21 @@
-import { useState, useEffect } from "react";
-import styled, { keyframes } from "styled-components";
+import { useEffect, useState } from "react";
 import Select from "react-select";
-import { MainDiv, RowDiv } from "../../style/CommonStyle";
-import { ReactComponent as DOpen } from "../../Assets/DropdownOpened.svg";
-import { ReactComponent as DClose } from "../../Assets/DropdownClosed.svg";
-import { ReactComponent as Cancel } from "../../Assets/Cancel.svg";
-import {
-  getAllStudentAPI,
-  getHiddenStudentAPI,
-  searchStudentAPI,
-} from "../../API/StudentAPI";
 import { useRecoilState } from "recoil";
+import styled, { keyframes } from "styled-components";
+import {
+  searchStudentAPI
+} from "../../API/StudentAPI";
+import { ReactComponent as Cancel } from "../../Assets/Cancel.svg";
+import { ReactComponent as DClose } from "../../Assets/DropdownClosed.svg";
+import { ReactComponent as DOpen } from "../../Assets/DropdownOpened.svg";
 import {
   currentPageState,
+  dataState,
+  isHiddenState,
   totalElementsState,
   totalPageState,
-  isHiddenState,
-  dataState,
 } from "../../Atom";
-import TableMenus from "./TableMenus";
+import { MainDiv, RowDiv } from "../../style/CommonStyle";
 
 const options = [
   { value: "M3", label: "중3" },
@@ -27,7 +24,7 @@ const options = [
   { value: "H3", label: "고3" },
 ];
 
-const StudentSearch = ({ isEditing, setIsEditing }) => {
+const StudentSearch = () => {
   const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
   const [totalElements, setTotalElements] = useRecoilState(totalElementsState);
   const [totalPage, setTotalPage] = useRecoilState(totalPageState);
@@ -44,26 +41,6 @@ const StudentSearch = ({ isEditing, setIsEditing }) => {
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
-
-  useEffect(() => {
-    const fetchTableData = async () => {
-      try {
-        let response;
-
-        if (isHidden) {
-          response = await getHiddenStudentAPI(currentPage);
-        } else {
-          response = await getAllStudentAPI(currentPage);
-        }
-        setData(response.content);
-        setTotalPage(response.totalPages);
-        setTotalElements(response.totalElements);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchTableData();
-  }, [currentPage, totalElements]);
 
   useEffect(() => {
     const combinedKeywords = [...studentKeywords, ...schoolKeywords, ...gradeKeywords];
@@ -220,15 +197,6 @@ const StudentSearch = ({ isEditing, setIsEditing }) => {
           </DropdownContent>
         )}
       </DropdownContainer>
-
-      {/* 버튼 영역 */}
-      <TableMenus
-        isEditing={isEditing}
-        setIsEditing={setIsEditing}
-        setIsHidden={setIsHidden}
-        isHidden={isHidden}
-        totalElements={totalElements}
-      />
     </MainDiv>
   );
 };
