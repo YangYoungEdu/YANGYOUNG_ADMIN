@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled, { ThemeProvider } from "styled-components";
 import { MainDiv } from "../../style/CommonStyle";
