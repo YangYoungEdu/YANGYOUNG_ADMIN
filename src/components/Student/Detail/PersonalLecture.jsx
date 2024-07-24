@@ -19,7 +19,7 @@ import { ReactComponent as PlusIcon } from "../../../Assets/PlusIcon.svg";
 import { getLectureByStudentAPI } from "../../../API/LectureAPI";
 
 const PersonalLecture = () => {
-  const [isIngOpen, setIsIngOpen] = useState(false);
+  const [isIngOpen, setIsIngOpen] = useState(true);
   const [isEndOpen, setIsEndOpen] = useState(false);
   const [inProgressLectures, setInProgressLectures] = useState([]);
   const [completedLectures, setCompletedLectures] = useState([]);

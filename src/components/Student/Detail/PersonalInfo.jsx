@@ -79,6 +79,7 @@ const PersonalInfo = () => {
               name="school"
               value={tmpStudentInfo.school || ""}
               onChange={handleChange}
+              disabled={!isEditing}
             />
           </StyledDiv>
           <StyledDiv>
@@ -88,6 +89,7 @@ const PersonalInfo = () => {
               name="id"
               value={tmpStudentInfo.id || ""}
               onChange={handleChange}
+              disabled={!isEditing}
             />
           </StyledDiv>
         </StyledFormOne>
@@ -100,6 +102,7 @@ const PersonalInfo = () => {
               name="studentPhoneNumber"
               value={tmpStudentInfo.studentPhoneNumber || ""}
               onChange={handleChange}
+              disabled={!isEditing}
             />
           </StyledDiv>
           <StyledDiv>
@@ -109,6 +112,7 @@ const PersonalInfo = () => {
               name="parentPhoneNumber"
               value={tmpStudentInfo.parentPhoneNumber || ""}
               onChange={handleChange}
+              disabled={!isEditing}
             />
           </StyledDiv>
         </StyledFormOne>
@@ -161,6 +165,11 @@ const StyledInput = styled.input`
   font-size: 20px;
   font-weight: 500;
   color: #555555;
+  background-color: #f5f5f5;
+
+  &:disabled {
+    background-color: #fff;
+  }
 `;
 
 const UpperArea = styled.div`
@@ -183,15 +192,19 @@ const Name = styled.div`
 `;
 
 const Grade = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 40px;
   height: 20px;
   border-radius: 3px;
   background: #fff4de;
   text-align: center;
-  line-height: 20px;
   font-family: Pretendard Variable;
   font-size: 12px;
   font-weight: 400;
+  padding: 3px 12px 3px 12px;
+  text-align: center;
 `;
 
 const SubmitButton = styled.button`

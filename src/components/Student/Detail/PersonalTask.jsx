@@ -4,16 +4,13 @@ import styled from "styled-components";
 import { ReactComponent as UnOpenBlackPolygon } from "../../../Assets/UnOpenBlackPolygon.svg";
 import { ReactComponent as BlackPolygon } from "../../../Assets/BlackPolygon.svg";
 import { ReactComponent as Plus } from "../../../Assets/PlusIcon.svg";
-import {
-  getOneStudentTaskAPI,
-  postOneStudentTaskAPI,
-} from "../../../API/TaskAPI";
+import { getOneStudentTaskAPI } from "../../../API/TaskAPI";
 import TaskAddModal from "../StudentModal/TaskAddModal";
 
 const PersonalTask = ({ studentTask, studentLecture }) => {
   const { id } = useParams();
 
-  const [isIngOpen, setIsIngOpen] = useState(false);
+  const [isIngOpen, setIsIngOpen] = useState(true);
   const [isEndOpen, setIsEndOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inProgressTasks, setInProgressTasks] = useState([]);
@@ -57,9 +54,11 @@ const PersonalTask = ({ studentTask, studentLecture }) => {
               <Box key={task.id}>
                 <TopInfo>
                   <Title>{task.content}</Title>
-                  <DetailBox background={"#E9F2EB"}>
-                    {task.lectureName}
-                  </DetailBox>
+                  {task.taskType !== "개인 과제" && (
+                    <DetailBox background={"#E9F2EB"}>
+                      {task.lectureName}
+                    </DetailBox>
+                  )}
                   <DetailBox background={"#FFF4DE"}>{task.taskType}</DetailBox>
                 </TopInfo>
                 <BottomInfo>
@@ -82,7 +81,6 @@ const PersonalTask = ({ studentTask, studentLecture }) => {
             {isEndOpen ? <BlackPolygon /> : <UnOpenBlackPolygon />}
             <PolygonText>마감</PolygonText>
           </div>
-          <PlusIcon />
         </BtnArea>
         {/* task 목록 */}
         {isEndOpen && (
@@ -152,6 +150,8 @@ const TaskDiv = styled.div`
   display: flex;
   flex-direction: column;
   gap: 5px;
+
+  cursor: default;
 `;
 
 const Box = styled.div`
