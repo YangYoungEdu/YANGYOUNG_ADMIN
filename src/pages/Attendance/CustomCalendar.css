@@ -64,13 +64,13 @@ src/CustomCalendar.css .react-calendar {
   font-size: 16px;
   font-weight: bold;
   color: #333;
-width: 430px;
-padding-left: 24px;
-margin-bottom: 22px;
+  width: 430px;
+  padding-left: 24px;
+  margin-bottom: 10px;
 }
 
 .react-calendar__month-view__weekdays__weekday {
- 
+
   font-size: 16px;
   font-weight: 400;
   color: #555555;
@@ -98,9 +98,17 @@ margin-bottom: 22px;
   cursor: pointer;
 }
 
+.react-calendar__month-view__days__day--neighboringMonth,
+.react-calendar__decade-view__years__year--neighboringDecade,
+.react-calendar__century-view__decades__decade--neighboringCentury {
+  color: transparent; /* 텍스트 색상을 투명하게 */
+  background-color: transparent; /* 배경 색상도 투명하게 */
+  pointer-events: none; /* 클릭 이벤트 차단 */
+  visibility: hidden; /* 텍스트 숨기기 */
+}
+
 .react-calendar__tile:disabled {
   color: #ababab;
-  width: 35px;
 }
 
 .react-calendar__tile--now {
@@ -128,7 +136,8 @@ abbr {
 abbr:hover,
 abbr:focus,
 abbr:active,
-abbr.now {
+.react-calendar__tile--noew abbr,
+.selected-date abbr {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -141,7 +150,6 @@ abbr.now {
 }
 
 abbr[title] {
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -154,3 +162,4 @@ abbr[title] {
   text-decoration: none;
   cursor: default;
 }
+

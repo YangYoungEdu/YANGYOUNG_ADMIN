@@ -1,3 +1,4 @@
+//코드 분리 전 코드
 import Calendar from "react-calendar";
 import { useState, useEffect } from "react";
 import styled from "styled-components";
@@ -10,9 +11,9 @@ import {
   getAttendanceByLectureAndDateAPI,
   updateAttendanceAPI,
 } from "../../API/AttendanceAPI";
-import {ReactComponent as Rect} from "../../Assets/Rect.svg";
-import {ReactComponent as Prev} from "../../Assets/Prev.svg";
-import {ReactComponent as Next} from "../../Assets/Next.svg";
+import { ReactComponent as Rect } from "../../Assets/Rect.svg";
+import { ReactComponent as Prev } from "../../Assets/Prev.svg";
+import { ReactComponent as Next } from "../../Assets/Next.svg";
 
 const AttendanceSelect = () => {
   const [date, setDate] = useState(new Date());
@@ -21,6 +22,12 @@ const AttendanceSelect = () => {
   const [attendance, setAttendance] = useState([]); // 출결 데이터
   const [isUpdated, setIsUpdated] = useState(false);
   const [activeLectureId, setActiveLectureId] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  useEffect(() => {
+    // 처음 렌더링 시 현재 날짜에 대한 강의 목록을 로드합니다.
+    handleDateChange(date);
+  }, []); // 빈 배열을 의존성으로 설정하여 컴포넌트가 처음 렌더링될 때만 호출됩니다.
 
   useEffect(() => {
     const formattedDate = moment(date).format("YYYY-MM-DD");
@@ -32,11 +39,12 @@ const AttendanceSelect = () => {
       );
       setIsUpdated(false);
     }
-  }, [isUpdated]);
+  }, [isUpdated, selectedLecture, date]);
 
   // 날짜가 변경될 때마다 호출되는 함수
   const handleDateChange = async (newDate) => {
     setDate(newDate);
+    setSelectedDate(newDate);
     try {
       const formattedDate = moment(newDate).format("YYYY-MM-DD");
       const response = await getAllLectureByDayAPI(formattedDate); // API 호출
@@ -49,47 +57,49 @@ const AttendanceSelect = () => {
     }
   };
 
-  
-// 데이터를 가공하여 시간대와 수업 이름을 반환
-const formatLectures = () => {
-  const timeSlotMap = new Map();
+  // 데이터를 가공하여 시간대와 수업 이름을 반환
+  const formatLectures = () => {
+    const timeSlotMap = new Map();
 
-  (lectures || []).forEach((lecture) => {
-    // 24시간제 형식의 시간을 moment 객체로 변환
-    const startTime = moment(lecture.startTime, 'HH:mm', true);
-    const endTime = moment(lecture.endTime, 'HH:mm', true);
+    (lectures || []).forEach((lecture) => {
+      // 24시간제 형식의 시간을 moment 객체로 변환
+      const startTime = moment(lecture.startTime, "HH:mm", true);
+      const endTime = moment(lecture.endTime, "HH:mm", true);
 
-    // 유효한 날짜인지 확인
-    if (!startTime.isValid() || !endTime.isValid()) {
-      console.error('Invalid date format:', { startTime: lecture.startTime, endTime: lecture.endTime });
-      return; // 유효하지 않은 날짜는 무시
-    }
+      // 유효한 날짜인지 확인
+      if (!startTime.isValid() || !endTime.isValid()) {
+        console.error("Invalid date format:", {
+          startTime: lecture.startTime,
+          endTime: lecture.endTime,
+        });
+        return; // 유효하지 않은 날짜는 무시
+      }
 
-    // 12시간제로 변환하고 한국식 오전/오후 표기 추가
-    const formattedStartTime = formatTime(startTime);
-    const formattedEndTime = formatTime(endTime);
-    const timeSlot = `${formattedStartTime} ~ ${formattedEndTime}`;
-    
-    if (!timeSlotMap.has(timeSlot)) {
-      timeSlotMap.set(timeSlot, []);
-    }
-    timeSlotMap.get(timeSlot).push({ name: lecture.name, id: lecture.id });
-  });
+      // 12시간제로 변환하고 한국식 오전/오후 표기 추가
+      const formattedStartTime = formatTime(startTime);
+      const formattedEndTime = formatTime(endTime);
+      const timeSlot = `${formattedStartTime} ~ ${formattedEndTime}`;
 
-  const formattedLectures = Array.from(timeSlotMap.entries());
-  return formattedLectures;
-};
+      if (!timeSlotMap.has(timeSlot)) {
+        timeSlotMap.set(timeSlot, []);
+      }
+      timeSlotMap.get(timeSlot).push({ name: lecture.name, id: lecture.id });
+    });
 
-// 시간에 따라 오전/오후를 붙이는 함수
-const formatTime = (time) => {
-  const hour = time.hour();
-  const minute = time.minute();
-  const period = hour < 12 ? '오전' : '오후';
-  const hour12 = hour % 12 === 0 ? 12 : hour % 12;
-  return `${period} ${hour12}:${minute < 10 ? `0${minute}` : minute}`;
-};
+    const formattedLectures = Array.from(timeSlotMap.entries());
+    return formattedLectures;
+  };
 
-const formattedLectures = formatLectures();
+  // 시간에 따라 오전/오후를 붙이는 함수
+  const formatTime = (time) => {
+    const hour = time.hour();
+    const minute = time.minute();
+    const period = hour < 12 ? "오전" : "오후";
+    const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+    return `${period} ${hour12}:${minute < 10 ? `0${minute}` : minute}`;
+  };
+
+  const formattedLectures = formatLectures();
   // 강의를 선택하면 학생 출결 테이블
   const handleLectureSelect = async (lectureId) => {
     try {
@@ -136,7 +146,17 @@ const formattedLectures = formatLectures();
 
   const handleLectureClick = (selectedLectureId) => {
     setActiveLectureId(selectedLectureId);
-  }
+  };
+
+  const tileClassName = ({ date, view }) => {
+    if (view === "month") {
+      if (moment(date).isSame(selectedDate, "day")) {
+        return "selected-date";
+      }
+    }
+    return null;
+  };
+
   return (
     <MainDiv>
       {/* 상단 영역 */}
@@ -144,26 +164,26 @@ const formattedLectures = formatLectures();
         <CalendarWrapper>
           <Calendar
             onChange={handleDateChange}
-            value={date}
+            value={selectedDate}
             locale={ko}
             formatDay={(locale, date) => moment(date).format("DD")}
             nextLabel={<Next />}
             prevLabel={<Prev />}
-
+            tileClassName={tileClassName}
           />
         </CalendarWrapper>
         <LecturesWrapper>
           {formattedLectures.length > 0 ? (
-            formattedLectures.map(([timeSlot, names]) => (
+            formattedLectures.map(([timeSlot, lecturesForTimeSlot]) => (
               <LectureSlot key={timeSlot}>
                 <TimeSlotArea>
-                <Rect />
-                <TimeSlot>{timeSlot}</TimeSlot>
+                  <Rect />
+                  <TimeSlot>{timeSlot}</TimeSlot>
                 </TimeSlotArea>
-                {lectures.map((lecture) => (
+                {lecturesForTimeSlot.map((lecture) => (
                   <LectureName
                     key={lecture.id}
-                    isActive={activeLectureId === lecture.id}
+                    isActive={selectedLecture === lecture.id}
                     onClick={() => {
                       setSelectedLecture(lecture.id);
                       handleLectureSelect(lecture.id); // 강의 선택 시 출결 데이터 가져오기
@@ -195,7 +215,7 @@ const formattedLectures = formatLectures();
               <th>학생 연락처</th>
               <th>부모님 연락처</th>
               <th>출결</th>
-              <th>비고</th>
+              <th>타임 스탬프</th>
             </tr>
           </StyledThead>
           <StyledTbody>
@@ -247,9 +267,9 @@ const formattedLectures = formatLectures();
                     </RadioButtonWrapper>
                   </td>
                   <td>
-                    {moment(item.attendedDateTime).format(
-                      "YYYY-MM-DD HH:mm:ss"
-                    )}
+                    {item.attendedDateTime
+                      ? moment(item.attendedDateTime).format("HH:mm:ss")
+                      : ""}
                   </td>
                 </tr>
               ))
@@ -268,18 +288,20 @@ const formattedLectures = formatLectures();
 const Upper = styled.div`
   display: flex;
   justify-content: space-between;
+  gap: 10px;
   margin-top: 74px;
   width: 70%;
 `;
 
 const CalendarWrapper = styled.div`
-  width: 431px;
+  display: flex;
+  width: 50%;
 `;
 
 const LecturesWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 522px;
+  width: 50%;
   height: 364px;
   overflow-y: scroll;
 `;
@@ -319,13 +341,13 @@ const TimeSlot = styled.div`
 `;
 
 const LectureName = styled.div`
-  width: 466px;
+  width: 95%;
   height: 39px;
   box-sizing: border-box;
   border-radius: 5px;
   padding: 10px 10px 10px 15px;
-  background-color: ${({ isActive }) => (isActive ? '#15521D' : '#f7f7f7')};
-  color: ${({ isActive }) => (isActive ? 'white' : 'black')};
+  background-color: ${({ isActive }) => (isActive ? "#15521D" : "#f7f7f7")};
+  color: ${({ isActive }) => (isActive ? "white" : "black")};
   font-weight: 500;
   font-size: 16px;
   margin-bottom: 5px;
@@ -333,9 +355,8 @@ const LectureName = styled.div`
   cursor: pointer;
 
   &:hover {
-    background-color: #E0E0E0;
+    background-color: #e0e0e0;
   }
-
 `;
 
 const StyledTable = styled.table`
@@ -358,11 +379,15 @@ const SubmitButton = styled.button`
   font-weight: 400;
   font-size: 14px;
   color: white;
-  cursor: pointer;
+
+  white-space: nowrap;
+    cursor: pointer;
 `;
 
 const StyledThead = styled.thead`
   height: 48px;
+  white-space: nowrap;
+
 
   th {
     background: #e9f2eb;
