@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Select from "react-select";
 import { useRecoilState } from "recoil";
 import styled, { keyframes } from "styled-components";
-import { searchStudentAPI } from "../../API/StudentAPI";
 import { ReactComponent as Cancel } from "../../Assets/Cancel.svg";
 import { ReactComponent as DClose } from "../../Assets/DropdownClosed.svg";
 import { ReactComponent as DOpen } from "../../Assets/DropdownOpened.svg";
@@ -76,6 +75,8 @@ const StudentSearch = ({ setSearchData, searchKeyword, setSearchKeyword, setSear
       ...schoolList,
       ...gradeList,
     ]);
+
+    setIsOpen(false);
   };
 
   // 검색어 초기화
