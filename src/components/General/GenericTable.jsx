@@ -74,7 +74,7 @@ const GenericTable = ({
       const nameList = searchKeyword.nameList.join(",");
       const schoolList = searchKeyword.schoolList.join(",");
       const gradeList = searchKeyword.gradeList.join(",");
-      response = await searchStudentAPI(nameList, schoolList, gradeList);
+      response = await searchStudentAPI(nameList, schoolList, gradeList, currentPage);
     }
 
     console.log(response.content);
