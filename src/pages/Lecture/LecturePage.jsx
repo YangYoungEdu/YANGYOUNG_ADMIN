@@ -124,11 +124,11 @@ const LecturePage = () => {
         />
         <RowDiv>
           {/* 검색 필터 */}
-          {/* <LectureFilter
+          <LectureFilter
             mode={mode}
             originLectures={originLectures}
             setLectures={setLectures}
-          /> */}
+          />
           {/* 캘린더 */}
           {renderCalendar()}
         </RowDiv>

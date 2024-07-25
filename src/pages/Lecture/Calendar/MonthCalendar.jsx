@@ -122,6 +122,7 @@ const MonthlyView = styled.div`
   flex-direction: column;
   justify-content: center;
   margin-bottom: 50px;
+	
 `;
 
 const DayRow = styled.div`
@@ -141,6 +142,7 @@ const DayCell = styled.div`
   box-sizing: border-box;
   border-right: solid 1px #111;
   border-top: solid 1px #111;
+	/* all: initial; */
   
   &:nth-child(1) {
     border-left: solid 1px #111;
@@ -158,6 +160,7 @@ const MonthlyRow = styled.div`
   flex-direction: row;
   justify-content: center;
   border-bottom: solid 1px #111;
+	
 `;
 
 export default MonthCalendar;

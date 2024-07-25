@@ -77,7 +77,7 @@ const MonthlyCell = (props) => {
 	};
 
 	const onDropSchedule = (e) => {
-		console.log("드로그2", e);
+		console.log("드로그", e);
 
 		const newSchedule = editDate(dragAndDrop.to, dragAndDrop.from, userData.schedule);
 
@@ -146,6 +146,8 @@ const MonthlyCellContainer = styled.div`
 		cursor: pointer;
 		overflow: scroll;
 		padding: 5px; 
+	/* all: initial;; */
+		/* cursor: grab;  */
 
   & > p {
     width: 100%;
@@ -170,7 +172,8 @@ const MonthlyCellDiv = styled.div`
 		border-radius: 5px;
 		z-index: 2;
 		margin-bottom: 10px;
-		cursor: pointer; 
+		cursor: grab;
+		/* all: initial; */
 
     &:hover {
       opacity: 0.5;
