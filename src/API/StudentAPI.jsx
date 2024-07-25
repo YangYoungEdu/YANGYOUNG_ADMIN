@@ -54,7 +54,7 @@ export const getHiddenStudentAPI = async (page = 1, size = 10) => {
 // 학생 검색 API
 export const searchStudentAPI = async (nameList, schoolList, gradeList) => {
   try {
-    const response = await axios.get(`${local}student/search`, {
+    const response = await axios.get(`${server}student/search`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -67,7 +67,7 @@ export const searchStudentAPI = async (nameList, schoolList, gradeList) => {
       },
     });
     console.log(response.data);
-    return response;
+    return response.data;
   } catch (error) {
     if (error.response.status === 403) {
       alert("로그인 후 이용해주세요.");
