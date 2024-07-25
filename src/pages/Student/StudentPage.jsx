@@ -21,10 +21,8 @@ const StudentPage = () => {
       <ThemeProvider theme={theme}>
         {/* 검색 영역 */}
         <StudentSearch
-          setSearchData={setSearchData}
           searchKeyword={searchKeyword}
           setSearchKeyword={setSearchKeyword}
-          setSearchDataCount={setSearchDataCount}
         />
         {/* 테이블 */}
         <GenericTable 
