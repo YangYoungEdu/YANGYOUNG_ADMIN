@@ -98,8 +98,7 @@ const LectureFilter = ({ mode, originLectures, setLectures }) => {
 const SearchWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 15%;
-  padding-left: 37px;
+  width: 14.5%;
 `;
 
 const Line = styled.hr`
