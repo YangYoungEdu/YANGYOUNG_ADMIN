@@ -1,6 +1,6 @@
 import DayTable from "../../../components/Lecture/DayTable";
 import React, { useState, useEffect } from 'react';
-// import '../../../style/css/app.css';
+import '../../../style/css/app.css';
 import { getSchedule } from '../../../components/Lecture/UserDataController.jsx';
 // store
 import { useCalendarState } from '../../../stores/calendarState.jsx';

@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-// import '../../../style/css/app.css';
+import '../../../style/css/app.css';
 // import WeeklyCell from './WeeklyCell';
 import { getSchedule } from '../../../components/Lecture/UserDataController';
 // store

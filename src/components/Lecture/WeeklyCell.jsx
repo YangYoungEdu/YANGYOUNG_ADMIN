@@ -286,7 +286,7 @@ const WeeklyCell = (props) => {
 
     if (index === 0) {
         return (
-            <div className={day === '일' ? 'weekly-cell sunday' : day === '토' ? 'weekly-cell saturday' : 'weekly-cell'}>
+            <div className={'weekly-cell'}>
                 {day}
             </div>
         );
@@ -294,7 +294,7 @@ const WeeklyCell = (props) => {
 
     if (index === 1)
         return (
-            <div className={day === '일' ? 'weekly-cell sunday' : day === '토' ? 'weekly-cell saturday' : 'weekly-cell'}>
+            <div className={'weekly-cell'}>
                 {date.getDate()}
             </div>
         );
@@ -326,31 +326,32 @@ const WeeklyCell = (props) => {
     );
 };
 
-const WeeklyCellDiv = styled.div`
-  width: 100%;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  box-sizing: border-box;
-  cursor: pointer;
-  overflow: visible;
 
-  &:nth-child(1) {
+const WeeklyCellDiv = styled.div`
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    box-sizing: border-box;
+    cursor: pointer;
+    overflow: visible;
+    
+    &:nth-child(1) {
     display: flex;
     align-items: center;
     height: 30px;
-  }
+    }
 
-  &:nth-child(2) {
+    &:nth-child(2) {
     display: flex;
     align-items: center;
     height: 30px;
     border-bottom: solid 2px black;
-  }
+    }
 
-  &:nth-child(n + 3) {
+    &:nth-child(n + 3) {
     border-bottom: solid 1px #111;
-  }
+    }
 `;
 
 const WeeklySchedule = styled.div`
@@ -368,25 +369,25 @@ const WeeklySchedule = styled.div`
     cursor: pointer;
     position: relative;
 
-  &:hover {
+    &:hover {
     opacity: 0.5;
-  }
+    }
 
-  p {
+    p {
     width: 100px;
     margin: 0;
     overflow: scroll;
-  }
+    }
 `;
 
 const ResizeHandle = styled.div`
-  width: 100%;
-  height: 10px;
-  background: rgba(0, 0, 0, 0.2);
-  cursor: ns-resize;
-  position: absolute;
-  bottom: 0;
-  left: 0;
+    width: 100%;
+    height: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    cursor: ns-resize;
+    position: absolute;
+    bottom: 0;
+    left: 0;
 `;
 
 const ResizingSchedule = styled(WeeklySchedule)`
@@ -394,9 +395,9 @@ const ResizingSchedule = styled(WeeklySchedule)`
 `;
 
 const ResizingBody = styled.body`
-  &.resizing {
+    &.resizing {
     cursor: ns-resize !important;
-  }
+    }
 `;
 
 export default WeeklyCell;

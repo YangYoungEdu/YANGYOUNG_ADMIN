@@ -3,7 +3,7 @@ import styled, { ThemeProvider } from "styled-components";
 import DayTimeTable from "../../../components/Lecture/DayTimeTable";
 import { theme } from "../../../style/theme";
 
-// import '../../../style/css/app.css';
+import '../../../style/css/app.css';
 import { getSchedule } from '../../../components/Lecture/UserDataController.jsx';
 // store
 import { useCalendarState } from '../../../stores/calendarState.jsx';
