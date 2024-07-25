@@ -28,7 +28,8 @@ input {
 }
 
 div {
-    all: unset; 
+    /* all: unset;  */
+    //제가 일단 주석처리해놨어요.
 }
 
 select {

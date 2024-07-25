@@ -5,6 +5,7 @@ import { ReactComponent as LeftArrow } from "../../Assets/LeftArrow.svg";
 import { ReactComponent as Plus } from "../../Assets/Plus.svg";
 import { ReactComponent as RightArrow } from "../../Assets/RightArrow.svg";
 import SelectArrow from "../../Assets/SelectArrow.svg";
+import { useCalendarState } from '../../stores/calendarState';
 
 const LectrueHeader = ({
   mode,
@@ -21,23 +22,34 @@ const LectrueHeader = ({
       setIsToday(false);
     }
   }, [isToday]);
+
+	const [ calendarState, setCalendarState ] = useCalendarState();
+	const { date } = calendarState;
+
+
   // 모드(달,주,일)에 따라서 날짜 변경 함수
   const changeDate = (amount, mode) => {
     const newDate = new Date(currentDate);
+    let newDateCal;
+
     switch (mode) {
       case "month":
         newDate.setMonth(newDate.getMonth() + amount);
+        newDateCal = new Date(date.getFullYear(), date.getMonth() + amount, date.getDate());
         break;
       case "week":
         newDate.setDate(newDate.getDate() + amount * 7);
+        newDateCal = new Date(date.getFullYear(), date.getMonth(), date.getDate() + amount * 7);
         break;
       case "day":
         newDate.setDate(newDate.getDate() + amount);
+        newDateCal = new Date(date.getFullYear(), date.getMonth(), date.getDate() + amount);
         break;
       default:
         break;
     }
     setCurrentDate(newDate);
+    setCalendarState({ ...calendarState, date: newDateCal, mode: mode });
   };
 
   const prev = () => {
@@ -60,6 +72,8 @@ const LectrueHeader = ({
       day: day,
       isHighlight: true,
     });
+
+    setCalendarState({ ...calendarState, date: new Date() });
   };
 
   return (
@@ -85,7 +99,7 @@ const LectrueHeader = ({
           <LeftButtons>
             <Select value={mode} onChange={(e) => setMode(e.target.value)}>
               <option value="month">&nbsp;&nbsp;&nbsp;월</option>
-              {/* <option value="week">&nbsp;&nbsp;&nbsp;주</option> */}
+              <option value="week">&nbsp;&nbsp;&nbsp;주</option>
               <option value="day">&nbsp;&nbsp;&nbsp;일</option>
             </Select>
             <TodayButton onClick={setToday}>오늘</TodayButton>
