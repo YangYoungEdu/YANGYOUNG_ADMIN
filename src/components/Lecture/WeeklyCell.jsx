@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import '../../style/css/app.css';
+// import '../../style/css/app.css';
 // store
 import { useErrorState } from '../../stores/errorState';
 import { useAddFormState } from '../../stores/addFormState';
 import { useUserData } from '../../stores/userData';
 import { useDragAndDrop } from '../../stores/dragAndDrop';
+import styled from 'styled-components';
 
 const WeeklyCell = (props) => {
     const { index, day, date, startHour, schedule } = props;
@@ -299,31 +300,103 @@ const WeeklyCell = (props) => {
         );
 
     return (
-        <div className="weekly-cell" 
-            onClick={onClickDate} 
-            onDragEnter={onDragEnterCell} 
-            onDragOver={(e) => e.preventDefault()} 
-            onDrop={onDropSchedule}>
-
-            {schedule ? (
-                <div
-                    className={`weekly-schedule ${isResizing ? 'resizing' : ''}`}
-                    style={{ height }} // 여기에 height를 직접 적용
-                    onClick={(e) => onClickSchedule(e, schedule)}
-                    draggable
-                    onDragStart={(e) => onDragCell(e)}
-                >
-                    <p>{schedule.startTime.hour + ':' + schedule.startTime.minute + '~' + schedule.endTime.hour + ':' + schedule.endTime.minute}</p>
-                    <p>{schedule.title}</p>
-                    <div
-                        className="resize-handle"
-                        onMouseDown={(e) => onResizeMouseDown(e, schedule)}
-                        onClick={(e) => e.stopPropagation()}
-                    ></div>
-                </div>
+        <WeeklyCellDiv 
+            // className="weekly-cell" 
+            onClick={onClickDate}
+            onDragEnter={onDragEnterCell}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={onDropSchedule}
+        >
+        {schedule ? (
+            <ResizingSchedule
+                style={{ height }}
+                onClick={(e) => onClickSchedule(e, schedule)}
+                draggable
+                onDragStart={(e) => onDragCell(e)}
+            >
+                <p>{`${schedule.startTime.hour}:${schedule.startTime.minute}~${schedule.endTime.hour}:${schedule.endTime.minute}`}</p>
+                <p>{schedule.title}</p>
+                <ResizeHandle
+                onMouseDown={(e) => onResizeMouseDown(e, schedule)}
+                onClick={(e) => e.stopPropagation()}
+                />
+            </ResizingSchedule>
             ) : null}
-        </div>
+        </WeeklyCellDiv>
     );
 };
+
+const WeeklyCellDiv = styled.div`
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+  cursor: pointer;
+  overflow: visible;
+
+  &:nth-child(1) {
+    display: flex;
+    align-items: center;
+    height: 30px;
+  }
+
+  &:nth-child(2) {
+    display: flex;
+    align-items: center;
+    height: 30px;
+    border-bottom: solid 2px black;
+  }
+
+  &:nth-child(n + 3) {
+    border-bottom: solid 1px #111;
+  }
+`;
+
+const WeeklySchedule = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 120px;
+    background: #111;
+    color: #eee;
+    font-size: 12px;
+    padding: 5px;
+    border: solid 1px #111;
+    margin: 5px;
+    border-radius: 5px;
+    z-index: 3;
+    cursor: pointer;
+    position: relative;
+
+  &:hover {
+    opacity: 0.5;
+  }
+
+  p {
+    width: 100px;
+    margin: 0;
+    overflow: scroll;
+  }
+`;
+
+const ResizeHandle = styled.div`
+  width: 100%;
+  height: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  cursor: ns-resize;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+`;
+
+const ResizingSchedule = styled(WeeklySchedule)`
+  cursor: ns-resize !important;
+`;
+
+const ResizingBody = styled.body`
+  &.resizing {
+    cursor: ns-resize !important;
+  }
+`;
 
 export default WeeklyCell;

@@ -3,7 +3,7 @@ import styled, { ThemeProvider } from "styled-components";
 import DayTimeTable from "../../../components/Lecture/DayTimeTable";
 import { theme } from "../../../style/theme";
 
-import '../../../style/css/app.css';
+// import '../../../style/css/app.css';
 import { getSchedule } from '../../../components/Lecture/UserDataController.jsx';
 // store
 import { useCalendarState } from '../../../stores/calendarState.jsx';
@@ -88,25 +88,17 @@ const MonthCalendar = ({
 	};
 
 	return (
-			<MonthlyView 
-				//id="monthly-view"
-				>
-				<DayRow 
-					//className="day-row"
-					>
+			<MonthlyView id="monthly-view">
+				<DayRow className="day-row">
 					{weekDays.map((a, i) => (
-						<DayCell key={i} 
-							// className="day-cell"
-							>
+						<DayCell key={i} className="day-cell">
 							{a}
 						</DayCell>
 					))}
 				</DayRow>
 
 				{dates.map((a, i) => (
-					<MonthlyRow key={i} 
-						// className="monthly-row"
-					>
+					<MonthlyRow key={i}  className="monthly-row">
 						{a.map((b, j) => (
               <MonthlyCell key={j} date={b} schedule={getCurDateSchedule(b)} />
             ))}

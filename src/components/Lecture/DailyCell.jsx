@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../../style/css/app.css';
+// import '../../style/css/app.css';
 import styled from 'styled-components';
 
 // store

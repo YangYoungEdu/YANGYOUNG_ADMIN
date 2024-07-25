@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import '../../../style/css/app.css';
+// import '../../../style/css/app.css';
 // import WeeklyCell from './WeeklyCell';
 import { getSchedule } from '../../../components/Lecture/UserDataController';
 // store
@@ -121,17 +121,17 @@ const WeekCalendar = ({ currentDate, lectures }) => {
 	};
 
 	return (
-		<div id="weekly-view">
-			<div className="hour-col">
+		<WeeklyView id="weekly-view">
+			<HourCol className="hour-col">
 				{timeTable.map((a, i) => (
-					<div key={i} className="hour-cell">
+					<HourCell key={i} className="hour-cell">
 						{a}
-					</div>
+					</HourCell>
 				))}
-			</div>
+			</HourCol>
 			{console.log('주간 dates형식', dates)}
 			{dates.map((a, i) => (
-				<div key={i} className="weekly-col">
+				<WeeklyCol key={i} className="weekly-col">
 					{a.map((b, j) => (
 						<WeeklyCell
 							key={j}
@@ -142,10 +142,65 @@ const WeekCalendar = ({ currentDate, lectures }) => {
 							schedule={getCurDateSchedule(a[1], b)}
 						/>
 					))}
-				</div>
+				</WeeklyCol>
 			))}
-		</div>
+		</WeeklyView>
 	);
 };
+
+export const WeeklyView = styled.div`
+   width: 900px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    box-sizing: border-box;
+    margin-bottom: 50px; 
+`;
+
+// 시간 열
+export const HourCol = styled.div`
+    width: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-right: solid 0.5px #111;
+    border-top: solid 0.5px #111;
+    border-left: solid 0.5px #111;
+    border-bottom: solid 0.5px #111;
+    box-sizing: border-box;
+`;
+
+// 시간 셀
+export const HourCell = styled.div`
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+
+  &:nth-child(1) {
+    height: 30px;
+  }
+
+  &:nth-child(2) {
+    height: 30px;
+    border-bottom: solid 2px #111;
+  }
+`;
+
+// 주간 열
+export const WeeklyCol = styled.div`
+    width: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-right: solid 0.5px #111;
+    border-top: solid 0.5px #111;
+    border-bottom: solid 0.5px #111;
+    box-sizing: border-box;
+`;
 
 export default WeekCalendar;
