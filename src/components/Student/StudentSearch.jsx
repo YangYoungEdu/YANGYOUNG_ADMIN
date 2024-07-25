@@ -83,6 +83,7 @@ const StudentSearch = ({ setSearchData, searchKeyword, setSearchKeyword, setSear
   const resetKeywords = () => {
     setSearchKeyword({ nameList: [], schoolList: [], gradeList: [] });
     setTempSearchKeywords([]);
+    setIsOpen(false);
   };
 
   const handleRemoveKeyword = (event, keywordToRemove) =>{
