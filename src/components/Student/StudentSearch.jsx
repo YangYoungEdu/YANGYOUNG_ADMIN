@@ -65,7 +65,7 @@ const StudentSearch = ({ setSearchData, searchKeyword, setSearchKeyword, setSear
 
     console.log(gradeKeyword);
     if (gradeKeyword !== ""){
-      const updateGradeList = [...gradeList, gradeKeyword.value];
+      const updateGradeList = [...gradeList, gradeKeyword.label];
       setSearchKeyword(prevKeywords => ({...prevKeywords, gradeList: updateGradeList}));
       setGradeKeyword("");
     }

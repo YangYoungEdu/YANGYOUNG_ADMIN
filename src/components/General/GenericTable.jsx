@@ -113,7 +113,7 @@ const GenericTable = ({
           setIsEditing={setIsEditing}
           setIsHidden={setIsHidden}
           isHidden={isHidden}
-          totalElements={totalElements}
+          totalElements={setSearchDataCount}
         />
         <Container>
           <StyledTable cellSpacing={0}>
