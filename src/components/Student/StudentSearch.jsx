@@ -63,8 +63,10 @@ const StudentSearch = ({ setSearchData, searchKeyword, setSearchKeyword, setSear
       setSearchKeyword(prevKeywords => ({...prevKeywords, schoolList: updateSchoolList}));
       setSchoolKeyword("");
     }
+
+    console.log(gradeKeyword);
     if (gradeKeyword !== ""){
-      const updateGradeList = [...gradeList, gradeKeyword];
+      const updateGradeList = [...gradeList, gradeKeyword.value];
       setSearchKeyword(prevKeywords => ({...prevKeywords, gradeList: updateGradeList}));
       setGradeKeyword("");
     }
@@ -169,9 +171,7 @@ const StudentSearch = ({ setSearchData, searchKeyword, setSearchKeyword, setSear
                   <div>학년</div>
                   <CustomSelect
                     options={options}
-                    onChange={(e) =>
-                      handleChangeKeyword("grade", options.value)
-                    }
+                    onChange={setGradeKeyword}
                   />
                 </SearchField>
               </SearchOptions>
