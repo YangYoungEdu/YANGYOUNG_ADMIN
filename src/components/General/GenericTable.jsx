@@ -9,8 +9,16 @@ import {
   currentPageState,
   totalPageState,
   dataState,
-  selectedStudentState
+  selectedStudentState,
+  totalElementsState,
+  isHiddenState,
 } from "../../Atom";
+import {
+  getAllStudentAPI,
+  getHiddenStudentAPI,
+  searchStudentAPI,
+} from "../../API/StudentAPI";
+import TableMenus from "../Student/TableMenus";
 
 const columns = [
   { key: "index", label: "순번" },
@@ -22,13 +30,59 @@ const columns = [
   { key: "id", label: "학번" },
 ];
 
-const GenericTable = ({ isEditing }) => {
+const GenericTable = ({
+  isEditing,
+  setIsEditing,
+  searchData,
+  setSearchData,
+  setSearchDataCount,
+  searchKeyword
+}) => {
   const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
   const [totalPage, setTotalPage] = useRecoilState(totalPageState);
   const [data, setData] = useRecoilState(dataState);
-  const [selectedStudent, setSelectedStudent] = useRecoilState(selectedStudentState);
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedStudent, setSelectedStudent] =
+    useRecoilState(selectedStudentState);
+  const [totalElements, setTotalElements] = useRecoilState(totalElementsState);
+  const [isHidden, setIsHidden] = useRecoilState(isHiddenState);
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchTableData();
+  }, [currentPage, searchKeyword]);
+
+  const fetchTableData = async () => {
+    let response;
+
+    // searchData. nameList, gradeList, schoolList가 모두 비어있늕 ㅣ확인 하는 변수
+    const isSearchKeywordEmpty = Object.values(searchKeyword).every(
+      (value) => value.length === 0
+    );
+    if (isSearchKeywordEmpty) {
+      if (isHidden) {
+        console.log("숨김 학생 조회");
+        response = await getHiddenStudentAPI(currentPage);
+      }
+      if (!isHidden) {
+        console.log("전체 학생 조회");
+        response = await getAllStudentAPI(currentPage);
+      }
+    }
+    if (!isSearchKeywordEmpty) {
+      console.log("검색 학생 조회");
+      const nameList = searchKeyword.nameList.join(",");
+      const schoolList = searchKeyword.schoolList.join(",");
+      const gradeList = searchKeyword.gradeList.join(",");
+      response = await searchStudentAPI(nameList, schoolList, gradeList);
+    }
+
+    console.log(response.content);
+
+    setSearchData(response.content);
+    setTotalPage(response.totalPages);
+    setSearchDataCount(response.totalElements);
+  };
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -41,8 +95,8 @@ const GenericTable = ({ isEditing }) => {
   };
 
   const handleCheckboxChange = (id) => {
-    setSelectedStudent((prevSelectedStudent) =>{
-      if (prevSelectedStudent.includes(id)){
+    setSelectedStudent((prevSelectedStudent) => {
+      if (prevSelectedStudent.includes(id)) {
         return prevSelectedStudent.filter((id) => id !== id);
       } else {
         return [...prevSelectedStudent, id];
@@ -50,11 +104,17 @@ const GenericTable = ({ isEditing }) => {
     });
   };
 
-
-
   return (
     <MainDiv>
       <ThemeProvider theme={theme}>
+        {/* 버튼 영역 */}
+        <TableMenus
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
+          setIsHidden={setIsHidden}
+          isHidden={isHidden}
+          totalElements={setSearchDataCount}
+        />
         <Container>
           <StyledTable cellSpacing={0}>
             <StyledThead>
@@ -65,8 +125,8 @@ const GenericTable = ({ isEditing }) => {
               </tr>
             </StyledThead>
             <StyledTbody>
-              {data &&
-                data.map((item, index) => {
+              {searchData &&
+                searchData.map((item, index) => {
                   const isSelected = selectedStudent.includes(item.id);
                   return (
                     <tr
