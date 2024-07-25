@@ -1,11 +1,11 @@
 import Calendar from "react-calendar";
 import { useState, useEffect } from "react";
-import { getAllLectureByDayAPI, getAttendanceByLectureAndDateAPI, updateAttendanceAPI } from "../../API";
-import { ReactComponent as Rect } from "../../Assets/Rect.svg";
-import { ReactComponent as Prev } from "../../Assets/Prev.svg";
-import { ReactComponent as Next } from "../../Assets/Next.svg";
-import moment from "moment";
-import { ko } from "date-fns/locale";
+import { getAllLectureByDayAPI } from "../../API/LectureAPI";
+import {
+  getAttendanceByLectureAndDateAPI,
+  updateAttendanceAPI,
+} from "../../API/AttendanceAPI";
+import moment from "moment-timezone";
 import CalendarComponent from "./CalendarComponent";
 import LectureList from "./LectureList";
 import AttendanceTable from "./AttendanceTable";
@@ -17,7 +17,6 @@ const AttendanceSelect = () => {
   const [selectedLecture, setSelectedLecture] = useState(null);
   const [attendance, setAttendance] = useState([]);
   const [isUpdated, setIsUpdated] = useState(false);
-  const [activeLectureId, setActiveLectureId] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   useEffect(() => {
@@ -27,11 +26,15 @@ const AttendanceSelect = () => {
   useEffect(() => {
     const formattedDate = moment(date).format("YYYY-MM-DD");
     if (isUpdated) {
-      getAttendanceByLectureAndDateAPI(selectedLecture, formattedDate).then(
-        (res) => {
-          setAttendance(res);
-        }
-      );
+      if (selectedLecture) {
+        getAttendanceByLectureAndDateAPI(selectedLecture, formattedDate).then(
+          (res) => {
+            setAttendance(res);
+          }
+        );
+      } else {
+        setAttendance([]); // selectedLecture가 없을 때는 attendance를 빈 상태로 설정
+      }
       setIsUpdated(false);
     }
   }, [isUpdated, selectedLecture, date]);
@@ -39,6 +42,9 @@ const AttendanceSelect = () => {
   const handleDateChange = async (newDate) => {
     setDate(newDate);
     setSelectedDate(newDate);
+    setSelectedLecture(null); // 날짜 변경 시 selectedLecture 초기화
+    setAttendance([]); // 테이블을 빈 상태로 재설정
+
     try {
       const formattedDate = moment(newDate).format("YYYY-MM-DD");
       const response = await getAllLectureByDayAPI(formattedDate);
@@ -76,9 +82,15 @@ const AttendanceSelect = () => {
   };
 
   const handleLectureSelect = async (lectureId) => {
+    setSelectedLecture(lectureId);
+    setAttendance([]); // 새로운 강의 선택 시 출석 테이블 초기화
+
     try {
       const formattedDate = moment(date).format("YYYY-MM-DD");
-      const response = await getAttendanceByLectureAndDateAPI(lectureId, formattedDate);
+      const response = await getAttendanceByLectureAndDateAPI(
+        lectureId,
+        formattedDate
+      );
       setAttendance(response || []);
     } catch (error) {
       console.error(error);
@@ -86,6 +98,11 @@ const AttendanceSelect = () => {
   };
 
   const updateAttendance = async () => {
+    const lectureDate = selectedDate.toISOString();
+    const attendDateTime = moment
+      .utc(lectureDate)
+      .tz("Asia/Seoul")
+      .format("YYYY-MM-DDTHH:mm:ss");
     const updateRequest = attendance
       .filter((item) => item.attendanceType !== null)
       .map((item) => ({
@@ -93,6 +110,7 @@ const AttendanceSelect = () => {
         studentId: item.studentId,
         lectureId: selectedLecture,
         attendanceType: item.attendanceType,
+        attendDateTime: attendDateTime,
         note: "수동 출결",
       }));
 
@@ -113,10 +131,6 @@ const AttendanceSelect = () => {
     setAttendance(updatedAttendances);
   };
 
-  const handleLectureClick = (selectedLectureId) => {
-    setActiveLectureId(selectedLectureId);
-  };
-
   const tileClassName = ({ date, view }) => {
     if (view === "month") {
       if (moment(date).isSame(selectedDate, "day")) {
@@ -130,21 +144,19 @@ const AttendanceSelect = () => {
 
   return (
     <MainDiv>
-      <CalendarComponent
-        date={date}
-        selectedDate={selectedDate}
-        handleDateChange={handleDateChange}
-        tileClassName={tileClassName}
-      />
-      <LectureList
-        lectures={formattedLectures}
-        selectedLecture={selectedLecture}
-        onLectureSelect={(id) => {
-          setSelectedLecture(id);
-          handleLectureSelect(id);
-          handleLectureClick(id);
-        }}
-      />
+      <UpperDiv>
+        <CalendarComponent
+          date={date}
+          selectedDate={selectedDate}
+          handleDateChange={handleDateChange}
+          tileClassName={tileClassName}
+        />
+        <LectureList
+          lectures={formattedLectures}
+          selectedLecture={selectedLecture}
+          onLectureSelect={handleLectureSelect}
+        />
+      </UpperDiv>
       <AttendanceTable
         attendance={attendance}
         updateAttendance={updateAttendance}
@@ -155,8 +167,18 @@ const AttendanceSelect = () => {
 };
 
 const MainDiv = styled.div`
-  width: 70%;
-  margin: 74px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 `;
 
+const UpperDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  width: 75%;
+  justify-content: space-between;
+  margin-top: 74px;
+`;
 export default AttendanceSelect;

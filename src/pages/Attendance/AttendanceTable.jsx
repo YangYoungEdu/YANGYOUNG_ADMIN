@@ -1,9 +1,14 @@
 import styled from "styled-components";
 import moment from "moment";
 
-const AttendanceTable = ({ attendance, updateAttendance, handleOptionChange }) => (
+const AttendanceTable = ({
+  attendance,
+  updateAttendance,
+  handleOptionChange,
+}) => (
   <AttendanceTableArea>
     <Top>
+      {console.log(attendance)}
       <StyledH1>출석 체크</StyledH1>
       <SubmitButton onClick={updateAttendance}>저장</SubmitButton>
     </Top>
@@ -62,7 +67,10 @@ const AttendanceTable = ({ attendance, updateAttendance, handleOptionChange }) =
               </td>
               <td>
                 {item.attendedDateTime
-                  ? moment(item.attendedDateTime).format("HH:mm:ss")
+                  ? moment(item.attendedDateTime).format("HH:mm:ss") ===
+                    "00:00:00"
+                    ? "수동 출결 처리"
+                    : moment(item.attendedDateTime).format("HH:mm:ss")
                   : ""}
               </td>
             </tr>
@@ -82,7 +90,7 @@ const AttendanceTableArea = styled.div`
   flex-direction: column;
   gap: 18px;
   margin-top: 62px;
-  width: 70%;
+  width: 75%;
   margin-bottom: 150px;
 `;
 
