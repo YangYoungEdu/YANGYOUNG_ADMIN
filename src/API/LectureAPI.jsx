@@ -68,7 +68,7 @@ export const getAllLectureByDayAPI = async (date) => {
         date: fixedDate,
       },
     });
-    console.log(response.data);
+    console.log("일 단위 강의 전체 조회", response.data);
     return response.data;
   } catch (error) {
     if (error.response.status === 403) {
