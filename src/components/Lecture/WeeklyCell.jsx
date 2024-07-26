@@ -326,7 +326,7 @@ const WeeklyCell = (props) => {
                 onDragStart={(e) => onDragCell(e)}
                 teacher= {schedule.teacher}
             >
-                <p>{`${formatTime(schedule.startTime.hour, schedule.startTime.minute)}~${formatTime(schedule.endTime.hour, schedule.endTime.minute)}`}</p>
+                <p>{`${formatTime(schedule.startTime.hour, schedule.startTime.minute)} ~ ${formatTime(schedule.endTime.hour, schedule.endTime.minute)}`}</p>
                 <p>{schedule.title}</p>
                 <ResizeHandle
                 onMouseDown={(e) => onResizeMouseDown(e, schedule)}
