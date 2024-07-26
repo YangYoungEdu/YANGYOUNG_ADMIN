@@ -11,13 +11,6 @@ import WeeklyCell from "../../../components/Lecture/WeeklyCell";
 
 //15분 간격 배열 추가
 export const times = [
-	'00:00', '00:15', '00:30', '00:45',
-	'01:00', '01:15', '01:30', '01:45',
-	'02:00', '02:15', '02:30', '02:45',
-	'03:00', '03:15', '03:30', '03:45',
-	'04:00', '04:15', '04:30', '04:45',
-	'05:00', '05:15', '05:30', '05:45',
-	'06:00', '06:15', '06:30', '06:45',
 	'07:00', '07:15', '07:30', '07:45',
 	'08:00', '08:15', '08:30', '08:45',
 	'09:00', '09:15', '09:30', '09:45',
@@ -114,18 +107,23 @@ const WeekCalendar = ({ currentDate, lectures }) => {
 				break;
 			}
 		}
-
-		// console.log('cur',curDateSchedule );
 		
 		return curDateSchedule;
 	};
+
+	function formatTime(time) {
+		const [hours, minutes] = time.split(':').map(Number);
+		const period = hours < 12 ? '오전' : '오후';
+		const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
+		return `${period} ${formattedHours}시`;
+	}
 
 	return (
 		<WeeklyView id="weekly-view">
 			<HourCol className="hour-col">
 				{timeTable.map((a, i) => (
 					<HourCell key={i} className="hour-cell">
-						{a}
+						 <span>{formatTime(a)}</span>
 					</HourCell>
 				))}
 			</HourCol>
@@ -148,7 +146,7 @@ const WeekCalendar = ({ currentDate, lectures }) => {
 	);
 };
 
-export const WeeklyView = styled.div`
+const WeeklyView = styled.div`
    /* width: 900px;  */
     display: flex;
     flex-direction: row;
@@ -158,7 +156,7 @@ export const WeeklyView = styled.div`
 `;
 
 // 시간 열
-export const HourCol = styled.div`
+const HourCol = styled.div`
     width: 60px;
     display: flex;
     flex-direction: column;
@@ -168,12 +166,12 @@ export const HourCol = styled.div`
 `;
 
 // 시간 셀
-export const HourCell = styled.div`
+const HourCell = styled.div`
   width: 100%;
   /* height: 50px; */
 	height: 12.5px;
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
   box-sizing: border-box;
 
@@ -196,10 +194,21 @@ export const HourCell = styled.div`
 	&:nth-child(4n + 3) {
 		color: var(--gray-gray-006, #555);
   }
+	&:nth-child(4n + 7) {
+		color: var(--gray-gray-006, #555);
+		border-top: solid 1px #E0E0E0;
+  }
+
+	& >span{
+		border-top: solid 1px #FFF;
+		border-bottom: solid 1px #FFF;
+		padding-right:7px ;
+	}
+
 `;
 
 // 주간 열
-export const WeeklyCol = styled.div`
+const WeeklyCol = styled.div`
     width: 151.159px;
     display: flex;
     flex-direction: column;
