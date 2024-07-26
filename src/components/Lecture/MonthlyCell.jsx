@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../../style/css/app.css';
+// import '../../style/css/app.css';
 import { editDate } from './UserDataController';
 import { useAddFormState } from '../../stores/addFormState';
 import { useErrorState } from '../../stores/errorState';
@@ -42,6 +42,7 @@ const MonthlyCell = (props) => {
 				active: true,
 				mode: 'add',
 				title: '',
+				teacher: '',
 				curDate: date, // Date 객체 그대로 유지
 				startTime: { 
 					hour: startHour, 
@@ -61,7 +62,7 @@ const MonthlyCell = (props) => {
 	//일정 클릭 후 수정
 	const onClickSchedule = (e, schedule) => {
 		e.stopPropagation();
-		const { title, curDate, startTime, endTime } = schedule;
+		const { title, teacher, curDate, startTime, endTime } = schedule;
 
 		if (!active) {
 			setAddFormState({
@@ -69,6 +70,7 @@ const MonthlyCell = (props) => {
 				active: true,
 				mode: 'edit',
 				title: title,
+				teacher: teacher,
 				curDate: curDate,
 				startTime: { ...startTime}, // 새로운 시간 형식 적용
 				endTime: { ... endTime}
@@ -106,8 +108,8 @@ const MonthlyCell = (props) => {
 	};
 
 	const onDragEnterCell = (e) => {
-		const { title, startTime, endTime } = dragAndDrop.from;
-		const newScheduleForm = { title: title, curDate: date, startTime: { ... startTime}, endTime: { ... endTime} };
+		const { title,teacher, startTime, endTime } = dragAndDrop.from;
+		const newScheduleForm = { title: title, teacher:teacher, curDate: date, startTime: { ... startTime}, endTime: { ... endTime} };
 		setDragAndDrop({ ...dragAndDrop, to: newScheduleForm });
 	};
 

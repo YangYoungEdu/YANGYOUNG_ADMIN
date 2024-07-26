@@ -11,13 +11,6 @@ import WeeklyCell from "../../../components/Lecture/WeeklyCell";
 
 //15분 간격 배열 추가
 export const times = [
-	'00:00', '00:15', '00:30', '00:45',
-	'01:00', '01:15', '01:30', '01:45',
-	'02:00', '02:15', '02:30', '02:45',
-	'03:00', '03:15', '03:30', '03:45',
-	'04:00', '04:15', '04:30', '04:45',
-	'05:00', '05:15', '05:30', '05:45',
-	'06:00', '06:15', '06:30', '06:45',
 	'07:00', '07:15', '07:30', '07:45',
 	'08:00', '08:15', '08:30', '08:45',
 	'09:00', '09:15', '09:30', '09:45',
@@ -70,28 +63,33 @@ const WeekCalendar = ({ currentDate, lectures }) => {
 		const year = date.getFullYear();
 		const month = date.getMonth();
 		const day = date.getDay();
-		const firstDate = new Date(year, month, date.getDate() - day);
-		const lastDate = new Date(year, month, date.getDate() + (6 - day));
-		return { firstDate: firstDate, lastDate: lastDate };
+
+		//월요일부터 시작
+		const firstDate = new Date(year, month, date.getDate() - (day === 0 ? 6 : day - 1));
+		const lastDate = new Date(year, month, firstDate.getDate() + 6);
+		return { firstDate, lastDate };
 	};
 
 	const makeCalendar = (firstDate, lastDate) => {
-		let tempDate = new Date(firstDate);
-		const newDates = [ [ '일' ], [ '월' ], [ '화' ], [ '수' ], [ '목' ], [ '금' ], [ '토' ] ];
-		const tempTime = times;  //15분 간격 배열 추가
-		
-		let index = 0;
-		while (tempDate.getDate() !== lastDate.getDate()) {
-			newDates[index].push(tempDate);
-			newDates[index] = newDates[index].concat(tempTime);
-			tempDate = new Date(tempDate.getFullYear(), tempDate.getMonth(), tempDate.getDate() + 1);
-			index++;
-		}
-		newDates[index].push(tempDate);
-		newDates[index] = newDates[index].concat(tempTime);
-		setCurSchedule(getSchedule(firstDate, lastDate, schedule));
-		return newDates.slice();
-	};
+    let tempDate = new Date(firstDate);
+    const newDates = [
+        ['월'], ['화'], ['수'], ['목'], ['금'], ['토'], ['일']
+    ];
+    const tempTime = times; // 15분 간격 배열 추가
+    
+    let index = 0;
+    while (tempDate <= lastDate) {
+        if (index < newDates.length) {
+            newDates[index].push(tempDate); // 해당 날짜를 새로운 배열에 추가
+            newDates[index] = newDates[index].concat(tempTime); // 시간 간격 배열 추가
+        }
+        tempDate = new Date(tempDate.getFullYear(), tempDate.getMonth(), tempDate.getDate() + 1);
+        index++;
+    }
+    
+    return newDates.slice();
+};
+
 
 	const getCurDateSchedule = (curDate, startHour) => {
 		let curDateSchedule = null;
@@ -114,24 +112,29 @@ const WeekCalendar = ({ currentDate, lectures }) => {
 				break;
 			}
 		}
-
-		// console.log('cur',curDateSchedule );
 		
 		return curDateSchedule;
 	};
 
+	function formatTime(time) {
+		const [hours, minutes] = time.split(':').map(Number);
+		const period = hours < 12 ? '오전' : '오후';
+		const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
+		return `${period} ${formattedHours}시`;
+	}
+
 	return (
-		<div id="weekly-view">
-			<div className="hour-col">
+		<WeeklyView id="weekly-view">
+			<HourCol className="hour-col">
 				{timeTable.map((a, i) => (
-					<div key={i} className="hour-cell">
-						{a}
-					</div>
+					<HourCell key={i} className="hour-cell">
+						<span>{formatTime(a)}</span>
+					</HourCell>
 				))}
-			</div>
+			</HourCol>
 			{console.log('주간 dates형식', dates)}
 			{dates.map((a, i) => (
-				<div key={i} className="weekly-col">
+				<WeeklyCol key={i} className="weekly-col">
 					{a.map((b, j) => (
 						<WeeklyCell
 							key={j}
@@ -142,10 +145,87 @@ const WeekCalendar = ({ currentDate, lectures }) => {
 							schedule={getCurDateSchedule(a[1], b)}
 						/>
 					))}
-				</div>
+				</WeeklyCol>
 			))}
-		</div>
+		</WeeklyView>
 	);
 };
+
+const WeeklyView = styled.div`
+   /* width: 900px;  */
+	 	width: 85%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    box-sizing: border-box;
+    margin-bottom: 50px; 
+`;
+
+// 시간 열
+const HourCol = styled.div`
+    width: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-right: solid 1px #E0E0E0;
+    box-sizing: border-box;
+`;
+
+// 시간 셀
+const HourCell = styled.div`
+  width: 100%;
+  /* height: 50px; */
+	height: 12.5px;
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+  box-sizing: border-box;
+
+	color: var(--gray-gray-006, #FFF); 
+	text-align: right;
+	font-family: "Pretendard Variable";
+	font-size: 10px;
+	font-style: normal;
+	font-weight: 400;
+	line-height: normal;
+
+  &:nth-child(1) {
+    height: 42px;
+  }
+
+  &:nth-child(2) {
+    height: 42px;
+  }
+
+	&:nth-child(4n + 3) {
+		color: var(--gray-gray-006, #555);
+  }
+	&:nth-child(4n + 7) {
+		color: var(--gray-gray-006, #555);
+		border-top: solid 1px #E0E0E0;
+  }
+
+	& >span{
+		display: flex;
+		justify-content: start;
+		border-top: solid 1px #FFF;
+		border-bottom: solid 1px #FFF;
+		/* padding-right:7px ; */
+		white-space: nowrap;
+		width: 46px;
+	}
+
+`;
+
+// 주간 열
+const WeeklyCol = styled.div`
+    width: 151.159px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-right: solid 1px #E0E0E0;
+    box-sizing: border-box;
+
+`;
 
 export default WeekCalendar;
