@@ -161,11 +161,11 @@ const WeeklyCell = (props) => {
         const newStartHour = Math.max(Math.floor(newStartTotalMin / 60), 0);
         const newStartMinute = Math.max(newStartTotalMin % 60, 0);
 
-        // 기존 시간차 유지 + 끝 시간이 23:59를 넘지 않도록 보장
+        // 기존 시간차 유지 + 끝 시간이 24:를 넘지 않도록 보장
         const durationInMinutes = (from.endTime.hour * 60 + from.endTime.minute) - (from.startTime.hour * 60 + from.startTime.minute);
         let newEndTotalMin = newStartTotalMin + durationInMinutes;
 
-        const maxEndMinute = 23 * 60 + 59;
+        const maxEndMinute = 24 * 60;
         newEndTotalMin = Math.min(newEndTotalMin, maxEndMinute);
 
         const newEndHour = Math.floor(newEndTotalMin / 60);
@@ -259,8 +259,8 @@ const WeeklyCell = (props) => {
             const startMinute = schedule.startTime.hour * 60 + schedule.startTime.minute;
             newEndMinute = Math.max(newEndMinute, startMinute);
     
-            // 끝 시간이 23:59를 넘지 않도록 조정
-            const maxEndMinute = 23 * 60 + 59;
+            // 끝 시간이 24를 넘지 않도록 조정
+            const maxEndMinute = 24 * 60 ;
             newEndMinute = Math.min(newEndMinute, maxEndMinute);
     
             const newEndTime = {
@@ -289,11 +289,14 @@ const WeeklyCell = (props) => {
     };
 
     const formatTime = (hour, minute) => {
+        if (hour === 24) {
+            hour = 0; // 24시를 0시로 변환
+        }
         const period = hour >= 12 ? '오후' : '오전';
         const formattedHour = (hour % 12) || 12; // 0시는 12시로 변환
         const formattedMinute = minute.toString().padStart(2, '0'); // 분을 두 자리로 맞추기
         return `${period} ${formattedHour}${minute === 0 ? '' : ':' + formattedMinute}`;
-    }; 
+    };
 
     if (index === 0) {
         return (

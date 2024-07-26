@@ -84,7 +84,7 @@ const DailyCell = (props) => {
         const intervals = get15MinIntervals(startTime, endTime);
 
         // 15분 단위로 높이 조정 
-        const heightInPixels = intervals * oneCellHeight - 22;
+        const heightInPixels = intervals * oneCellHeight-22;
         return `${heightInPixels}px`;
     };
 
@@ -126,14 +126,14 @@ const DailyCell = (props) => {
     // 일정을 클릭하여 수정하는 함수
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
-        const { title,teacher, curDate, startTime, endTime } = schedule;
+        const { title, teacher, curDate, startTime, endTime } = schedule;
         if (!active && !isResizing) { // 리사이징 중일 때 클릭 방지
             setAddFormState({
                 ...addFormState,
                 active: true,
                 mode: 'edit',
                 title: title,
-                teacher: teacher,
+                teacher:teacher,
                 curDate: curDate,
                 startTime: {...startTime},
                 endTime: {...endTime}
@@ -152,7 +152,7 @@ const DailyCell = (props) => {
 
         // Y좌표의 차이 계산
         const yDifference = e.clientY - initialY;
-        const differenceInMinutes = Math.round(yDifference / oneCellHeight) * 15; // oneCellHeight = 15분
+        const differenceInMinutes = Math.round(yDifference / oneCellHeight) * 15; // 50px = 15분
 
         // 새로운 시작 시간과 끝 시간 계산
         const newStartTotalMin = (to.startTime.hour * 60) + to.startTime.minute + differenceInMinutes;
@@ -161,11 +161,11 @@ const DailyCell = (props) => {
         const newStartHour = Math.max(Math.floor(newStartTotalMin / 60), 0);
         const newStartMinute = Math.max(newStartTotalMin % 60, 0);
 
-        // 기존 시간차 유지 + 끝 시간이 23:59를 넘지 않도록 보장
+        // 기존 시간차 유지 + 끝 시간이 24:를 넘지 않도록 보장
         const durationInMinutes = (from.endTime.hour * 60 + from.endTime.minute) - (from.startTime.hour * 60 + from.startTime.minute);
         let newEndTotalMin = newStartTotalMin + durationInMinutes;
 
-        const maxEndMinute = 23 * 60 + 59;
+        const maxEndMinute = 24 * 60;
         newEndTotalMin = Math.min(newEndTotalMin, maxEndMinute);
 
         const newEndHour = Math.floor(newEndTotalMin / 60);
@@ -213,7 +213,7 @@ const DailyCell = (props) => {
         console.log('드래그', from);
         const diff = (from.endTime.hour * 60 + from.endTime.minute) - (from.startTime.hour * 60 + from.startTime.minute);
 
-        const newScheduleForm = { title: from.title, teacher: from.teacher,curDate: date,
+        const newScheduleForm = { title: from.title, teacher:from.teacher, curDate: date,
             startTime: {
                 ...from.startTime,
                 hour: propsHour,
@@ -252,15 +252,15 @@ const DailyCell = (props) => {
 
         const onResizeMouseMove = (e) => {
             const newY = e.clientY;
-            const minDifference = Math.round((newY - initialY) / oneCellHeight) * 15; // oneCellHeight = 15분
+            const minDifference = Math.round((newY - initialY) / oneCellHeight) * 15; // oneCellHeight px = 15분
             let newEndMinute = initialEndMinute + minDifference;
 
             // 일정의 시작 시간을 초과하지 않도록 조정
             const startMinute = schedule.startTime.hour * 60 + schedule.startTime.minute;
             newEndMinute = Math.max(newEndMinute, startMinute);
     
-            // 끝 시간이 23:59를 넘지 않도록 조정
-            const maxEndMinute = 23 * 60 + 59;
+            // 끝 시간이 24를 넘지 않도록 조정
+            const maxEndMinute = 24 * 60 ;
             newEndMinute = Math.min(newEndMinute, maxEndMinute);
     
             const newEndTime = {
@@ -289,11 +289,14 @@ const DailyCell = (props) => {
     };
 
     const formatTime = (hour, minute) => {
+        if (hour === 24) {
+            hour = 0; // 24시를 0시로 변환
+        }
         const period = hour >= 12 ? '오후' : '오전';
         const formattedHour = (hour % 12) || 12; // 0시는 12시로 변환
         const formattedMinute = minute.toString().padStart(2, '0'); // 분을 두 자리로 맞추기
         return `${period} ${formattedHour}${minute === 0 ? '' : ':' + formattedMinute}`;
-    }; 
+    };
 
     return (
         <WeeklyCol>
@@ -312,7 +315,7 @@ const DailyCell = (props) => {
                     onDragStart={(e) => onDragCell(e)}
                     teacher={schedule.teacher}
                 >
-                    <p>{`${formatTime(schedule.startTime.hour, schedule.startTime.minute)}~${formatTime(schedule.endTime.hour, schedule.endTime.minute)}`}</p>
+                    <p>{`${formatTime(schedule.startTime.hour, schedule.startTime.minute)} ~ ${formatTime(schedule.endTime.hour, schedule.endTime.minute)}`}</p>
                     <p>{schedule.title}</p>
                     <ResizeHandle
                         className="resize-handle"
@@ -332,7 +335,7 @@ const WeeklyCol = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border-top: solid 1px #fff;
+    /* border-bottom: solid 1px #fff; */
     box-sizing: border-box;
 
     &:nth-child(4n + 1) {

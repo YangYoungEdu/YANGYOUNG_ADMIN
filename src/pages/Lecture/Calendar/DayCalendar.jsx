@@ -152,7 +152,7 @@ const HourCol = styled.div`
 
 const HourCell = styled.div`
   width: 100%;
-  height: 13.5px;
+  height: 12.5px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -174,11 +174,11 @@ const HourCell = styled.div`
 
 const WeeklyCol = styled.div`
   /* width: 120px; */
-  margin-top: 6px;
+  /* margin-top: 6px; */
   width: 80%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
   box-sizing: border-box;
 `;
