@@ -84,7 +84,7 @@ const WeeklyCell = (props) => {
         const intervals = get15MinIntervals(startTime, endTime);
 
         // 15분 단위로 높이 조정 
-        const heightInPixels = intervals * oneCellHeight - 22;
+        const heightInPixels = intervals * oneCellHeight;
         return `${heightInPixels}px`;
     };
 
@@ -328,6 +328,7 @@ const WeeklyCell = (props) => {
     );
 };
 
+//주간 캘린더 요일
 const WeekDiv = styled.div`
     display: flex;
     width: 100%;
@@ -345,6 +346,7 @@ const WeekDiv = styled.div`
     border-right: 1px solid var(--gray-gray-005, #FFF);
 `;
 
+//주간 캘린더 날짜
 const WeekDayDiv = styled.div`  
     display: flex;
     width: 100%;
@@ -360,6 +362,7 @@ const WeekDayDiv = styled.div`
     border-right: 1px solid var(--gray-gray-005, #FFF);
 `;
 
+//주간 캘린더 한 칸
 const WeeklyCellDiv = styled.div`
     width: 100%;
     height: 12.5px; //셀 한칸의 크기
@@ -390,7 +393,7 @@ const WeeklySchedule = styled.div`
     font-size: 12px;
     padding: 5px;
     border: solid 1px #111;
-    margin: 5px;
+    /* margin: 5px; */
     border-radius: 5px;
     z-index: 3;
     cursor: pointer;
