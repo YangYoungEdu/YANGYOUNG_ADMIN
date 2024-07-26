@@ -182,6 +182,7 @@ const AddForm = () => {
             <div className="label">담당 선생님</div>
             <div>
               <select id="teacher-select" value={teacher} onChange={onChangeNewAddFormState}>
+                <option value="">선택하세요</option>
                 <option value="김삼유">김삼유</option>
                 <option value="장영해">장영해</option>
                 <option value="전재우">전재우</option>
