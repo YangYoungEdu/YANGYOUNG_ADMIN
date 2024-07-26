@@ -5,7 +5,7 @@ import { ReactComponent as LeftArrow } from "../../Assets/LeftArrow.svg";
 import { ReactComponent as Plus } from "../../Assets/Plus.svg";
 import { ReactComponent as RightArrow } from "../../Assets/RightArrow.svg";
 import SelectArrow from "../../Assets/SelectArrow.svg";
-import { useCalendarState } from '../../stores/calendarState';
+import { useCalendarState } from "../../stores/calendarState";
 
 const LectrueHeader = ({
   mode,
@@ -23,9 +23,8 @@ const LectrueHeader = ({
     }
   }, [isToday]);
 
-	const [ calendarState, setCalendarState ] = useCalendarState();
-	const { date } = calendarState;
-
+  const [calendarState, setCalendarState] = useCalendarState();
+  const { date } = calendarState;
 
   // 모드(달,주,일)에 따라서 날짜 변경 함수
   const changeDate = (amount, mode) => {
@@ -35,15 +34,27 @@ const LectrueHeader = ({
     switch (mode) {
       case "month":
         newDate.setMonth(newDate.getMonth() + amount);
-        newDateCal = new Date(date.getFullYear(), date.getMonth() + amount, date.getDate());
+        newDateCal = new Date(
+          date.getFullYear(),
+          date.getMonth() + amount,
+          date.getDate()
+        );
         break;
       case "week":
         newDate.setDate(newDate.getDate() + amount * 7);
-        newDateCal = new Date(date.getFullYear(), date.getMonth(), date.getDate() + amount * 7);
+        newDateCal = new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate() + amount * 7
+        );
         break;
       case "day":
         newDate.setDate(newDate.getDate() + amount);
-        newDateCal = new Date(date.getFullYear(), date.getMonth(), date.getDate() + amount);
+        newDateCal = new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate() + amount
+        );
         break;
       default:
         break;
@@ -120,7 +131,6 @@ const CalendarHeader = styled(RowDiv)`
   box-sizing: border-box;
   margin-top: 41px;
   padding-bottom: 21px;
-  margin-bottom: 14px;
   padding-left: 15%;
   padding-right: 7%;
   border-bottom: 1px solid #e0e0e0;

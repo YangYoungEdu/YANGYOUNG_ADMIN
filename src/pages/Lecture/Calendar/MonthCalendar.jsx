@@ -3,11 +3,11 @@ import styled, { ThemeProvider } from "styled-components";
 import DayTimeTable from "../../../components/Lecture/DayTimeTable";
 import { theme } from "../../../style/theme";
 
-import '../../../style/css/app.css';
-import { getSchedule } from '../../../components/Lecture/UserDataController.jsx';
+import "../../../style/css/app.css";
+import { getSchedule } from "../../../components/Lecture/UserDataController.jsx";
 // store
-import { useCalendarState } from '../../../stores/calendarState.jsx';
-import { useUserData } from '../../../stores/userData.jsx';
+import { useCalendarState } from "../../../stores/calendarState.jsx";
+import { useUserData } from "../../../stores/userData.jsx";
 import MonthlyCell from "../../../components/Lecture/MonthlyCell.jsx";
 
 const MonthCalendar = ({
@@ -16,8 +16,10 @@ const MonthCalendar = ({
   isHighlight,
   setIsHighlight,
 }) => {
-  const [ calendarState, setCalendarState ] = useCalendarState();
-	const { date } = calendarState;
+  // 전역 변수로부터 현재 날짜를 가져옴
+  const [calendarState, setCalendarState] = useCalendarState();
+  const { date } = calendarState;
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const [days, setDays] = useState([]);
   const [filteredLectures, setFilteredLectures] = useState([]);
@@ -29,63 +31,68 @@ const MonthCalendar = ({
     { name: "전재우", color: "#BCD7EA" },
   ];
 
-	const [ weekDays ] = useState([ '일', '월', '화', '수', '목', '금', '토' ]);
-	const [ dates, setDates ] = useState([]); // 달력의 행
-	const [ userData ] = useUserData();
-	const { schedule } = userData; // 유저의 스케쥴
-	const [ curSchedule, setCurSchedule ] = useState([]); // 현재 달력 날짜 안에 포함된 스케쥴
+  const [weekDays] = useState(["월", "화", "수", "목", "금", "토", "일"]);
+  const [dates, setDates] = useState([]); // 달력의 행
+  const [userData] = useUserData();
+  const { schedule } = userData; // 유저의 스케쥴
+  const [curSchedule, setCurSchedule] = useState([]); // 현재 달력 날짜 안에 포함된 스케쥴
 
-	useEffect(
-		() => {
-			const { firstDate, lastDate } = getFirstAndLastDate();
-			setDates(makeCalendar(firstDate, lastDate));
-		},
-		[ date ]
-	);
+  const handleDateClick = (date) => {
+	setSelectedDate(date);
+  };
 
-	useEffect(
-		() => {
-			const { firstDate, lastDate } = getFirstAndLastDate();
-			setCurSchedule(getSchedule(firstDate, lastDate, schedule));
-		},
-		[ userData ]
-	);
+  //date, userData 변경될 때마다 캘린더와 스케줄 업데이트
+  useEffect(() => {
+    const { firstDate, lastDate } = getFirstAndLastDate();
+    setDates(makeCalendar(firstDate, lastDate));
+  }, [date]);
 
-	const getFirstAndLastDate = () => {
-		const year = date.getFullYear();
-		const month = date.getMonth();
-		let firstDate = new Date(year, month, 1);
-		firstDate = new Date(year, month, -firstDate.getDay() + 1);
-		let lastDate = new Date(year, month + 1, 0);
-		lastDate = new Date(year, month + 1, 6 - lastDate.getDay());
-		return { firstDate: firstDate, lastDate: lastDate };
-	};
+  useEffect(() => {
+    const { firstDate, lastDate } = getFirstAndLastDate();
+    setCurSchedule(getSchedule(firstDate, lastDate, schedule));
+  }, [userData]);
 
-	const makeCalendar = (firstDate, lastDate) => {
-		let tempDate = new Date(firstDate);
-		let newDates = [];
-		let index = 0;
-		while (tempDate.getMonth() !== lastDate.getMonth() || tempDate.getDate() !== lastDate.getDate()) {
-			if (index % 7 === 0) newDates[parseInt(index / 7)] = [];
-			newDates[parseInt(index / 7)].push(tempDate);
-			tempDate = new Date(tempDate.getFullYear(), tempDate.getMonth(), tempDate.getDate() + 1);
-			index++;
-		}
-		newDates[parseInt(index / 7)].push(tempDate); // 달력의 시작이 1일이고, 전 달이 30일로 끝나는 날 때문에 따로 배치
-		setCurSchedule(getSchedule(firstDate, lastDate, schedule));
-		return newDates.slice();
-	};
+   // 주어진 달의 첫 번째와 마지막 날짜 계산하여 반환
+   const getFirstAndLastDate = () => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    let firstDate = new Date(year, month, 1);
+    firstDate = new Date(firstDate.setDate(firstDate.getDate() - ((firstDate.getDay() + 6) % 7)));
+    let lastDate = new Date(year, month + 1, 0);
+    lastDate = new Date(lastDate.setDate(lastDate.getDate() + (7 - lastDate.getDay()) % 7));
+    return { firstDate: firstDate, lastDate: lastDate };
+  };
 
-	const getCurDateSchedule = (curDate) => {
-		const curDateSchedule = [];
-		curSchedule.forEach((date) => {
-			if (date.curDate.getTime() - curDate.getTime() === 0) {
-				curDateSchedule.push(date);
-			}
-		});
+  // 캘린더 생성 (주어진 시작 날짜와 끝 날짜 기준으로 날짜 배열)
+  const makeCalendar = (firstDate, lastDate) => {
+    let tempDate = new Date(firstDate);
+    let newDates = [];
+    let index = 0;
+    while (tempDate <= lastDate) {
+      if (index % 7 === 0) newDates[parseInt(index / 7)] = [];
+      newDates[parseInt(index / 7)].push(new Date(tempDate));
+      tempDate = new Date(
+        tempDate.getFullYear(),
+        tempDate.getMonth(),
+        tempDate.getDate() + 1
+      );
+      index++;
+    }
+    setCurSchedule(getSchedule(firstDate, lastDate, schedule));
+    return newDates.slice();
+  };
 
-		return curDateSchedule;
-	};
+  // 현재 날짜의 스케줄 가져오기
+  const getCurDateSchedule = (curDate) => {
+    const curDateSchedule = [];
+    curSchedule.forEach((date) => {
+      if (date.curDate.getTime() - curDate.getTime() === 0) {
+        curDateSchedule.push(date);
+      }
+    });
+
+    return curDateSchedule;
+  };
 
 	return (
 			<MonthlyView id="monthly-view">
@@ -97,24 +104,28 @@ const MonthCalendar = ({
 					))}
 				</DayRow>
 
-				{dates.map((a, i) => (
-					<MonthlyRow key={i}  className="monthly-row">
-						{a.map((b, j) => (
-              <MonthlyCell key={j} date={b} schedule={getCurDateSchedule(b)} />
-            ))}
-					</MonthlyRow>
-				))}
-			</MonthlyView>
-	);
+      {dates.map((a, i) => (
+        <MonthlyRow
+          key={i}
+          // className="monthly-row"
+        >
+          {a.map((b, j) => (
+            <MonthlyCell key={j} date={b} schedule={getCurDateSchedule(b)} 
+			isSelected={selectedDate && b.toDateString() === selectedDate.toDateString()}
+			onClick = {() => handleDateClick(b)}/>
+          ))}
+        </MonthlyRow>
+      ))}
+    </MonthlyView>
+  );
 };
 
 const MonthlyView = styled.div`
-  width: 840px;
+  width: 1120px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   margin-bottom: 50px;
-	
 `;
 
 const DayRow = styled.div`
@@ -122,27 +133,26 @@ const DayRow = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  border-bottom: solid 2px #111;
+  border-bottom: solid 4px #E0E0E0;
 `;
 
 const DayCell = styled.div`
-  width: 120px;
-  height: 60px;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  width: 160px;
+  height: 53px;
+
   box-sizing: border-box;
-  border-right: solid 1px #111;
-  border-top: solid 1px #111;
-	/* all: initial; */
-  
+
+  font-size: 20px;
+  font-weight: 500;
+
   &:nth-child(1) {
-    border-left: solid 1px #111;
-    color: #ef7a8b;
   }
 
   &:nth-child(7) {
-    color: #769bff;
   }
 `;
 
@@ -151,8 +161,7 @@ const MonthlyRow = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  border-bottom: solid 1px #111;
-	
+  border-bottom: solid 1px #E0E0E0;
 `;
 
 export default MonthCalendar;

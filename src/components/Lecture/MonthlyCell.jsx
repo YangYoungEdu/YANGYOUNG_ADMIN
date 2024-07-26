@@ -7,25 +7,23 @@ import { useUserData } from '../../stores/userData';
 import { useDragAndDrop } from '../../stores/dragAndDrop';
 import styled from 'styled-components';
 
-const MonthlyCell = (props) => {
-	const { date, schedule } = props;
-	const [ addFormState, setAddFormState ] = useAddFormState();
-	const { active } = addFormState;
-	const [ errorState, setErrorState ] = useErrorState();
-	const [ userData, setUserData ] = useUserData();
-	const [ dragAndDrop, setDragAndDrop ] = useDragAndDrop();
-	const [ curDateStr, setCurDateStr ] = useState('');
+const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
+  //   const { date, schedule } = props;
+  const [addFormState, setAddFormState] = useAddFormState();
+  const { active } = addFormState;
+  const [errorState, setErrorState] = useErrorState();
+  const [userData, setUserData] = useUserData();
+  const [dragAndDrop, setDragAndDrop] = useDragAndDrop();
+  const [curDateStr, setCurDateStr] = useState("");
+  //   const [isSelected, setIsSelected] = useState(false);
 
-	useEffect(
-		() => {
-			let newCurDateStr = date.getDate();
-			if (schedule.length !== 0) {
-				newCurDateStr += ' (' + schedule.length + ')';
-			}
-			setCurDateStr(newCurDateStr);
-		},
-		[ schedule ]
-	);
+  useEffect(() => {
+    let newCurDateStr = date.getDate();
+    if (schedule.length !== 0) {
+      newCurDateStr += " (" + schedule.length + ")";
+    }
+    setCurDateStr(newCurDateStr);
+  }, [schedule]);
 
 	//빈 셀 클릭후 일정 추가
 	const onClickDate = () => {
@@ -78,10 +76,14 @@ const MonthlyCell = (props) => {
 		}
 	};
 
-	const onDropSchedule = (e) => {
-		console.log("드로그", e);
+  const onDropSchedule = (e) => {
+    console.log("드로그", e);
 
-		const newSchedule = editDate(dragAndDrop.to, dragAndDrop.from, userData.schedule);
+    const newSchedule = editDate(
+      dragAndDrop.to,
+      dragAndDrop.from,
+      userData.schedule
+    );
 
 		if (newSchedule !== false) {
 			setUserData({ ...userData, schedule: newSchedule });
@@ -102,10 +104,10 @@ const MonthlyCell = (props) => {
 		}
 	};
 
-	const onDragCell = (e, schedule) => {
-		console.log("드로그", e);
-		setDragAndDrop({ ...dragAndDrop, from: schedule });
-	};
+  const onDragCell = (e, schedule) => {
+    console.log("드로그", e);
+    setDragAndDrop({ ...dragAndDrop, from: schedule });
+  };
 
 	const onDragEnterCell = (e) => {
 		const { title,teacher, startTime, endTime } = dragAndDrop.from;
@@ -113,13 +115,15 @@ const MonthlyCell = (props) => {
 		setDragAndDrop({ ...dragAndDrop, to: newScheduleForm });
 	};
 
-	return (
-		<MonthlyCellContainer 
-			// className="monthly-cell" 
-			onClick={onClickDate} 
-			onDragEnter={onDragEnterCell} 
-			onDragEnd={onDropSchedule}>
-			<p>{curDateStr}</p>
+  return (
+    <MonthlyCellContainer
+      // className="monthly-cell"
+      onClick={onClickDate}
+      //   onClick = {onClick}
+      onDragEnter={onDragEnterCell}
+      onDragEnd={onDropSchedule}
+    >
+      <DateText isSelected={isSelected}>{curDateStr}</DateText>
 
 			{schedule.map((a, i) => (
 				<MonthlyCellDiv
@@ -138,54 +142,70 @@ const MonthlyCell = (props) => {
 };
 
 const MonthlyCellContainer = styled.div`
-		width: 120px;
-		height: 120px;
-		display: flex;
-		flex-direction: column;
-		box-sizing: border-box;
-		border-right: solid 1px #111;
-		padding: 0px;
-		cursor: pointer;
-		overflow: scroll;
-		padding: 5px; 
-	/* all: initial;; */
-		/* cursor: grab;  */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-  & > p {
-    width: 100%;
-    background: #eee;
-    z-index: 3;
-    position: sticky;
-    top: 0;
-    margin: 0;
-  }
+  padding: 7px 12px 7px 12px;
+  width: 160px;
+  height: 144px;
+
+  box-sizing: border-box;
+  border-right: solid 1px #e0e0e0;
+
+  cursor: pointer;
+  overflow: scroll;
 
   &:nth-child(1) {
-    border-left: solid 1px #111;
+    border-left: solid 1px #e0e0e0;
   }
+`;
+
+const DateText = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+
+  width: 20%;
+  height: 21.9%;
+
+  z-index: 3;
+  position: sticky;
+  top: 0;
+
+  border-radius: 50%;
+
+  font-weight: 400;
+  font-size: 12px;
+
+  &:hover {
+    box-shadow: inset 0 0 0 1px #15521d;
+  }
+  background-color: ${({ isSelected }) => (isSelected ? "#15521d" : "inherit")};
+  color: ${({ isSelected }) => (isSelected ? "white" : "inherit")};
 `;
 
 const MonthlyCellDiv = styled.div`
-		padding: 5px;
-		font-size: 12px;
-		/* font-size: 50px; */
-		background: #111;
-		color: #eee;
-		border-radius: 5px;
-		z-index: 2;
-		margin-bottom: 10px;
-		cursor: grab;
-		/* all: initial; */
+  padding: 5px;
+  font-size: 12px;
+  /* font-size: 50px; */
+  background: #111;
+  color: #eee;
+  border-radius: 5px;
+  z-index: 2;
+  margin-bottom: 10px;
+  cursor: grab;
+  /* all: initial; */
 
-    &:hover {
-      opacity: 0.5;
-    }
+  &:hover {
+    opacity: 0.5;
+  }
 
-    & > p {
-      background: #111;
-      margin: 0;
-    }
+  & > p {
+    background: #111;
+    margin: 0;
+  }
 `;
-
 
 export default MonthlyCell;
