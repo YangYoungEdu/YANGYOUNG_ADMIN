@@ -105,6 +105,7 @@ const WeeklyCell = (props) => {
                 active: true,
                 mode: 'add',
                 title: '',
+                teacher: '',
                 curDate: date, // Date 객체 그대로 유지
                 startTime: { 
                     hour: propsHour, 
@@ -125,13 +126,14 @@ const WeeklyCell = (props) => {
     // 일정을 클릭하여 수정하는 함수
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
-        const { title, curDate, startTime, endTime } = schedule;
+        const { title, teacher, curDate, startTime, endTime } = schedule;
         if (!active && !isResizing) { // 리사이징 중일 때 클릭 방지
             setAddFormState({
                 ...addFormState,
                 active: true,
                 mode: 'edit',
                 title: title,
+                teacher:teacher,
                 curDate: curDate,
                 startTime: {...startTime},
                 endTime: {...endTime}
@@ -211,7 +213,7 @@ const WeeklyCell = (props) => {
         console.log('드래그', from);
         const diff = (from.endTime.hour * 60 + from.endTime.minute) - (from.startTime.hour * 60 + from.startTime.minute);
 
-        const newScheduleForm = { title: from.title, curDate: date,
+        const newScheduleForm = { title: from.title, teacher:from.teacher, curDate: date,
             startTime: {
                 ...from.startTime,
                 hour: propsHour,
@@ -397,7 +399,7 @@ const WeeklySchedule = styled.div`
     width: 100%;
     border-radius: 5px;
     background: rgba(216, 205, 99, 0.30);
-    padding: 5px;
+    padding: 5px 5px 5px 0;
     /* margin: 5px; */
     border-radius: 5px;
     z-index: 3;
