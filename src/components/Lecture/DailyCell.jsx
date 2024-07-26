@@ -105,6 +105,8 @@ const DailyCell = (props) => {
                 active: true,
                 mode: 'add',
                 lectureType: '',
+                name: '',
+                room: '',
                 teacher: '',
                 curDate: date, // Date 객체 그대로 유지
                 startTime: { 
@@ -126,13 +128,15 @@ const DailyCell = (props) => {
     // 일정을 클릭하여 수정하는 함수
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
-        const { lectureType, teacher, curDate, startTime, endTime } = schedule;
+        const { lectureType, name,room,teacher, curDate, startTime, endTime } = schedule;
         if (!active && !isResizing) { // 리사이징 중일 때 클릭 방지
             setAddFormState({
                 ...addFormState,
                 active: true,
                 mode: 'edit',
                 lectureType: lectureType,
+                name: name,
+                room:room,
                 teacher:teacher,
                 curDate: curDate,
                 startTime: {...startTime},
@@ -213,7 +217,7 @@ const DailyCell = (props) => {
         console.log('드래그', from);
         const diff = (from.endTime.hour * 60 + from.endTime.minute) - (from.startTime.hour * 60 + from.startTime.minute);
 
-        const newScheduleForm = { lectureType: from.lectureType, teacher:from.teacher, curDate: date,
+        const newScheduleForm = { lectureType: from.lectureType, name: from.name, room: from.room, teacher:from.teacher, curDate: date,
             startTime: {
                 ...from.startTime,
                 hour: propsHour,
@@ -316,7 +320,7 @@ const DailyCell = (props) => {
                     teacher={schedule.teacher}
                 >
                     <p>{`${formatTime(schedule.startTime.hour, schedule.startTime.minute)} ~ ${formatTime(schedule.endTime.hour, schedule.endTime.minute)}`}</p>
-                    <p>{schedule.lectureType}</p>
+                    <p>{schedule.name}</p>
                     <ResizeHandle
                         className="resize-handle"
                         onMouseDown={(e) => onResizeMouseDown(e, schedule)}

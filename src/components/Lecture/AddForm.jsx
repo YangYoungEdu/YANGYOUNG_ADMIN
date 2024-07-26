@@ -14,12 +14,14 @@ const AddForm = () => {
 
   const [newAddFormState, setNewAddFormState] = useState({
     lectureType: '',
+    name: '',
+    room: '',
     teacher: '',
     curDate: new Date(),
     startTime: { hour: 0, minute: 0, second: 0, nano: 0 },
     endTime: { hour: 1, minute: 0, second: 0, nano: 0 }
   });
-  const { lectureType, teacher, curDate, startTime, endTime } = newAddFormState;
+  const { lectureType, name, room, teacher, curDate, startTime, endTime } = newAddFormState;
   const [userData, setUserData] = useUserData();
   const { schedule } = userData;
   const [beforeEdit, setBeforeEdit] = useState();
@@ -27,16 +29,18 @@ const AddForm = () => {
 
   useEffect(() => {
     if (active) {
-      const { lectureType,teacher, curDate, startTime, endTime } = addFormState;
+      const { lectureType,name, room, teacher, curDate, startTime, endTime } = addFormState;
       setNewAddFormState({
         lectureType: lectureType || '',
-        teacher: teacher || '김삼유',
+        name:name|| '' , 
+        room: room|| '',
+        teacher: teacher || '',
         curDate: curDate || new Date(),
         startTime: startTime || { hour: 0, minute: 0, second: 0, nano: 0 },
         endTime: endTime || { hour: 1, minute: 0, second: 0, nano: 0 }
       });
       if (mode === 'edit') {
-        setBeforeEdit({ lectureType, teacher, curDate, startTime, endTime });
+        setBeforeEdit({ lectureType, name, room, teacher, curDate, startTime, endTime });
       }
     }
   }, [active, addFormState, mode]);
@@ -52,6 +56,12 @@ const AddForm = () => {
     switch (id) {
       case 'input-lectureType':
         setNewAddFormState({ ...newAddFormState, lectureType: value });
+        break;
+      case 'input-name':
+        setNewAddFormState({ ...newAddFormState, name: value });
+        break;
+      case 'input-room':
+        setNewAddFormState({ ...newAddFormState, room: value });
         break;
       case 'teacher-select':
         setNewAddFormState({
@@ -161,8 +171,12 @@ const AddForm = () => {
         <div id="add-form">
           <div id="add-form-title">{mode === 'add' ? '일정 추가' : '일정 수정'}</div>
           <div id="input-form">
-            <div className="label">제목</div>
+            <div className="label">타입</div>
             <input id="input-lectureType" value={lectureType} onChange={onChangeNewAddFormState} />
+          </div>
+          <div id="input-form">
+            <div className="label">이름</div>
+            <input id="input-name" value={name} onChange={onChangeNewAddFormState} />
           </div>
           <div id="teacher-picker-form">
             <div className="label">담당 선생님</div>
@@ -174,6 +188,11 @@ const AddForm = () => {
               </select>
             </div>
           </div>
+          <div id="input-form">
+            <div className="label">강의실</div>
+            <input id="input-room" value={room} onChange={onChangeNewAddFormState} />
+          </div>
+
           <div id="date-picker-form">
             <div className="label">날짜</div>
             <div id="date-picker">

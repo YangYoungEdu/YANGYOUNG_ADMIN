@@ -40,6 +40,8 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 				active: true,
 				mode: 'add',
 				lectureType: '',
+				name: '',
+				room: '',
 				teacher: '',
 				curDate: date, // Date 객체 그대로 유지
 				startTime: { 
@@ -60,7 +62,7 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 	//일정 클릭 후 수정
 	const onClickSchedule = (e, schedule) => {
 		e.stopPropagation();
-		const { lectureType, teacher, curDate, startTime, endTime } = schedule;
+		const { lectureType, name, room, teacher, curDate, startTime, endTime } = schedule;
 
 		if (!active) {
 			setAddFormState({
@@ -68,6 +70,8 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 				active: true,
 				mode: 'edit',
 				lectureType: lectureType,
+				name: name,
+				room: room,
 				teacher: teacher,
 				curDate: curDate,
 				startTime: { ...startTime}, // 새로운 시간 형식 적용
@@ -110,8 +114,8 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
   };
 
 	const onDragEnterCell = (e) => {
-		const { lectureType,teacher, startTime, endTime } = dragAndDrop.from;
-		const newScheduleForm = { lectureType: lectureType, teacher:teacher, curDate: date, startTime: { ... startTime}, endTime: { ... endTime} };
+		const { lectureType,name, room, teacher, startTime, endTime } = dragAndDrop.from;
+		const newScheduleForm = { lectureType: lectureType, name:name, room:room, teacher:teacher, curDate: date, startTime: { ... startTime}, endTime: { ... endTime} };
 		setDragAndDrop({ ...dragAndDrop, to: newScheduleForm });
 	};
 
@@ -134,7 +138,7 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 					onDragStart={(e) => onDragCell(e, a)}
 				>
 					<p>{a.startTime.hour+':'+a.startTime.minute+'~'+a.endTime.hour+':'+a.endTime.minute}</p>
-					<p>{a.lectureType}</p>
+					<p>{a.name}</p>
 				</MonthlyCellDiv>
 			))}
 		</MonthlyCellContainer>
