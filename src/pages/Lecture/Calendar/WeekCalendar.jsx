@@ -149,7 +149,7 @@ const WeekCalendar = ({ currentDate, lectures }) => {
 };
 
 export const WeeklyView = styled.div`
-   width: 900px;
+   /* width: 900px;  */
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -162,12 +162,10 @@ export const HourCol = styled.div`
     width: 60px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
-    border-right: solid 0.5px #111;
-    border-top: solid 0.5px #111;
-    border-left: solid 0.5px #111;
-    border-bottom: solid 0.5px #111;
+    border-right: solid 0.5px #E0E0E0;
+    /* border-bottom: solid 0.5px #E0E0E0; */
     box-sizing: border-box;
 `;
 
@@ -180,27 +178,34 @@ export const HourCell = styled.div`
   align-items: center;
   box-sizing: border-box;
 
+	color: var(--gray-gray-006, #555);
+	text-align: right;
+	font-family: "Pretendard Variable";
+	font-size: 10px;
+	font-style: normal;
+	font-weight: 400;
+	line-height: normal;
+
   &:nth-child(1) {
-    height: 30px;
+    height: 33px;
   }
 
   &:nth-child(2) {
-    height: 30px;
-    border-bottom: solid 2px #111;
+    height: 33px;
+    /* border-bottom: solid 2px #E0E0E0; */
   }
 `;
 
 // 주간 열
 export const WeeklyCol = styled.div`
-    width: 120px;
+    width: 151.159px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
-    border-right: solid 0.5px #111;
-    border-top: solid 0.5px #111;
-    border-bottom: solid 0.5px #111;
+    border-right: solid 0.5px #E0E0E0;
     box-sizing: border-box;
+
 `;
 
 export default WeekCalendar;

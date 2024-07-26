@@ -286,17 +286,17 @@ const WeeklyCell = (props) => {
 
     if (index === 0) {
         return (
-            <div className={'weekly-cell'}>
+            <WeekDiv className={'weekly-cell'}>
                 {day}
-            </div>
+            </WeekDiv>
         );
     }
 
     if (index === 1)
         return (
-            <div className={'weekly-cell'}>
+            <WeekDayDiv className={'weekly-cell'}>
                 {date.getDate()}
-            </div>
+            </WeekDayDiv>
         );
 
     return (
@@ -326,6 +326,37 @@ const WeeklyCell = (props) => {
     );
 };
 
+const WeekDiv = styled.div`
+    display: flex;
+    width: 100%;
+    justify-content: center;
+
+    color: var(--gray-gray-006, #555);
+    font-family: "Pretendard Variable";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    padding-top: 9px;
+    padding-bottom: 6px;
+    border-left: 1px solid var(--gray-gray-005, #FFF);
+    border-right: 1px solid var(--gray-gray-005, #FFF);
+`;
+
+const WeekDayDiv = styled.div`  
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    color: var(--gray-gray-006, #555);
+    font-family: "Pretendard Variable";
+    font-size: 26px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-bottom: 24px;
+    border-left: 1px solid var(--gray-gray-005, #FFF);
+    border-right: 1px solid var(--gray-gray-005, #FFF);
+`;
 
 const WeeklyCellDiv = styled.div`
     width: 100%;
@@ -335,25 +366,17 @@ const WeeklyCellDiv = styled.div`
     box-sizing: border-box;
     cursor: pointer;
     overflow: visible;
-    
-    &:nth-child(1) {
-    display: flex;
-    align-items: center;
-    height: 30px;
-    }
 
-    &:nth-child(2) {
-    display: flex;
-    align-items: center;
-    height: 30px;
-    border-bottom: solid 2px black;
+    &:nth-child(3) {
+        border-top: 1px solid var(--gray-gray-005, #BABABA);
     }
 
     &:nth-child(n + 3) {
-    border-bottom: solid 1px #111;
+    border-bottom: solid 1px #E0E0E0;
     }
 `;
 
+//일정 
 const WeeklySchedule = styled.div`
     display: flex;
     flex-direction: column;
@@ -380,6 +403,7 @@ const WeeklySchedule = styled.div`
     }
 `;
 
+//리사이징
 const ResizeHandle = styled.div`
     width: 100%;
     height: 10px;
@@ -394,10 +418,10 @@ const ResizingSchedule = styled(WeeklySchedule)`
   cursor: ns-resize !important;
 `;
 
-const ResizingBody = styled.body`
-    &.resizing {
-    cursor: ns-resize !important;
-    }
-`;
+// const ResizingBody = styled.body`
+//     &.resizing {
+//     cursor: ns-resize !important;
+//     }
+// `;
 
 export default WeeklyCell;
