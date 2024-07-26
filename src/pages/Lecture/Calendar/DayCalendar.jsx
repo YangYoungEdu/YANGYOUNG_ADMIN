@@ -175,7 +175,7 @@ const HourCell = styled.div`
 const WeeklyCol = styled.div`
   /* width: 120px; */
   margin-top: 6px;
-  width: 100%;
+  width: 80%;
   display: flex;
   flex-direction: column;
   justify-content: center;

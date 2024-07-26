@@ -323,7 +323,6 @@ const WeeklyCol = styled.div`
     justify-content: center;
     align-items: center;
     border-top: solid 1px #fff;
-    /* border-bottom: solid 0.5px #111; */
     box-sizing: border-box;
 
     &:nth-child(4n + 1) {
@@ -347,33 +346,52 @@ const WeeklyCell = styled.div`
     const WeeklySchedule = styled.div`
     display: flex;
     flex-direction: column;
-    width: 120px;
-    background: #111;
-    color: #eee;
-    font-size: 12px;
-    padding: 5px;
-    border: solid 1px #111;
-    margin: 5px;
+    width: 100%;
     border-radius: 5px;
+    background: rgba(149, 194, 92, 0.30);
+    color: black;
+    font-size: 12px;
+    padding: 6px 0px;
+
+    border-left: solid 4px #95C25C;
     z-index: 3;
     cursor: pointer;
     position: relative;
+    overflow: scroll;
+
+    color: #000;
+    font-family: "Pretendard Variable";
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
 
     &:hover {
     opacity: 0.5;
     }
 
     p {
-    width: 100px;
-    margin: 0;
-    overflow: scroll;
+        margin: 0;  
+        padding-left: 12px;
+
+    }
+
+    &>p:first-child{
+        padding-top: 5px;
+        padding-bottom: 7px;
+        color: #000;
+        font-family: "Pretendard Variable";
+        font-size: 13px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
     }
 `;
 
 const ResizeHandle = styled.div`
     width: 100%;
     height: 10px;
-    background: rgba(0, 0, 0, 0.2);
+    background-color: transparent;
     cursor: ns-resize;
     position: absolute;
     bottom: 0;
