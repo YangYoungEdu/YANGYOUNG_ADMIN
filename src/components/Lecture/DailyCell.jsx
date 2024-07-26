@@ -288,6 +288,13 @@ const DailyCell = (props) => {
         setIsResizing(true);
     };
 
+    const formatTime = (hour, minute) => {
+        const period = hour >= 12 ? '오후' : '오전';
+        const formattedHour = (hour % 12) || 12; // 0시는 12시로 변환
+        const formattedMinute = minute.toString().padStart(2, '0'); // 분을 두 자리로 맞추기
+        return `${period} ${formattedHour}${minute === 0 ? '' : ':' + formattedMinute}`;
+    }; 
+
     return (
         <WeeklyCol>
         <WeeklyCell className="weekly-cell" 
@@ -305,7 +312,7 @@ const DailyCell = (props) => {
                     onDragStart={(e) => onDragCell(e)}
                     teacher={schedule.teacher}
                 >
-                    <p>{schedule.startTime.hour + ':' + schedule.startTime.minute + '~' + schedule.endTime.hour + ':' + schedule.endTime.minute}</p>
+                    <p>{`${formatTime(schedule.startTime.hour, schedule.startTime.minute)}~${formatTime(schedule.endTime.hour, schedule.endTime.minute)}`}</p>
                     <p>{schedule.title}</p>
                     <ResizeHandle
                         className="resize-handle"
@@ -417,7 +424,6 @@ const WeeklyCell = styled.div`
 const ResizeHandle = styled.div`
     width: 100%;
     height: 10px;
-    background-color: transparent;
     cursor: ns-resize;
     position: absolute;
     bottom: 0;

@@ -292,7 +292,7 @@ const WeeklyCell = (props) => {
         const period = hour >= 12 ? '오후' : '오전';
         const formattedHour = (hour % 12) || 12; // 0시는 12시로 변환
         const formattedMinute = minute.toString().padStart(2, '0'); // 분을 두 자리로 맞추기
-        return `${period} ${formattedHour}시${minute === 0 ? '' : ':' + formattedMinute}`;
+        return `${period} ${formattedHour}${minute === 0 ? '' : ':' + formattedMinute}`;
     }; 
 
     if (index === 0) {
