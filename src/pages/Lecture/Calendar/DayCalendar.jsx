@@ -10,13 +10,6 @@ import styled from 'styled-components';
 
 //15분 간격 배열 추가
 export const times = [
-	'00:00', '00:15', '00:30', '00:45',
-	'01:00', '01:15', '01:30', '01:45',
-	'02:00', '02:15', '02:30', '02:45',
-	'03:00', '03:15', '03:30', '03:45',
-	'04:00', '04:15', '04:30', '04:45',
-	'05:00', '05:15', '05:30', '05:45',
-	'06:00', '06:15', '06:30', '06:45',
 	'07:00', '07:15', '07:30', '07:45',
 	'08:00', '08:15', '08:30', '08:45',
 	'09:00', '09:15', '09:30', '09:45',
@@ -40,7 +33,7 @@ const DayCalendar = ({ currentDate, lectureOfDay }) => {
   const [calendarState, setCalendarState] = useCalendarState();
   const { date } = calendarState;
 
-  const [timeTable, setTimeTable] = useState(['', '', ...times]);
+  const [timeTable, setTimeTable] = useState([...times]);
 
   const [userData, setUserData] = useUserData();
   const { schedule } = userData;
@@ -93,20 +86,27 @@ const DayCalendar = ({ currentDate, lectureOfDay }) => {
   for (let i = 0; i < curSchedule.length; i++) {
 
     if (curDate.getTime() === curSchedule[i].curDate.getTime() && curSchedule[i].startTime.hour === propsHour && to15MinRange(curSchedule[i].startTime.minute) === propsMin ) {
-      curDateSchedule = curSchedule[i];
-      break;
+        curDateSchedule = curSchedule[i];
+        break;
+      }
     }
-  }
 
-  return curDateSchedule;
-};
+    return curDateSchedule;
+  };
+
+  function formatTime(time) {
+    const [hours, minutes] = time.split(':').map(Number);
+    const period = hours < 12 ? '오전' : '오후';
+    const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
+    return `${period} ${formattedHours}시`;
+  }
 
   return (
       <WeeklyView id="weekly-view"> {/* 일간 보기로 변경 */}
           <HourCol className="hour-col">
               {timeTable.map((a, i) => (
                   <HourCell key={i} className="hour-cell">
-                      {a}
+                      {formatTime(a)}
                   </HourCell>
               ))}
           </HourCol>
@@ -130,11 +130,13 @@ const DayCalendar = ({ currentDate, lectureOfDay }) => {
 };
 
 const WeeklyView = styled.div`
-  width: 900px;
+  /* width: 900px; */
+  width: 85%;
   display: flex;
   flex-direction: row;
   justify-content: center;
   box-sizing: border-box;
+  padding-top: 7px;
   margin-bottom: 50px;
 `;
 
@@ -142,93 +144,43 @@ const HourCol = styled.div`
   width: 60px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
-  border: solid 0.5px #111;
+  /* border: solid 0.5px #111; */
   box-sizing: border-box;
 `;
 
 const HourCell = styled.div`
   width: 100%;
-  height: 50px;
+  height: 13.5px;
   display: flex;
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
 
-  &:nth-child(1) {
-    height: 30px;
-  }
+  color: var(--gray-gray-005, #fff);
+  text-align: right;
+  font-family: "Pretendard Variable";
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  /* border-top: solid 1px #BABABA; */
 
-  &:nth-child(2) {
-    height: 30px;
-    border-bottom: solid 2px #111;
+  &:nth-child(4n + 1) {
+		color: var(--gray-gray-006, #BABABA);
   }
 `;
 
 const WeeklyCol = styled.div`
-  width: 120px;
+  /* width: 120px; */
+  margin-top: 6px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-right: solid 0.5px #111;
-  border-top: solid 0.5px #111;
-  border-bottom: solid 0.5px #111;
   box-sizing: border-box;
-`;
-
-const WeeklyCell = styled.div`
-  width: 100%;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  box-sizing: border-box;
-  cursor: pointer;
-  overflow: visible;
-
-  &:nth-child(1) {
-    display: flex;
-    align-items: center;
-    height: 30px;
-  }
-
-  &:nth-child(2) {
-    display: flex;
-    align-items: center;
-    height: 30px;
-    border-bottom: solid 2px black;
-  }
-
-  &:nth-child(n + 3) {
-    border-bottom: solid 1px #111;
-  }
-`;
-
-const WeeklySchedule = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 120px;
-  background: #111;
-  color: #eee;
-  font-size: 12px;
-  padding: 5px;
-  border: solid 1px #111;
-  margin: 5px;
-  border-radius: 5px;
-  z-index: 3;
-  cursor: pointer;
-  position: relative;
-
-  &:hover {
-    opacity: 0.5;
-  }
-
-  p {
-    width: 100px;
-    margin: 0;
-    overflow: scroll;
-  }
 `;
 
 export default DayCalendar;
