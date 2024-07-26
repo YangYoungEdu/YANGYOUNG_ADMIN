@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import styled from 'styled-components';
 // import '../../style/css/app.css';
 import { insertDate, deleteDate, editDate } from './UserDataController.jsx';
 // store
 import { useAddFormState } from '../../stores/addFormState.jsx';
 import { useUserData } from '../../stores/userData.jsx';
 import { useErrorState } from '../../stores/errorState.jsx';
+import AddGenericTable from './AddGenericTable.jsx';
+import AddStudentSearch from './AddStudentSearch.jsx';
 
 const AddForm = () => {
   const [addFormState, setAddFormState] = useAddFormState();
@@ -28,9 +31,26 @@ const AddForm = () => {
   const [beforeEdit, setBeforeEdit] = useState();
   const [errorState, setErrorState] = useErrorState();
 
+  // 학생 선택
+  const [searchData, setSearchData] = useState([]);
+  const [searchDataCount, setSearchDataCount] = useState(0);
+  const [searchKeyword, setSearchKeyword] = useState({
+    nameList: [],
+    schoolList: [],
+    gradeList: [],
+  });
+  const [selectedStudent, setSelectedStudent] =useState();
+
+  useEffect(()=>{
+    console.log('학번', selectedStudent);
+  },[selectedStudent])
+
   useEffect(() => {
+
     if (active) {
       const { lectureCode,name, room, teacher, curDate, startTime, endTime , studentList} = addFormState;
+      console.log('스케줄 확인', studentList);
+
       setNewAddFormState({
         lectureCode: lectureCode || '',
         name:name|| '' , 
@@ -42,6 +62,7 @@ const AddForm = () => {
         studentList: studentList || []
       });
       if (mode === 'edit') {
+
         setBeforeEdit({ lectureCode, name, room, teacher, curDate, startTime, endTime , studentList});
       }
     }
@@ -95,6 +116,7 @@ const AddForm = () => {
           endTime: { ...endTime, minute: intValue }
         });
         break;
+
       default:
         break;
     }
@@ -105,11 +127,15 @@ const AddForm = () => {
   };
 
   const onClickAdd = () => {
-    // if (lectureCode === '') return;
+    // 학생 리스트를 newAddFormState에 추가
+    const updatedFormState = {
+      ...newAddFormState,
+      studentList: selectedStudent
+    };
 
-    const newSchedule = insertDate(newAddFormState, schedule);
+    const newSchedule = insertDate(updatedFormState, schedule);
     if (newSchedule !== false) {
-			console.log("일정추가", newAddFormState);
+			console.log("일정추가", updatedFormState);
       setUserData({ ...userData, schedule: newSchedule });
       setAddFormState({ ...addFormState, active: false });
       setErrorState({
@@ -133,7 +159,12 @@ const AddForm = () => {
   const onClickEdit = () => {
     // if (lectureCode === '') return;
 
-    const newSchedule = editDate(newAddFormState, beforeEdit, schedule);
+    const updatedFormState = {
+      ...newAddFormState,
+      studentList: selectedStudent
+    };
+
+    const newSchedule = editDate(updatedFormState, beforeEdit, schedule);
 
     if (newSchedule !== false) {
       setUserData({ ...userData, schedule: newSchedule });
@@ -164,6 +195,24 @@ const AddForm = () => {
       mode: 'delete',
       message: [['일정이 삭제 되었습니다.']]
     });
+  };
+
+  // 학생 리스트 추가
+  const handleCheckboxChange = (id) => {
+    console.log('id 확인', id);
+    setSelectedStudent((prevSelectedStudent) => {
+      if (prevSelectedStudent.includes(id)) {
+        console.log('있음');
+        // 배열에서 해당 id를 제거
+        return prevSelectedStudent.filter((studentId) => studentId !== id);
+      } else {
+        console.log('없음');
+        // 배열에 해당 id를 추가
+        return [...prevSelectedStudent, id];
+      }
+    });
+
+    setNewAddFormState({ ...newAddFormState, studentList: selectedStudent });
   };
 
   if (!active) return null;
@@ -243,6 +292,25 @@ const AddForm = () => {
               </select>
               분
             </div>
+          </div>
+          <div id= 'select-student'>
+            {/* 검색 영역 */}
+            <AddStudentSearch
+              searchKeyword={searchKeyword}
+              setSearchKeyword={setSearchKeyword}
+            />
+            {/* 테이블 */}
+            <AddGenericTable 
+              searchData={searchData}
+              setSearchData={setSearchData}
+              searchDataCount={searchDataCount}
+              setSearchDataCount={setSearchDataCount}
+              searchKeyword={searchKeyword}
+              handleCheckboxChange={handleCheckboxChange}
+              selectedStudent={selectedStudent}
+              active={active}
+              setSelectedStudent={setSelectedStudent}
+            />
           </div>
           <div id="option-form">
             <div id="cancel-btn" className="btn" onClick={onClickCancel}>
