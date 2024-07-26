@@ -324,6 +324,7 @@ const WeeklyCell = (props) => {
                 onClick={(e) => onClickSchedule(e, schedule)}
                 draggable
                 onDragStart={(e) => onDragCell(e)}
+                teacher= {schedule.teacher}
             >
                 <p>{`${formatTime(schedule.startTime.hour, schedule.startTime.minute)}~${formatTime(schedule.endTime.hour, schedule.endTime.minute)}`}</p>
                 <p>{schedule.title}</p>
@@ -398,7 +399,19 @@ const WeeklySchedule = styled.div`
     flex-direction: column;
     width: 100%;
     border-radius: 5px;
-    background: rgba(216, 205, 99, 0.30);
+
+    background: ${(props) => {
+    switch (props.teacher) {
+        case "김삼유":
+        return "rgba(149, 194, 92, 0.30)";
+        case "장영해":
+        return "rgba(216, 205, 99, 0.30)";
+        case "전재우":
+        return "rgba(188, 215, 234, 0.30)";
+        default:
+        return "#95c25c";
+    }
+    }};
     padding: 5px 5px 5px 0;
     /* margin: 5px; */
     border-radius: 5px;
@@ -406,7 +419,18 @@ const WeeklySchedule = styled.div`
     cursor: pointer;
     position: relative;
     overflow: scroll;
-    border-left: solid 4px #D8CD63;
+    border-left: solid 4px ${(props) => {
+    switch (props.teacher) {
+        case "김삼유":
+        return "#95C25C";
+        case "장영해":
+        return "#D8CD63";
+        case "전재우":
+        return  "#BCD7EA"
+        default:
+        return "#95c25c";
+    }
+    }};
 
     &:hover {
     opacity: 0.5;

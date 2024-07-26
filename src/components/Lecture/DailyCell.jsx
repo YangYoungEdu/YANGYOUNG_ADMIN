@@ -303,6 +303,7 @@ const DailyCell = (props) => {
                     onClick={(e) => onClickSchedule(e, schedule)}
                     draggable
                     onDragStart={(e) => onDragCell(e)}
+                    teacher={schedule.teacher}
                 >
                     <p>{schedule.startTime.hour + ':' + schedule.startTime.minute + '~' + schedule.endTime.hour + ':' + schedule.endTime.minute}</p>
                     <p>{schedule.title}</p>
@@ -350,12 +351,35 @@ const WeeklyCell = styled.div`
     flex-direction: column;
     width: 100%;
     border-radius: 5px;
-    background: rgba(149, 194, 92, 0.30);
+    background: ${(props) => {
+    switch (props.teacher) {
+        case "김삼유":
+        return "rgba(149, 194, 92, 0.30)";
+        case "장영해":
+        return "rgba(216, 205, 99, 0.30)";
+        case "전재우":
+        return "rgba(188, 215, 234, 0.30)";
+        default:
+        return "#95c25c";
+    }
+    }};
     color: black;
     font-size: 12px;
     padding: 6px 0px;
 
-    border-left: solid 4px #95C25C;
+    border-left: solid 4px ${(props) => {
+    switch (props.teacher) {
+        case "김삼유":
+        return "#95C25C";
+        case "장영해":
+        return "#D8CD63";
+        case "전재우":
+        return  "#BCD7EA"
+        default:
+        return "#95c25c";
+    }
+    }};
+    
     z-index: 3;
     cursor: pointer;
     position: relative;
