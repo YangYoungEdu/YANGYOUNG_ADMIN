@@ -63,28 +63,33 @@ const WeekCalendar = ({ currentDate, lectures }) => {
 		const year = date.getFullYear();
 		const month = date.getMonth();
 		const day = date.getDay();
-		const firstDate = new Date(year, month, date.getDate() - day);
-		const lastDate = new Date(year, month, date.getDate() + (6 - day));
-		return { firstDate: firstDate, lastDate: lastDate };
+
+		//월요일부터 시작
+		const firstDate = new Date(year, month, date.getDate() - (day === 0 ? 6 : day - 1));
+		const lastDate = new Date(year, month, firstDate.getDate() + 6);
+		return { firstDate, lastDate };
 	};
 
 	const makeCalendar = (firstDate, lastDate) => {
-		let tempDate = new Date(firstDate);
-		const newDates = [ [ '일' ], [ '월' ], [ '화' ], [ '수' ], [ '목' ], [ '금' ], [ '토' ] ];
-		const tempTime = times;  //15분 간격 배열 추가
-		
-		let index = 0;
-		while (tempDate.getDate() !== lastDate.getDate()) {
-			newDates[index].push(tempDate);
-			newDates[index] = newDates[index].concat(tempTime);
-			tempDate = new Date(tempDate.getFullYear(), tempDate.getMonth(), tempDate.getDate() + 1);
-			index++;
-		}
-		newDates[index].push(tempDate);
-		newDates[index] = newDates[index].concat(tempTime);
-		setCurSchedule(getSchedule(firstDate, lastDate, schedule));
-		return newDates.slice();
-	};
+    let tempDate = new Date(firstDate);
+    const newDates = [
+        ['월'], ['화'], ['수'], ['목'], ['금'], ['토'], ['일']
+    ];
+    const tempTime = times; // 15분 간격 배열 추가
+    
+    let index = 0;
+    while (tempDate <= lastDate) {
+        if (index < newDates.length) {
+            newDates[index].push(tempDate); // 해당 날짜를 새로운 배열에 추가
+            newDates[index] = newDates[index].concat(tempTime); // 시간 간격 배열 추가
+        }
+        tempDate = new Date(tempDate.getFullYear(), tempDate.getMonth(), tempDate.getDate() + 1);
+        index++;
+    }
+    
+    return newDates.slice();
+};
+
 
 	const getCurDateSchedule = (curDate, startHour) => {
 		let curDateSchedule = null;
@@ -123,7 +128,7 @@ const WeekCalendar = ({ currentDate, lectures }) => {
 			<HourCol className="hour-col">
 				{timeTable.map((a, i) => (
 					<HourCell key={i} className="hour-cell">
-						 <span>{formatTime(a)}</span>
+						<span>{formatTime(a)}</span>
 					</HourCell>
 				))}
 			</HourCol>
