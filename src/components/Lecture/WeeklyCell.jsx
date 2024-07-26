@@ -84,7 +84,7 @@ const WeeklyCell = (props) => {
         const intervals = get15MinIntervals(startTime, endTime);
 
         // 15분 단위로 높이 조정 
-        const heightInPixels = intervals * oneCellHeight;
+        const heightInPixels = intervals * oneCellHeight-22;
         return `${heightInPixels}px`;
     };
 
@@ -286,6 +286,13 @@ const WeeklyCell = (props) => {
         setIsResizing(true);
     };
 
+    const formatTime = (hour, minute) => {
+        const period = hour >= 12 ? '오후' : '오전';
+        const formattedHour = (hour % 12) || 12; // 0시는 12시로 변환
+        const formattedMinute = minute.toString().padStart(2, '0'); // 분을 두 자리로 맞추기
+        return `${period} ${formattedHour}시${minute === 0 ? '' : ':' + formattedMinute}`;
+    }; 
+
     if (index === 0) {
         return (
             <WeekDiv className={'weekly-cell'}>
@@ -316,7 +323,7 @@ const WeeklyCell = (props) => {
                 draggable
                 onDragStart={(e) => onDragCell(e)}
             >
-                <p>{`${schedule.startTime.hour}:${schedule.startTime.minute}~${schedule.endTime.hour}:${schedule.endTime.minute}`}</p>
+                <p>{`${formatTime(schedule.startTime.hour, schedule.startTime.minute)}~${formatTime(schedule.endTime.hour, schedule.endTime.minute)}`}</p>
                 <p>{schedule.title}</p>
                 <ResizeHandle
                 onMouseDown={(e) => onResizeMouseDown(e, schedule)}
@@ -387,26 +394,43 @@ const WeeklyCellDiv = styled.div`
 const WeeklySchedule = styled.div`
     display: flex;
     flex-direction: column;
-    width: 120px;
-    background: #111;
-    color: #eee;
-    font-size: 12px;
+    width: 100%;
+    border-radius: 5px;
+    background: rgba(216, 205, 99, 0.30);
     padding: 5px;
-    border: solid 1px #111;
     /* margin: 5px; */
     border-radius: 5px;
     z-index: 3;
     cursor: pointer;
     position: relative;
+    overflow: scroll;
+    border-left: solid 4px #D8CD63;
 
     &:hover {
     opacity: 0.5;
     }
 
     p {
-    width: 100px;
-    margin: 0;
-    overflow: scroll;
+        margin: 0;
+        padding-left: 12px;
+        /* padding-top:7% ; */
+        color: #000;
+        font-family: "Pretendard Variable";
+        font-size: 15px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: normal;
+    }
+
+    p:first-child{
+        color: #000;
+        font-family: "Pretendard Variable";
+        font-size: 13px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        padding-top:7% ;
+        padding-bottom: 7px;
     }
 `;
 
@@ -414,7 +438,6 @@ const WeeklySchedule = styled.div`
 const ResizeHandle = styled.div`
     width: 100%;
     height: 10px;
-    background: rgba(0, 0, 0, 0.2);
     cursor: ns-resize;
     position: absolute;
     bottom: 0;
