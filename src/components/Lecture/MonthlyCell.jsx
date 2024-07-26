@@ -7,14 +7,15 @@ import { useUserData } from "../../stores/userData";
 import { useDragAndDrop } from "../../stores/dragAndDrop";
 import styled from "styled-components";
 
-const MonthlyCell = (props) => {
-  const { date, schedule } = props;
+const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
+  //   const { date, schedule } = props;
   const [addFormState, setAddFormState] = useAddFormState();
   const { active } = addFormState;
   const [errorState, setErrorState] = useErrorState();
   const [userData, setUserData] = useUserData();
   const [dragAndDrop, setDragAndDrop] = useDragAndDrop();
   const [curDateStr, setCurDateStr] = useState("");
+  //   const [isSelected, setIsSelected] = useState(false);
 
   useEffect(() => {
     let newCurDateStr = date.getDate();
@@ -125,10 +126,11 @@ const MonthlyCell = (props) => {
     <MonthlyCellContainer
       // className="monthly-cell"
       onClick={onClickDate}
+      //   onClick = {onClick}
       onDragEnter={onDragEnterCell}
       onDragEnd={onDropSchedule}
     >
-      <p>{curDateStr}</p>
+      <DateText isSelected={isSelected}>{curDateStr}</DateText>
 
       {schedule.map((a, i) => (
         <MonthlyCellDiv
@@ -138,7 +140,7 @@ const MonthlyCell = (props) => {
           draggable
           onDragStart={(e) => onDragCell(e, a)}
         >
-          <p>
+          {/* <p>
             {a.startTime.hour +
               ":" +
               a.startTime.minute +
@@ -146,8 +148,9 @@ const MonthlyCell = (props) => {
               a.endTime.hour +
               ":" +
               a.endTime.minute}
-          </p>
+          </p> */}
           <p>{a.title}</p>
+		  {console.log ("a:", a)}
         </MonthlyCellDiv>
       ))}
     </MonthlyCellContainer>
@@ -155,31 +158,48 @@ const MonthlyCell = (props) => {
 };
 
 const MonthlyCellContainer = styled.div`
-  width: 160px;
-  height: 144px;
   display: flex;
   flex-direction: column;
+  align-items: center;
+
+  padding: 7px 12px 7px 12px;
+  width: 160px;
+  height: 144px;
+
   box-sizing: border-box;
-  border-right: solid 1px #E0E0E0;
-  padding: 0px;
+  border-right: solid 1px #e0e0e0;
+
   cursor: pointer;
   overflow: scroll;
-  padding: 5px;
-  /* all: initial;; */
-  /* cursor: grab;  */
-
-  & > p {
-    width: 100%;
-    background: #eee;
-    z-index: 3;
-    position: sticky;
-    top: 0;
-    margin: 0;
-  }
 
   &:nth-child(1) {
-    border-left: solid 1px #E0E0E0;
+    border-left: solid 1px #e0e0e0;
   }
+`;
+
+const DateText = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+
+  width: 20%;
+  height: 21.9%;
+
+  z-index: 3;
+  position: sticky;
+  top: 0;
+
+  border-radius: 50%;
+
+  font-weight: 400;
+  font-size: 12px;
+
+  &:hover {
+    box-shadow: inset 0 0 0 1px #15521d;
+  }
+  background-color: ${({ isSelected }) => (isSelected ? "#15521d" : "inherit")};
+  color: ${({ isSelected }) => (isSelected ? "white" : "inherit")};
 `;
 
 const MonthlyCellDiv = styled.div`

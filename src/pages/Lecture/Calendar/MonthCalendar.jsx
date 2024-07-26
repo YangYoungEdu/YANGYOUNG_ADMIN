@@ -19,6 +19,7 @@ const MonthCalendar = ({
   // 전역 변수로부터 현재 날짜를 가져옴
   const [calendarState, setCalendarState] = useCalendarState();
   const { date } = calendarState;
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const [days, setDays] = useState([]);
   const [filteredLectures, setFilteredLectures] = useState([]);
@@ -35,6 +36,10 @@ const MonthCalendar = ({
   const [userData] = useUserData();
   const { schedule } = userData; // 유저의 스케쥴
   const [curSchedule, setCurSchedule] = useState([]); // 현재 달력 날짜 안에 포함된 스케쥴
+
+  const handleDateClick = (date) => {
+	setSelectedDate(date);
+  };
 
   //date, userData 변경될 때마다 캘린더와 스케줄 업데이트
   useEffect(() => {
@@ -113,7 +118,9 @@ const MonthCalendar = ({
           // className="monthly-row"
         >
           {a.map((b, j) => (
-            <MonthlyCell key={j} date={b} schedule={getCurDateSchedule(b)} />
+            <MonthlyCell key={j} date={b} schedule={getCurDateSchedule(b)} 
+			isSelected={selectedDate && b.toDateString() === selectedDate.toDateString()}
+			onClick = {() => handleDateClick(b)}/>
           ))}
         </MonthlyRow>
       ))}
