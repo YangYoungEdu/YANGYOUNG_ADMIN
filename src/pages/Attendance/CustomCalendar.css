@@ -1,6 +1,7 @@
 src/CustomCalendar.css .react-calendar {
   display: flex;
-  /* width: 431px; */
+  box-sizing: border-box;
+  width: 100%;
   border: none;
 }
 
@@ -133,9 +134,9 @@ abbr {
   height: 35px;
 }
 
-abbr:hover,
-abbr:focus,
-abbr:active,
+.react-calendar__month-view__days__day abbr:hover,
+.react-calendar__month-view__days__day abbr:focus,
+.react-calendar__month-view__days__day abbr:active,
 .react-calendar__tile--noew abbr,
 .selected-date abbr {
   display: flex;

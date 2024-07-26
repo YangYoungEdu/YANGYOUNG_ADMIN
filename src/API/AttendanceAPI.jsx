@@ -33,7 +33,7 @@ export const updateAttendanceAPI = async (attendanceList) => {
   console.log(attendanceList.length);
   console.log (attendanceList);
   try {
-    const response = await axios.patch(`${local}attendance`, attendanceList, {
+    const response = await axios.patch(`${server}attendance`, attendanceList, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },

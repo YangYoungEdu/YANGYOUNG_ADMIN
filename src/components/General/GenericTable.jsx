@@ -1,23 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import styled, { ThemeProvider } from "styled-components";
-import { MainDiv } from "../../style/CommonStyle";
-import { theme } from "../../style/theme";
-import PaginationComponent from "../General/Pagination";
 import { useRecoilState } from "recoil";
-import {
-  currentPageState,
-  totalPageState,
-  dataState,
-  selectedStudentState,
-  totalElementsState,
-  isHiddenState,
-} from "../../Atom";
+import styled, { ThemeProvider } from "styled-components";
 import {
   getAllStudentAPI,
   getHiddenStudentAPI,
   searchStudentAPI,
 } from "../../API/StudentAPI";
+import {
+  currentPageState,
+  isHiddenState,
+  selectedStudentState,
+  totalPageState
+} from "../../Atom";
+import { MainDiv } from "../../style/CommonStyle";
+import { theme } from "../../style/theme";
+import PaginationComponent from "../General/Pagination";
 import TableMenus from "../Student/TableMenus";
 
 const columns = [
@@ -36,14 +34,13 @@ const GenericTable = ({
   searchData,
   setSearchData,
   setSearchDataCount,
+  searchDataCount,
   searchKeyword
 }) => {
   const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
   const [totalPage, setTotalPage] = useRecoilState(totalPageState);
-  const [data, setData] = useRecoilState(dataState);
   const [selectedStudent, setSelectedStudent] =
     useRecoilState(selectedStudentState);
-  const [totalElements, setTotalElements] = useRecoilState(totalElementsState);
   const [isHidden, setIsHidden] = useRecoilState(isHiddenState);
 
   const navigate = useNavigate();
@@ -74,7 +71,7 @@ const GenericTable = ({
       const nameList = searchKeyword.nameList.join(",");
       const schoolList = searchKeyword.schoolList.join(",");
       const gradeList = searchKeyword.gradeList.join(",");
-      response = await searchStudentAPI(nameList, schoolList, gradeList);
+      response = await searchStudentAPI(nameList, schoolList, gradeList, currentPage);
     }
 
     console.log(response.content);
@@ -82,6 +79,7 @@ const GenericTable = ({
     setSearchData(response.content);
     setTotalPage(response.totalPages);
     setSearchDataCount(response.totalElements);
+    console.log(response.totalElements);
   };
 
   const handlePageChange = (pageNumber) => {
@@ -113,7 +111,7 @@ const GenericTable = ({
           setIsEditing={setIsEditing}
           setIsHidden={setIsHidden}
           isHidden={isHidden}
-          totalElements={setSearchDataCount}
+          searchDataCount={searchDataCount}
         />
         <Container>
           <StyledTable cellSpacing={0}>

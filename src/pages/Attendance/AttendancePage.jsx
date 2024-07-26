@@ -1,5 +1,4 @@
-import AttendanceSelect from "./AttendanceCalender";
-import AttendanceCalender from "./AttendanceCalender";
+import AttendanceSelect from "./AttendanceSelect";
 
 const AttendancePage = () => {
   return (

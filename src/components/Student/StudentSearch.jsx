@@ -8,7 +8,7 @@ import { ReactComponent as DOpen } from "../../Assets/DropdownOpened.svg";
 import {
   currentPageState,
   totalElementsState,
-  totalPageState
+  totalPageState,
 } from "../../Atom";
 import { MainDiv, RowDiv } from "../../style/CommonStyle";
 
@@ -19,8 +19,8 @@ const options = [
   { value: "H3", label: "고3" },
 ];
 
-const StudentSearch = ({ setSearchData, searchKeyword, setSearchKeyword, setSearchDataCount }) => {
-  const {nameList, schoolList, gradeList} = searchKeyword;
+const StudentSearch = ({ searchKeyword, setSearchKeyword }) => {
+  const { nameList, schoolList, gradeList } = searchKeyword;
   const [tempSearchKewords, setTempSearchKeywords] = useState([]);
   const [studentKeyword, setStudentKeyword] = useState("");
   const [schoolKeyword, setSchoolKeyword] = useState("");
@@ -35,46 +35,43 @@ const StudentSearch = ({ setSearchData, searchKeyword, setSearchKeyword, setSear
   };
 
   useEffect(() => {
-    const combinedKeywords = [
-      ...nameList,
-      ...schoolList,
-      ...gradeList,
-    ];
+    const combinedKeywords = [...nameList, ...schoolList, ...gradeList];
 
     if (combinedKeywords.length > 0) {
       setTempSearchKeywords(combinedKeywords);
     }
-  }, [
-    nameList,
-    schoolList,
-    gradeList,
-  ]);
+  }, [nameList, schoolList, gradeList]);
 
   // 검색어 추가
   const addKeywordByType = () => {
-    if (studentKeyword !== ""){
+    if (studentKeyword !== "") {
       const updateNameList = [...nameList, studentKeyword];
-      setSearchKeyword(prevKeywords => ({...prevKeywords, nameList: updateNameList}));
+      setSearchKeyword((prevKeywords) => ({
+        ...prevKeywords,
+        nameList: updateNameList,
+      }));
       setStudentKeyword("");
     }
-    if (schoolKeyword !== ""){
+    if (schoolKeyword !== "") {
       const updateSchoolList = [...schoolList, schoolKeyword];
-      setSearchKeyword(prevKeywords => ({...prevKeywords, schoolList: updateSchoolList}));
+      setSearchKeyword((prevKeywords) => ({
+        ...prevKeywords,
+        schoolList: updateSchoolList,
+      }));
       setSchoolKeyword("");
     }
 
     console.log(gradeKeyword);
-    if (gradeKeyword !== ""){
+    if (gradeKeyword !== "") {
       const updateGradeList = [...gradeList, gradeKeyword.label];
-      setSearchKeyword(prevKeywords => ({...prevKeywords, gradeList: updateGradeList}));
+      setSearchKeyword((prevKeywords) => ({
+        ...prevKeywords,
+        gradeList: updateGradeList,
+      }));
       setGradeKeyword("");
     }
 
-    setTempSearchKeywords([
-      ...nameList,
-      ...schoolList,
-      ...gradeList,
-    ]);
+    setTempSearchKeywords([...nameList, ...schoolList, ...gradeList]);
 
     setIsOpen(false);
   };
@@ -86,10 +83,10 @@ const StudentSearch = ({ setSearchData, searchKeyword, setSearchKeyword, setSear
     setIsOpen(false);
   };
 
-  const handleRemoveKeyword = (event, keywordToRemove) =>{
+  const handleRemoveKeyword = (event, keywordToRemove) => {
     event.stopPropagation();
     removeKeyword(keywordToRemove);
-  }
+  };
 
   // 검색어 삭제
   const removeKeyword = (keywordToRemove) => {
@@ -99,7 +96,7 @@ const StudentSearch = ({ setSearchData, searchKeyword, setSearchKeyword, setSear
     setSearchKeyword((prevState) => ({
       nameList: updateKeywords(prevState.nameList),
       schoolList: updateKeywords(prevState.schoolList),
-      gradeList: updateKeywords(prevState.gradeList)
+      gradeList: updateKeywords(prevState.gradeList),
     }));
 
     setTempSearchKeywords((prevKeywords) => updateKeywords(prevKeywords));
@@ -126,22 +123,24 @@ const StudentSearch = ({ setSearchData, searchKeyword, setSearchKeyword, setSear
     <MainDiv>
       <DropdownContainer>
         {/* 버튼 박스 */}
-          <DropdownButtonContainer isOpen={isOpen} onClick={toggleDropdown}>
-            {tempSearchKewords.length > 0 ? (
-              <SearchKewordWrapper>
-                {tempSearchKewords.map((keyword, index) => (
-                  <SearchKeword key={index}>
-                    {keyword}
-                    <CancelIcon onClick={(e) => handleRemoveKeyword(e, keyword)} />
-                  </SearchKeword>
-                ))}
-              </SearchKewordWrapper>
-            ) : (
-              <div>학생 검색하기</div>
-            )}
-            {/* 아이콘 */}
-            <OpenCloseIcon>{isOpen ? <DOpen /> : <DClose />}</OpenCloseIcon>
-          </DropdownButtonContainer>
+        <DropdownButtonContainer isOpen={isOpen} onClick={toggleDropdown}>
+          {tempSearchKewords.length > 0 ? (
+            <SearchKewordWrapper>
+              {tempSearchKewords.map((keyword, index) => (
+                <SearchKeword key={index}>
+                  {keyword}
+                  <CancelIcon
+                    onClick={(e) => handleRemoveKeyword(e, keyword)}
+                  />
+                </SearchKeword>
+              ))}
+            </SearchKewordWrapper>
+          ) : (
+            <div>학생 검색하기</div>
+          )}
+          {/* 아이콘 */}
+          <OpenCloseIcon>{isOpen ? <DOpen /> : <DClose />}</OpenCloseIcon>
+        </DropdownButtonContainer>
         {/* isOpen인 경우 드롭다운 형식으로 서치박스 나타남 */}
         {isOpen && (
           <DropdownContent>
@@ -171,10 +170,7 @@ const StudentSearch = ({ setSearchData, searchKeyword, setSearchKeyword, setSear
                 </SearchField>
                 <SearchField>
                   <div>학년</div>
-                  <CustomSelect
-                    options={options}
-                    onChange={setGradeKeyword}
-                  />
+                  <CustomSelect options={options} onChange={setGradeKeyword} />
                 </SearchField>
               </SearchOptions>
 
