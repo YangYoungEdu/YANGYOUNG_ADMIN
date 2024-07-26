@@ -7,6 +7,8 @@ import { useUserData } from '../../stores/userData';
 import { useDragAndDrop } from '../../stores/dragAndDrop';
 import styled from 'styled-components';
 
+const oneCellHeight = 12.5;
+
 const WeeklyCell = (props) => {
     const { index, day, date, startHour, schedule } = props;
     const [addFormState, setAddFormState] = useAddFormState();
@@ -77,12 +79,12 @@ const WeeklyCell = (props) => {
 
     // 일정의 높이를 계산하는 부분
     // 일정의 시작 시간과 끝 시간을 15분 단위로 계산하여 px 단위로 변환
-    // 60 = 분 / 15 = 분단위 / 50 = 한칸 높이 / 22 = 마진값
+    // 60 = 분 / 15 = 분단위 / oneCellHeight = 한칸 높이 / 22 = 마진값
     const calculateHeight = (startTime, endTime) => {
         const intervals = get15MinIntervals(startTime, endTime);
 
         // 15분 단위로 높이 조정 
-        const heightInPixels = intervals * 50 - 22;
+        const heightInPixels = intervals * oneCellHeight - 22;
         return `${heightInPixels}px`;
     };
 
@@ -148,7 +150,7 @@ const WeeklyCell = (props) => {
 
         // Y좌표의 차이 계산
         const yDifference = e.clientY - initialY;
-        const differenceInMinutes = Math.round(yDifference / 50) * 15; // 50px = 15분
+        const differenceInMinutes = Math.round(yDifference / oneCellHeight) * 15; // 50px = 15분
 
         // 새로운 시작 시간과 끝 시간 계산
         const newStartTotalMin = (to.startTime.hour * 60) + to.startTime.minute + differenceInMinutes;
@@ -248,7 +250,7 @@ const WeeklyCell = (props) => {
 
         const onResizeMouseMove = (e) => {
             const newY = e.clientY;
-            const minDifference = Math.round((newY - initialY) / 50) * 15; // 50px = 15분
+            const minDifference = Math.round((newY - initialY) / oneCellHeight) * 15; // oneCellHeight px = 15분
             let newEndMinute = initialEndMinute + minDifference;
 
             // 일정의 시작 시간을 초과하지 않도록 조정
@@ -308,7 +310,7 @@ const WeeklyCell = (props) => {
             onDrop={onDropSchedule}
         >
         {schedule ? (
-            <ResizingSchedule
+            <WeeklySchedule
                 style={{ height }}
                 onClick={(e) => onClickSchedule(e, schedule)}
                 draggable
@@ -320,7 +322,7 @@ const WeeklyCell = (props) => {
                 onMouseDown={(e) => onResizeMouseDown(e, schedule)}
                 onClick={(e) => e.stopPropagation()}
                 />
-            </ResizingSchedule>
+            </WeeklySchedule>
             ) : null}
         </WeeklyCellDiv>
     );
@@ -360,19 +362,21 @@ const WeekDayDiv = styled.div`
 
 const WeeklyCellDiv = styled.div`
     width: 100%;
-    height: 50px;
+    height: 12.5px; //셀 한칸의 크기
     display: flex;
     justify-content: center;
     box-sizing: border-box;
     cursor: pointer;
     overflow: visible;
+    border-bottom: solid 1px #FFF; //배경색
 
     &:nth-child(3) {
         border-top: 1px solid var(--gray-gray-005, #BABABA);
+        /* border-bottom: solid 1px #E0E0E0;  */
     }
 
-    &:nth-child(n + 3) {
-    border-bottom: solid 1px #E0E0E0;
+    &:nth-child(4n + 2) {
+    border-bottom: solid 1px #E0E0E0; 
     }
 `;
 
@@ -413,15 +417,5 @@ const ResizeHandle = styled.div`
     bottom: 0;
     left: 0;
 `;
-
-const ResizingSchedule = styled(WeeklySchedule)`
-  cursor: ns-resize !important;
-`;
-
-// const ResizingBody = styled.body`
-//     &.resizing {
-//     cursor: ns-resize !important;
-//     }
-// `;
 
 export default WeeklyCell;

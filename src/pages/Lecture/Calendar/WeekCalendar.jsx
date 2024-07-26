@@ -162,23 +162,22 @@ export const HourCol = styled.div`
     width: 60px;
     display: flex;
     flex-direction: column;
-    /* justify-content: center; */
     align-items: center;
-    border-right: solid 0.5px #E0E0E0;
-    /* border-bottom: solid 0.5px #E0E0E0; */
+    border-right: solid 1px #E0E0E0;
     box-sizing: border-box;
 `;
 
 // 시간 셀
 export const HourCell = styled.div`
   width: 100%;
-  height: 50px;
+  /* height: 50px; */
+	height: 12.5px;
   display: flex;
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
 
-	color: var(--gray-gray-006, #555);
+	color: var(--gray-gray-006, #FFF); 
 	text-align: right;
 	font-family: "Pretendard Variable";
 	font-size: 10px;
@@ -187,12 +186,15 @@ export const HourCell = styled.div`
 	line-height: normal;
 
   &:nth-child(1) {
-    height: 33px;
+    height: 42px;
   }
 
   &:nth-child(2) {
-    height: 33px;
-    /* border-bottom: solid 2px #E0E0E0; */
+    height: 42px;
+  }
+
+	&:nth-child(4n + 3) {
+		color: var(--gray-gray-006, #555);
   }
 `;
 
@@ -201,9 +203,8 @@ export const WeeklyCol = styled.div`
     width: 151.159px;
     display: flex;
     flex-direction: column;
-    /* justify-content: center; */
     align-items: center;
-    border-right: solid 0.5px #E0E0E0;
+    border-right: solid 1px #E0E0E0;
     box-sizing: border-box;
 
 `;
