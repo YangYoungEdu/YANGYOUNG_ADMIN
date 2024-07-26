@@ -206,9 +206,13 @@ const HourCell = styled.div`
   }
 
 	& >span{
+		display: flex;
+		justify-content: start;
 		border-top: solid 1px #FFF;
 		border-bottom: solid 1px #FFF;
-		padding-right:7px ;
+		/* padding-right:7px ; */
+		white-space: nowrap;
+		width: 46px;
 	}
 
 `;
