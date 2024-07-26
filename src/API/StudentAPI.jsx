@@ -52,7 +52,7 @@ export const getHiddenStudentAPI = async (page = 1, size = 10) => {
 };
 
 // 학생 검색 API
-export const searchStudentAPI = async (nameList, schoolList, gradeList) => {
+export const searchStudentAPI = async (nameList, schoolList, gradeList, currentPage) => {
   try {
     const response = await axios.get(`${server}student/search`, {
       headers: {
@@ -62,7 +62,7 @@ export const searchStudentAPI = async (nameList, schoolList, gradeList) => {
         nameList: nameList,
         schoolList: schoolList,
         gradeList: gradeList,
-        page: 1,
+        page: currentPage,
         size: 10,
       },
     });

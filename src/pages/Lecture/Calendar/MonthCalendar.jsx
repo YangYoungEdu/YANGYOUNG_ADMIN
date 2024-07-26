@@ -94,23 +94,15 @@ const MonthCalendar = ({
     return curDateSchedule;
   };
 
-  return (
-    // 전체 캘린더 컨테이너
-    <MonthlyView
-    //id="monthly-view"
-    >
-      <DayRow
-      //className="day-row"
-      >
-        {weekDays.map((a, i) => (
-          <DayCell
-            key={i}
-            // className="day-cell"
-          >
-            {a}
-          </DayCell>
-        ))}
-      </DayRow>
+	return (
+			<MonthlyView id="monthly-view">
+				<DayRow className="day-row">
+					{weekDays.map((a, i) => (
+						<DayCell key={i} className="day-cell">
+							{a}
+						</DayCell>
+					))}
+				</DayRow>
 
       {dates.map((a, i) => (
         <MonthlyRow

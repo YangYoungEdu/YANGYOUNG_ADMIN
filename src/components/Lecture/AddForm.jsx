@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import '../../style/css/app.css';
+// import '../../style/css/app.css';
 import { insertDate, deleteDate, editDate } from './UserDataController.jsx';
 // store
 import { useAddFormState } from '../../stores/addFormState.jsx';
@@ -14,11 +14,12 @@ const AddForm = () => {
 
   const [newAddFormState, setNewAddFormState] = useState({
     title: '',
+    teacher: '',
     curDate: new Date(),
     startTime: { hour: 0, minute: 0, second: 0, nano: 0 },
     endTime: { hour: 1, minute: 0, second: 0, nano: 0 }
   });
-  const { title, curDate, startTime, endTime } = newAddFormState;
+  const { title, teacher, curDate, startTime, endTime } = newAddFormState;
   const [userData, setUserData] = useUserData();
   const { schedule } = userData;
   const [beforeEdit, setBeforeEdit] = useState();
@@ -26,15 +27,16 @@ const AddForm = () => {
 
   useEffect(() => {
     if (active) {
-      const { title, curDate, startTime, endTime } = addFormState;
+      const { title,teacher, curDate, startTime, endTime } = addFormState;
       setNewAddFormState({
         title: title || '',
+        teacher: teacher || '김삼유',
         curDate: curDate || new Date(),
         startTime: startTime || { hour: 0, minute: 0, second: 0, nano: 0 },
         endTime: endTime || { hour: 1, minute: 0, second: 0, nano: 0 }
       });
       if (mode === 'edit') {
-        setBeforeEdit({ title, curDate, startTime, endTime });
+        setBeforeEdit({ title, teacher, curDate, startTime, endTime });
       }
     }
   }, [active, addFormState, mode]);
@@ -45,10 +47,17 @@ const AddForm = () => {
 
   const onChangeNewAddFormState = (e) => {
     const { id, value } = e.target;
+    console.log('밸류', value);
     const intValue = parseInt(value, 10);
     switch (id) {
       case 'input-title':
         setNewAddFormState({ ...newAddFormState, title: value });
+        break;
+      case 'teacher-select':
+        setNewAddFormState({
+          ...newAddFormState,
+          teacher: value
+        });
         break;
       case 'start-hour':
         setNewAddFormState({
@@ -97,6 +106,8 @@ const AddForm = () => {
         mode: 'add',
         message: [['일정이 추가 되었습니다.']]
       });
+
+
     } else {
       setErrorState({
         ...errorState,
@@ -152,6 +163,16 @@ const AddForm = () => {
           <div id="input-form">
             <div className="label">제목</div>
             <input id="input-title" value={title} onChange={onChangeNewAddFormState} />
+          </div>
+          <div id="teacher-picker-form">
+            <div className="label">담당 선생님</div>
+            <div>
+              <select id="teacher-select" value={teacher} onChange={onChangeNewAddFormState}>
+                <option value="김삼유">김삼유</option>
+                <option value="장영해">장영해</option>
+                <option value="전재우">전재우</option>
+              </select>
+            </div>
           </div>
           <div id="date-picker-form">
             <div className="label">날짜</div>

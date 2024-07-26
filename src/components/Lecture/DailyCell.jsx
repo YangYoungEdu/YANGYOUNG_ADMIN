@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../../style/css/app.css';
+// import '../../style/css/app.css';
 import styled from 'styled-components';
 
 // store
@@ -8,6 +8,7 @@ import { useAddFormState } from '../../stores/addFormState';
 import { useUserData } from '../../stores/userData';
 import { useDragAndDrop } from '../../stores/dragAndDrop';
 
+const oneCellHeight = 12.5;
 const DailyCell = (props) => {
     const { index, day, date, startHour, schedule } = props;
     const [addFormState, setAddFormState] = useAddFormState();
@@ -78,12 +79,12 @@ const DailyCell = (props) => {
 
     // 일정의 높이를 계산하는 부분
     // 일정의 시작 시간과 끝 시간을 15분 단위로 계산하여 px 단위로 변환
-    // 60 = 분 / 15 = 분단위 / 50 = 한칸 높이 / 22 = 마진값
+    // 60 = 분 / 15 = 분단위 / oneCellHeight = 한칸 높이 / 22 = 마진값
     const calculateHeight = (startTime, endTime) => {
         const intervals = get15MinIntervals(startTime, endTime);
 
         // 15분 단위로 높이 조정 
-        const heightInPixels = intervals * 50 - 22;
+        const heightInPixels = intervals * oneCellHeight-22;
         return `${heightInPixels}px`;
     };
 
@@ -104,6 +105,7 @@ const DailyCell = (props) => {
                 active: true,
                 mode: 'add',
                 title: '',
+                teacher: '',
                 curDate: date, // Date 객체 그대로 유지
                 startTime: { 
                     hour: propsHour, 
@@ -124,13 +126,14 @@ const DailyCell = (props) => {
     // 일정을 클릭하여 수정하는 함수
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
-        const { title, curDate, startTime, endTime } = schedule;
+        const { title, teacher, curDate, startTime, endTime } = schedule;
         if (!active && !isResizing) { // 리사이징 중일 때 클릭 방지
             setAddFormState({
                 ...addFormState,
                 active: true,
                 mode: 'edit',
                 title: title,
+                teacher:teacher,
                 curDate: curDate,
                 startTime: {...startTime},
                 endTime: {...endTime}
@@ -149,7 +152,7 @@ const DailyCell = (props) => {
 
         // Y좌표의 차이 계산
         const yDifference = e.clientY - initialY;
-        const differenceInMinutes = Math.round(yDifference / 50) * 15; // 50px = 15분
+        const differenceInMinutes = Math.round(yDifference / oneCellHeight) * 15; // 50px = 15분
 
         // 새로운 시작 시간과 끝 시간 계산
         const newStartTotalMin = (to.startTime.hour * 60) + to.startTime.minute + differenceInMinutes;
@@ -158,11 +161,11 @@ const DailyCell = (props) => {
         const newStartHour = Math.max(Math.floor(newStartTotalMin / 60), 0);
         const newStartMinute = Math.max(newStartTotalMin % 60, 0);
 
-        // 기존 시간차 유지 + 끝 시간이 23:59를 넘지 않도록 보장
+        // 기존 시간차 유지 + 끝 시간이 24:를 넘지 않도록 보장
         const durationInMinutes = (from.endTime.hour * 60 + from.endTime.minute) - (from.startTime.hour * 60 + from.startTime.minute);
         let newEndTotalMin = newStartTotalMin + durationInMinutes;
 
-        const maxEndMinute = 23 * 60 + 59;
+        const maxEndMinute = 24 * 60;
         newEndTotalMin = Math.min(newEndTotalMin, maxEndMinute);
 
         const newEndHour = Math.floor(newEndTotalMin / 60);
@@ -210,7 +213,7 @@ const DailyCell = (props) => {
         console.log('드래그', from);
         const diff = (from.endTime.hour * 60 + from.endTime.minute) - (from.startTime.hour * 60 + from.startTime.minute);
 
-        const newScheduleForm = { title: from.title, curDate: date,
+        const newScheduleForm = { title: from.title, teacher:from.teacher, curDate: date,
             startTime: {
                 ...from.startTime,
                 hour: propsHour,
@@ -249,15 +252,15 @@ const DailyCell = (props) => {
 
         const onResizeMouseMove = (e) => {
             const newY = e.clientY;
-            const minDifference = Math.round((newY - initialY) / 50) * 15; // 50px = 15분
+            const minDifference = Math.round((newY - initialY) / oneCellHeight) * 15; // oneCellHeight px = 15분
             let newEndMinute = initialEndMinute + minDifference;
 
             // 일정의 시작 시간을 초과하지 않도록 조정
             const startMinute = schedule.startTime.hour * 60 + schedule.startTime.minute;
             newEndMinute = Math.max(newEndMinute, startMinute);
     
-            // 끝 시간이 23:59를 넘지 않도록 조정
-            const maxEndMinute = 23 * 60 + 59;
+            // 끝 시간이 24를 넘지 않도록 조정
+            const maxEndMinute = 24 * 60 ;
             newEndMinute = Math.min(newEndMinute, maxEndMinute);
     
             const newEndTime = {
@@ -285,20 +288,15 @@ const DailyCell = (props) => {
         setIsResizing(true);
     };
 
-    if (index === 0) {
-        return (
-            <div className={day === '일' ? 'weekly-cell sunday' : day === '토' ? 'weekly-cell saturday' : 'weekly-cell'}>
-                {day}
-            </div>
-        );
-    }
-
-    if (index === 1)
-        return (
-            <div className={day === '일' ? 'weekly-cell sunday' : day === '토' ? 'weekly-cell saturday' : 'weekly-cell'}>
-                {date.getDate()}
-            </div>
-        );
+    const formatTime = (hour, minute) => {
+        if (hour === 24) {
+            hour = 0; // 24시를 0시로 변환
+        }
+        const period = hour >= 12 ? '오후' : '오전';
+        const formattedHour = (hour % 12) || 12; // 0시는 12시로 변환
+        const formattedMinute = minute.toString().padStart(2, '0'); // 분을 두 자리로 맞추기
+        return `${period} ${formattedHour}${minute === 0 ? '' : ':' + formattedMinute}`;
+    };
 
     return (
         <WeeklyCol>
@@ -309,21 +307,22 @@ const DailyCell = (props) => {
             onDrop={onDropSchedule}>
 
             {schedule ? (
-                <ResizingSchedule
+                <WeeklySchedule
                     className={`weekly-schedule ${isResizing ? 'resizing' : ''}`}
                     style={{ height }} // 여기에 height를 직접 적용
                     onClick={(e) => onClickSchedule(e, schedule)}
                     draggable
                     onDragStart={(e) => onDragCell(e)}
+                    teacher={schedule.teacher}
                 >
-                    <p>{schedule.startTime.hour + ':' + schedule.startTime.minute + '~' + schedule.endTime.hour + ':' + schedule.endTime.minute}</p>
+                    <p>{`${formatTime(schedule.startTime.hour, schedule.startTime.minute)} ~ ${formatTime(schedule.endTime.hour, schedule.endTime.minute)}`}</p>
                     <p>{schedule.title}</p>
                     <ResizeHandle
                         className="resize-handle"
                         onMouseDown={(e) => onResizeMouseDown(e, schedule)}
                         onClick={(e) => e.stopPropagation()}
                     ></ResizeHandle>
-                </ResizingSchedule>
+                </WeeklySchedule>
             ) : null}
         </WeeklyCell>
         </WeeklyCol>
@@ -331,20 +330,25 @@ const DailyCell = (props) => {
 };
 
 const WeeklyCol = styled.div`
-    width: 120px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border-right: solid 0.5px #111;
-    border-top: solid 0.5px #111;
-    border-bottom: solid 0.5px #111;
+    /* border-bottom: solid 1px #fff; */
     box-sizing: border-box;
+
+    &:nth-child(4n + 1) {
+    border-top: solid 1px #EFEFEF; 
+    }
+    &:last-child{
+    border-bottom: solid 1px #EFEFEF; 
+    }
 `;
 
 const WeeklyCell = styled.div`
     width: 100%;
-    height: 50px;
+    height: 12.5px; //oneCellHeight
     display: flex;
     justify-content: center;
     box-sizing: border-box;
@@ -355,47 +359,78 @@ const WeeklyCell = styled.div`
     const WeeklySchedule = styled.div`
     display: flex;
     flex-direction: column;
-    width: 120px;
-    background: #111;
-    color: #eee;
-    font-size: 12px;
-    padding: 5px;
-    border: solid 1px #111;
-    margin: 5px;
+    width: 100%;
     border-radius: 5px;
+    background: ${(props) => {
+    switch (props.teacher) {
+        case "김삼유":
+        return "rgba(149, 194, 92, 0.30)";
+        case "장영해":
+        return "rgba(216, 205, 99, 0.30)";
+        case "전재우":
+        return "rgba(188, 215, 234, 0.30)";
+        default:
+        return "#95c25c";
+    }
+    }};
+    color: black;
+    font-size: 12px;
+    padding: 6px 0px;
+
+    border-left: solid 4px ${(props) => {
+    switch (props.teacher) {
+        case "김삼유":
+        return "#95C25C";
+        case "장영해":
+        return "#D8CD63";
+        case "전재우":
+        return  "#BCD7EA"
+        default:
+        return "#95c25c";
+    }
+    }};
+    
     z-index: 3;
     cursor: pointer;
     position: relative;
+    overflow: scroll;
+
+    color: #000;
+    font-family: "Pretendard Variable";
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
 
     &:hover {
     opacity: 0.5;
     }
 
     p {
-    width: 100px;
-    margin: 0;
-    overflow: scroll;
+        margin: 0;  
+        padding-left: 12px;
+
+    }
+
+    &>p:first-child{
+        padding-top: 5px;
+        padding-bottom: 7px;
+        color: #000;
+        font-family: "Pretendard Variable";
+        font-size: 13px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
     }
 `;
 
 const ResizeHandle = styled.div`
     width: 100%;
     height: 10px;
-    background: rgba(0, 0, 0, 0.2);
     cursor: ns-resize;
     position: absolute;
     bottom: 0;
     left: 0;
-`;
-
-const ResizingSchedule = styled(WeeklySchedule)`
-    cursor: ns-resize !important;
-`;
-
-const ResizingBody = styled.body`
-    &.resizing {
-    cursor: ns-resize !important;
-    }
 `;
 
 

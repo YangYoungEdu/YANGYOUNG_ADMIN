@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import "../../style/css/app.css";
-import { editDate } from "./UserDataController";
-import { useAddFormState } from "../../stores/addFormState";
-import { useErrorState } from "../../stores/errorState";
-import { useUserData } from "../../stores/userData";
-import { useDragAndDrop } from "../../stores/dragAndDrop";
-import styled from "styled-components";
+import React, { useState, useEffect } from 'react';
+// import '../../style/css/app.css';
+import { editDate } from './UserDataController';
+import { useAddFormState } from '../../stores/addFormState';
+import { useErrorState } from '../../stores/errorState';
+import { useUserData } from '../../stores/userData';
+import { useDragAndDrop } from '../../stores/dragAndDrop';
+import styled from 'styled-components';
 
 const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
   //   const { date, schedule } = props;
@@ -25,55 +25,56 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
     setCurDateStr(newCurDateStr);
   }, [schedule]);
 
-  //빈 셀 클릭후 일정 추가
-  const onClickDate = () => {
-    if (!active) {
-      const now = new Date();
-      const startHour = now.getHours();
-      const startMinute = now.getMinutes();
-      const endHour = startHour + 1;
+	//빈 셀 클릭후 일정 추가
+	const onClickDate = () => {
+		if (!active) {
+			const now = new Date();
+			const startHour = now.getHours();
+			const startMinute = now.getMinutes(); 
+			const endHour = startHour + 1;
+	
+			console.log("빈셀", { hour: startHour, minute: startMinute });
+	
+			setAddFormState({
+				...addFormState,
+				active: true,
+				mode: 'add',
+				title: '',
+				teacher: '',
+				curDate: date, // Date 객체 그대로 유지
+				startTime: { 
+					hour: startHour, 
+					minute: startMinute, 
+					second: 0, 
+					nano:0 }, // 새로운 시간 형식 적용
+				endTime: { 
+					hour: endHour, 
+					minute: startMinute, 
+					second: 0, 
+					nano:0 } // 새로운 시간 형식 적용
+			});
+		}
+	};
+	
 
-      console.log("빈셀", { hour: startHour, minute: startMinute });
+	//일정 클릭 후 수정
+	const onClickSchedule = (e, schedule) => {
+		e.stopPropagation();
+		const { title, teacher, curDate, startTime, endTime } = schedule;
 
-      setAddFormState({
-        ...addFormState,
-        active: true,
-        mode: "add",
-        title: "",
-        curDate: date, // Date 객체 그대로 유지
-        startTime: {
-          hour: startHour,
-          minute: startMinute,
-          second: 0,
-          nano: 0,
-        }, // 새로운 시간 형식 적용
-        endTime: {
-          hour: endHour,
-          minute: startMinute,
-          second: 0,
-          nano: 0,
-        }, // 새로운 시간 형식 적용
-      });
-    }
-  };
-
-  //일정 클릭 후 수정
-  const onClickSchedule = (e, schedule) => {
-    e.stopPropagation();
-    const { title, curDate, startTime, endTime } = schedule;
-
-    if (!active) {
-      setAddFormState({
-        ...addFormState,
-        active: true,
-        mode: "edit",
-        title: title,
-        curDate: curDate,
-        startTime: { ...startTime }, // 새로운 시간 형식 적용
-        endTime: { ...endTime },
-      });
-    }
-  };
+		if (!active) {
+			setAddFormState({
+				...addFormState,
+				active: true,
+				mode: 'edit',
+				title: title,
+				teacher: teacher,
+				curDate: curDate,
+				startTime: { ...startTime}, // 새로운 시간 형식 적용
+				endTime: { ... endTime}
+			});
+		}
+	};
 
   const onDropSchedule = (e) => {
     console.log("드로그", e);
@@ -84,43 +85,35 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
       userData.schedule
     );
 
-    if (newSchedule !== false) {
-      setUserData({ ...userData, schedule: newSchedule });
-      setAddFormState({ ...addFormState, active: false });
-      setErrorState({
-        ...errorState,
-        active: true,
-        mode: "edit",
-        message: [["일정이 수정 되었습니다."]],
-      });
-    } else {
-      setErrorState({
-        ...errorState,
-        active: true,
-        mode: "fail",
-        message: [
-          ["일정을 수정할 수 없습니다."],
-          ["해당 시간에 이미 다른 일정이 존재합니다."],
-        ],
-      });
-    }
-  };
+		if (newSchedule !== false) {
+			setUserData({ ...userData, schedule: newSchedule });
+			setAddFormState({ ...addFormState, active: false });
+			setErrorState({
+				...errorState,
+				active: true,
+				mode: 'edit',
+				message: [ [ '일정이 수정 되었습니다.' ] ]
+			});
+		} else {
+			setErrorState({
+				...errorState,
+				active: true,
+				mode: 'fail',
+				message: [ [ '일정을 수정할 수 없습니다.' ], [ '해당 시간에 이미 다른 일정이 존재합니다.' ] ]
+			});
+		}
+	};
 
   const onDragCell = (e, schedule) => {
     console.log("드로그", e);
     setDragAndDrop({ ...dragAndDrop, from: schedule });
   };
 
-  const onDragEnterCell = (e) => {
-    const { title, startTime, endTime } = dragAndDrop.from;
-    const newScheduleForm = {
-      title: title,
-      curDate: date,
-      startTime: { ...startTime },
-      endTime: { ...endTime },
-    };
-    setDragAndDrop({ ...dragAndDrop, to: newScheduleForm });
-  };
+	const onDragEnterCell = (e) => {
+		const { title,teacher, startTime, endTime } = dragAndDrop.from;
+		const newScheduleForm = { title: title, teacher:teacher, curDate: date, startTime: { ... startTime}, endTime: { ... endTime} };
+		setDragAndDrop({ ...dragAndDrop, to: newScheduleForm });
+	};
 
   return (
     <MonthlyCellContainer
@@ -132,29 +125,20 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
     >
       <DateText isSelected={isSelected}>{curDateStr}</DateText>
 
-      {schedule.map((a, i) => (
-        <MonthlyCellDiv
-          key={i}
-          // className="monthly-schedule"
-          onClick={(e) => onClickSchedule(e, a)}
-          draggable
-          onDragStart={(e) => onDragCell(e, a)}
-        >
-          {/* <p>
-            {a.startTime.hour +
-              ":" +
-              a.startTime.minute +
-              "~" +
-              a.endTime.hour +
-              ":" +
-              a.endTime.minute}
-          </p> */}
-          <p>{a.title}</p>
-		  {console.log ("a:", a)}
-        </MonthlyCellDiv>
-      ))}
-    </MonthlyCellContainer>
-  );
+			{schedule.map((a, i) => (
+				<MonthlyCellDiv
+					key={i}
+					// className="monthly-schedule"
+					onClick={(e) => onClickSchedule(e, a)}
+					draggable
+					onDragStart={(e) => onDragCell(e, a)}
+				>
+					<p>{a.startTime.hour+':'+a.startTime.minute+'~'+a.endTime.hour+':'+a.endTime.minute}</p>
+					<p>{a.title}</p>
+				</MonthlyCellDiv>
+			))}
+		</MonthlyCellContainer>
+	);
 };
 
 const MonthlyCellContainer = styled.div`

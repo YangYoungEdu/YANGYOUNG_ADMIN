@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { selectedStudentState } from "../../Atom";
 import { MainDiv } from "../../style/CommonStyle";
 import StudentAdd from "../Student/StudentModal/StudentAdd";
 import StudentHide from "./StudentModal/StudentHide";
@@ -11,13 +9,10 @@ const TableMenus = ({
   setIsEditing,
   setIsHidden,
   isHidden,
-  totalElements,
+  searchDataCount,
 }) => {
-  const [selectedStudent, setSelectedStudent] =
-    useRecoilState(selectedStudentState);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isHideModalOpen, setIsHideModalOpen] = useState(false);
-
 
   const setEdit = () => {
     setIsEditing(true);
@@ -36,14 +31,6 @@ const TableMenus = ({
     setIsHideModalOpen(!isHideModalOpen);
   };
 
-  // const hideStudent = async () => {
-  //   try {
-  //     const response = await hideStudentAPI(selectedStudent);
-  //     // window.location.reload();
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
   return (
     <MainDiv>
       {/* 보관함 들어온 경우 */}
@@ -59,7 +46,7 @@ const TableMenus = ({
           <div>전체선택</div>
         ) : (
           //편집 모드 아닌 경우
-          <div>총 {totalElements}개</div>
+          <div>총 {searchDataCount}개</div>
         )}
 
         {isEditing ? (
