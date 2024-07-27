@@ -16,6 +16,7 @@ const AddForm = () => {
   const { active, mode } = addFormState;
 
   const [newAddFormState, setNewAddFormState] = useState({
+    //id:number, finished:boolean 추가 필요 
     lectureCode: '',
     name: '',
     room: '',

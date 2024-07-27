@@ -60,7 +60,7 @@ export const insertDate = (addFormState, schedule) => {
 	}
 };
 
-//일정 데이터 patch
+//일정 데이터 patch -id로 구분 필요
 export const editDate = (addFormState, beforeEdit, schedule) => {
 	const { lectureCode, name, room, teacher, curDate, startTime, endTime , lectureDateList, lectureDayList, studentList} = addFormState;
 
@@ -80,7 +80,7 @@ export const editDate = (addFormState, beforeEdit, schedule) => {
 	}
 };
 
-//일정 데이터 delete
+//일정 데이터 delete -id로 구분 필요
 export const deleteDate = (curDate, startTime, endTime, schedule) => {
 	// 기존 schedule에서 curDate, startTime, endTime와 일치하는 항목을 찾아서 삭제
 	return schedule.filter(

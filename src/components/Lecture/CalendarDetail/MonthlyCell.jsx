@@ -132,7 +132,7 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 
 			{schedule.map((a, i) => (
 				<MonthlyCellDiv
-					key={i}
+					key={i} //id로 구분 필요
 					// className="monthly-schedule"
 					onClick={(e) => onClickSchedule(e, a)}
 					draggable

@@ -179,7 +179,7 @@ const DailyCell = (props) => {
         const newEndHour = Math.floor(newEndTotalMin / 60);
         const newEndMinute = newEndTotalMin % 60;
 
-        // 기존 일정 업데이트
+        // 기존 일정 업데이트-id로 구분 필요
         const updatedSchedule = userData.schedule.map(item =>
             item === from ? { ...item, 
                 startTime: { 
@@ -273,7 +273,8 @@ const DailyCell = (props) => {
                 hour: Math.floor(newEndMinute / 60),
                 minute: newEndMinute % 60
             };
-
+            
+            //-id로 구분 필요
             setUserData({
                 ...userData,
                 schedule: userData.schedule.map((item) =>
