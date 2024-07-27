@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { ReactComponent as DownArrow } from "../../Assets/DownArrow.svg";
-import { ReactComponent as UpArrow } from "../../Assets/UpArrow.svg";
-import { teacherList } from "../../const/Const";
-import { ReactComponent as Check } from "../../Assets/Check.svg";
+import { ReactComponent as DownArrow } from "../../../Assets/DownArrow.svg";
+import { ReactComponent as UpArrow } from "../../../Assets/UpArrow.svg";
+import { teacherList } from "../../../const/Const";
+import { ReactComponent as Check } from "../../../Assets/Check.svg";
 
 const LectureFilter = ({ mode, originLectures, setLectures }) => {
   const [checkedTeachers, setCheckedTeachers] = useState({});

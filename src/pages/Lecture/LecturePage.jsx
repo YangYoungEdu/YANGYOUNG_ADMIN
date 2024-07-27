@@ -8,13 +8,13 @@ import {
 import { ColumnDiv, RowDiv } from "../../style/CommonStyle";
 import { theme } from "../../style/theme";
 import LectureHeader from "../../components/Lecture/LectureHeader";
-import LectureFilter from "../../components/Lecture/LectureFilter";
+import LectureFilter from "../../components/Lecture/CalendarDetail/LectureFilter.jsx";
 import DayCalendar from "./Calendar/DayCalendar";
 import WeekCalendar from "./Calendar/WeekCalendar";
 import MonthCalendar from "./Calendar/MonthCalendar";
 
 import { useUserData } from '../../stores/userData.jsx';
-import AddForm from "../../components/Lecture/AddForm.jsx";
+import AddForm from "../../components/Lecture/CalendarDetail/AddForm.jsx";
 
 const LecturePage = () => {
   const [mode, setMode] = useState("day");

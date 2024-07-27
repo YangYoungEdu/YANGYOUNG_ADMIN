@@ -5,8 +5,8 @@ import styled from 'styled-components';
 // import '../../style/css/app.css';
 import { insertDate, deleteDate, editDate } from './UserDataController.jsx';
 // store
-import { useAddFormState } from '../../stores/addFormState.jsx';
-import { useUserData } from '../../stores/userData.jsx';
+import { useAddFormState } from '../../../stores/addFormState.jsx';
+import { useUserData } from '../../../stores/userData.jsx';
 import AddGenericTable from './AddGenericTable.jsx';
 import AddStudentSearch from './AddStudentSearch.jsx';
 import DateOrWeekdaySelector from './DateOrWeekdaySelector.jsx';
