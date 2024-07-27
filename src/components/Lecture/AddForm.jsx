@@ -10,6 +10,7 @@ import { useUserData } from '../../stores/userData.jsx';
 import { useErrorState } from '../../stores/errorState.jsx';
 import AddGenericTable from './AddGenericTable.jsx';
 import AddStudentSearch from './AddStudentSearch.jsx';
+import DateOrWeekdaySelector from './DateOrWeekdaySelector.jsx';
 
 const AddForm = () => {
   const [addFormState, setAddFormState] = useAddFormState();
@@ -42,6 +43,9 @@ const AddForm = () => {
     gradeList: [],
   });
   const [selectedStudent, setSelectedStudent] =useState();
+  const [isDateSelected, setIsDateSelected] = useState(true); // 날짜 선택이 기본값
+  const [multidates, setmultiDates] = useState([]); //날짜 선택
+  const [selectedDays, setSelectedDays] = useState([]); //요일 선택
 
   useEffect(()=>{
     console.log('학번', selectedStudent);
@@ -134,7 +138,9 @@ const AddForm = () => {
     // 학생 리스트를 newAddFormState에 추가
     const updatedFormState = {
       ...newAddFormState,
-      studentList: selectedStudent
+      studentList: selectedStudent,
+      lectureDateList: multidates,
+      lectureDayList: selectedDays
     };
 
     const newSchedule = insertDate(updatedFormState, schedule);
@@ -165,7 +171,9 @@ const AddForm = () => {
 
     const updatedFormState = {
       ...newAddFormState,
-      studentList: selectedStudent
+      studentList: selectedStudent,
+      lectureDateList: multidates,
+      lectureDayList: selectedDays
     };
 
     const newSchedule = editDate(updatedFormState, beforeEdit, schedule);
@@ -250,9 +258,14 @@ const AddForm = () => {
           </div>
 
           <div id="date-picker-form">
-            <div className="label">날짜</div>
             <div id="date-picker">
-              <DatePicker selected={curDate} onChange={onChangeCurDate} />
+              <DateOrWeekdaySelector  
+                isDateSelected={isDateSelected}
+                setIsDateSelected= {setIsDateSelected}
+                multidates={multidates}
+                setmultiDates={setmultiDates}
+                selectedDays={selectedDays}
+                setSelectedDays={setSelectedDays} />
             </div>
           </div>
           <div id="time-picker-form">
