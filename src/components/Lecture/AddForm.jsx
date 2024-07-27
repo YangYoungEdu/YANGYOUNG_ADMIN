@@ -256,8 +256,13 @@ const AddForm = () => {
             <div className="label">강의실</div>
             <input id="input-room" value={room} onChange={onChangeNewAddFormState} />
           </div>
-
           <div id="date-picker-form">
+            <div className="label">날짜</div>
+            <div id="date-picker">
+              <DatePicker selected={curDate} onChange={onChangeCurDate} />
+            </div>
+          </div>
+          {/* <div id="date-picker-form">
             <div id="date-picker">
               <DateOrWeekdaySelector  
                 isDateSelected={isDateSelected}
@@ -267,7 +272,7 @@ const AddForm = () => {
                 selectedDays={selectedDays}
                 setSelectedDays={setSelectedDays} />
             </div>
-          </div>
+          </div> */}
           <div id="time-picker-form">
             <div className="label">시작 시간</div>
             <div>
