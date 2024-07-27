@@ -17,6 +17,8 @@ const DailyCell = (props) => {
     const [userData, setUserData] = useUserData();
     const [dragAndDrop, setDragAndDrop] = useDragAndDrop();
     const [isResizing, setIsResizing] = useState(false); // 리사이징 상태 추가
+    const [isAdding, setIsAdding] = useState(false); // 일정 추가 상태
+    const [newSchedule, setNewSchedule] = useState(null); // 새로 추가되는 일정 상태
 
     // HH:MM 형태의 string 타입인 startHour를 숫자로 변환
     const [propsHour, propsMin] = (typeof startHour === 'string' ? startHour.split(':') : ['0', '0']).map(Number);
@@ -97,33 +99,47 @@ const DailyCell = (props) => {
         }
     }, [schedule]);
 
-    // 빈 셀을 클릭하여 일정을 추가하는 함수
+    // 빈 셀 클릭 시 새로운 일정을 즉시 생성
     const onClickDate = () => {
-        if (!active && !isResizing) {
-            setAddFormState({
-                ...addFormState,
-                active: true,
-                mode: 'add',
-                lectureCode: '',
-                name: '',
-                room: '',
-                teacher: '',
-                curDate: date, // Date 객체 그대로 유지
-                startTime: { 
-                    hour: propsHour, 
-                    minute: propsMin, 
-                    second: 0, 
-                    nano: 0 
-                }, // 새로운 시간 형식 적용
-                endTime: { 
-                    hour: propsHour + 1, 
-                    minute: propsMin, 
-                    second: 0, 
-                    nano: 0 
-                }, // 새로운 시간 형식 적용
-                studentList: []
-            });
-        }
+    if (!active && !isResizing) {
+        const newSchedule = {
+            lectureCode: '',
+            name: '(제목없음)', // 새로운 일정의 기본 이름
+            room: '',
+            teacher: '',
+            curDate: date,
+            startTime: {
+                hour: propsHour,
+                minute: propsMin,
+                second: 0,
+                nano: 0
+            },
+            endTime: {
+                hour: propsHour + 1, // 일정 기본 시간: 1시간
+                minute: propsMin,
+                second: 0,
+                nano: 0
+            },
+            studentList: []
+        };
+
+        //일정 화면에 바로 추가
+        setUserData({
+            ...userData,
+            schedule: [...userData.schedule, newSchedule]
+        });
+
+        //일정 수정 모달창 띄우기
+        setAddFormState({
+            ...addFormState,
+            active: true,
+            mode: 'edit',
+            ...newSchedule
+        });
+
+        setIsAdding(true); // 추가 상태로 전환
+
+    }
     };
 
     // 일정을 클릭하여 수정하는 함수
@@ -145,6 +161,8 @@ const DailyCell = (props) => {
                 studentList : studentList
             });
         }
+
+        setIsAdding(false); 
     };
 
     // 일정을 드래그 앤 드랍으로 이동시키는 함수
