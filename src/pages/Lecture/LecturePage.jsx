@@ -13,8 +13,6 @@ import DayCalendar from "./Calendar/DayCalendar";
 import WeekCalendar from "./Calendar/WeekCalendar";
 import MonthCalendar from "./Calendar/MonthCalendar";
 
-// import '../../style/css/app.css';
-import ErrorPopup from '../../components/Lecture/ErrorPopup.jsx';
 import { useUserData } from '../../stores/userData.jsx';
 import AddForm from "../../components/Lecture/AddForm.jsx";
 
@@ -133,7 +131,6 @@ const LecturePage = () => {
           {renderCalendar()}
         </RowDiv>
         <AddForm/>
-        <ErrorPopup />
       </ColumnDiv>
     </ThemeProvider>
   );

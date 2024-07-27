@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 // import '../../style/css/app.css';
 import { editDate } from './UserDataController';
 import { useAddFormState } from '../../stores/addFormState';
-import { useErrorState } from '../../stores/errorState';
 import { useUserData } from '../../stores/userData';
 import { useDragAndDrop } from '../../stores/dragAndDrop';
 import styled from 'styled-components';
@@ -11,7 +10,6 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
   //   const { date, schedule } = props;
   const [addFormState, setAddFormState] = useAddFormState();
   const { active } = addFormState;
-  const [errorState, setErrorState] = useErrorState();
   const [userData, setUserData] = useUserData();
   const [dragAndDrop, setDragAndDrop] = useDragAndDrop();
   const [curDateStr, setCurDateStr] = useState("");
@@ -98,20 +96,7 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 		if (newSchedule !== false) {
 			setUserData({ ...userData, schedule: newSchedule });
 			setAddFormState({ ...addFormState, active: false });
-			setErrorState({
-				...errorState,
-				active: true,
-				mode: 'edit',
-				message: [ [ '일정이 수정 되었습니다.' ] ]
-			});
-		} else {
-			setErrorState({
-				...errorState,
-				active: true,
-				mode: 'fail',
-				message: [ [ '일정을 수정할 수 없습니다.' ], [ '해당 시간에 이미 다른 일정이 존재합니다.' ] ]
-			});
-		}
+		} 
 	};
 
   const onDragCell = (e, schedule) => {

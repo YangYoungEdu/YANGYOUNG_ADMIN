@@ -7,7 +7,6 @@ import { insertDate, deleteDate, editDate } from './UserDataController.jsx';
 // store
 import { useAddFormState } from '../../stores/addFormState.jsx';
 import { useUserData } from '../../stores/userData.jsx';
-import { useErrorState } from '../../stores/errorState.jsx';
 import AddGenericTable from './AddGenericTable.jsx';
 import AddStudentSearch from './AddStudentSearch.jsx';
 import DateOrWeekdaySelector from './DateOrWeekdaySelector.jsx';
@@ -21,7 +20,7 @@ const AddForm = () => {
     name: '',
     room: '',
     teacher: '',
-    curDate: new Date(),
+    curDate: new Date(), //서버에 안 들어가는 변수
     startTime: { hour: 0, minute: 0, second: 0, nano: 0 },
     endTime: { hour: 1, minute: 0, second: 0, nano: 0 },
     lectureDateList: [],
@@ -32,7 +31,6 @@ const AddForm = () => {
   const [userData, setUserData] = useUserData();
   const { schedule } = userData;
   const [beforeEdit, setBeforeEdit] = useState();
-  const [errorState, setErrorState] = useErrorState();
 
   // 학생 선택
   const [searchData, setSearchData] = useState([]);
@@ -148,23 +146,8 @@ const AddForm = () => {
 			console.log("일정추가", updatedFormState);
       setUserData({ ...userData, schedule: newSchedule });
       setAddFormState({ ...addFormState, active: false });
-      setErrorState({
-        ...errorState,
-        active: true,
-        mode: 'add',
-        message: [['일정이 추가 되었습니다.']]
-      });
-
-
-    } else {
-      setErrorState({
-        ...errorState,
-        active: true,
-        mode: 'fail',
-        message: [['일정을 추가할 수 없습니다.'], ['해당 시간에 이미 다른 일정이 존재합니다.']]
-      });
-    }
-  };
+      }
+    };
 
   const onClickEdit = () => {
     // if (lectureCode === '') return;
@@ -181,32 +164,13 @@ const AddForm = () => {
     if (newSchedule !== false) {
       setUserData({ ...userData, schedule: newSchedule });
       setAddFormState({ ...addFormState, active: false });
-      setErrorState({
-        ...errorState,
-        active: true,
-        mode: 'edit',
-        message: [['일정이 수정 되었습니다.']]
-      });
-    } else {
-      setErrorState({
-        ...errorState,
-        active: true,
-        mode: 'fail',
-        message: [['일정을 수정할 수 없습니다.'], ['해당 시간에 이미 다른 일정이 존재합니다.']]
-      });
-    }
-  };
+      }
+    };
 
   const onClickDelete = () => {
     const newSchedule = deleteDate(curDate, startTime, endTime, schedule);
     setUserData({ ...userData, schedule: newSchedule });
     setAddFormState({ ...addFormState, active: false });
-    setErrorState({
-      ...errorState,
-      active: true,
-      mode: 'delete',
-      message: [['일정이 삭제 되었습니다.']]
-    });
   };
 
   // 학생 리스트 추가

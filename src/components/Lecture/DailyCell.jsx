@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 // store
-import { useErrorState } from '../../stores/errorState';
 import { useAddFormState } from '../../stores/addFormState';
 import { useUserData } from '../../stores/userData';
 import { useDragAndDrop } from '../../stores/dragAndDrop';
@@ -13,7 +12,6 @@ const DailyCell = (props) => {
     const { index, day, date, startHour, schedule } = props;
     const [addFormState, setAddFormState] = useAddFormState();
     const { active } = addFormState;
-    const [errorState, setErrorState] = useErrorState();
     const [userData, setUserData] = useUserData();
     const [dragAndDrop, setDragAndDrop] = useDragAndDrop();
     const [isResizing, setIsResizing] = useState(false); // 리사이징 상태 추가
@@ -208,12 +206,7 @@ const DailyCell = (props) => {
         // 일정 업데이트
         setUserData({ ...userData, schedule: updatedSchedule });
         setAddFormState({ ...addFormState, active: false });
-        setErrorState({
-            ...errorState,
-            active: true,
-            mode: 'edit',
-            message: [['일정이 수정 되었습니다.']]
-        });
+
     };
 
     // 드래그가 들어왔을 때 호출되는 함수
