@@ -104,7 +104,9 @@ const DailyCell = (props) => {
                 ...addFormState,
                 active: true,
                 mode: 'add',
-                title: '',
+                lectureCode: '',
+                name: '',
+                room: '',
                 teacher: '',
                 curDate: date, // Date 객체 그대로 유지
                 startTime: { 
@@ -118,7 +120,8 @@ const DailyCell = (props) => {
                     minute: propsMin, 
                     second: 0, 
                     nano: 0 
-                } // 새로운 시간 형식 적용
+                }, // 새로운 시간 형식 적용
+                studentList: []
             });
         }
     };
@@ -126,17 +129,20 @@ const DailyCell = (props) => {
     // 일정을 클릭하여 수정하는 함수
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
-        const { title, teacher, curDate, startTime, endTime } = schedule;
+        const { lectureCode, name,room,teacher, curDate, startTime, endTime , studentList} = schedule;
         if (!active && !isResizing) { // 리사이징 중일 때 클릭 방지
             setAddFormState({
                 ...addFormState,
                 active: true,
                 mode: 'edit',
-                title: title,
+                lectureCode: lectureCode,
+                name: name,
+                room:room,
                 teacher:teacher,
                 curDate: curDate,
                 startTime: {...startTime},
-                endTime: {...endTime}
+                endTime: {...endTime},
+                studentList : studentList
             });
         }
     };
@@ -213,7 +219,7 @@ const DailyCell = (props) => {
         console.log('드래그', from);
         const diff = (from.endTime.hour * 60 + from.endTime.minute) - (from.startTime.hour * 60 + from.startTime.minute);
 
-        const newScheduleForm = { title: from.title, teacher:from.teacher, curDate: date,
+        const newScheduleForm = { lectureCode: from.lectureCode, name: from.name, room: from.room, teacher:from.teacher, curDate: date,
             startTime: {
                 ...from.startTime,
                 hour: propsHour,
@@ -223,7 +229,8 @@ const DailyCell = (props) => {
                 ...from.endTime,
                 hour: propsHour + Math.floor(diff / 60),
                 minute: propsMin + (diff % 60)
-            }};
+            },
+        studentList: from.studentList};
 
         // 현재 Y좌표 저장
         setDragAndDrop({ ...dragAndDrop, to: newScheduleForm, initialY: e.clientY });
@@ -316,7 +323,7 @@ const DailyCell = (props) => {
                     teacher={schedule.teacher}
                 >
                     <p>{`${formatTime(schedule.startTime.hour, schedule.startTime.minute)} ~ ${formatTime(schedule.endTime.hour, schedule.endTime.minute)}`}</p>
-                    <p>{schedule.title}</p>
+                    <p>{schedule.name}</p>
                     <ResizeHandle
                         className="resize-handle"
                         onMouseDown={(e) => onResizeMouseDown(e, schedule)}

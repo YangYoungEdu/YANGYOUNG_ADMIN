@@ -39,7 +39,9 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 				...addFormState,
 				active: true,
 				mode: 'add',
-				title: '',
+				lectureCode: '',
+				name: '',
+				room: '',
 				teacher: '',
 				curDate: date, // Date 객체 그대로 유지
 				startTime: { 
@@ -51,7 +53,8 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 					hour: endHour, 
 					minute: startMinute, 
 					second: 0, 
-					nano:0 } // 새로운 시간 형식 적용
+					nano:0 }, // 새로운 시간 형식 적용
+				studentList: []
 			});
 		}
 	};
@@ -60,18 +63,21 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 	//일정 클릭 후 수정
 	const onClickSchedule = (e, schedule) => {
 		e.stopPropagation();
-		const { title, teacher, curDate, startTime, endTime } = schedule;
+		const { lectureCode, name, room, teacher, curDate, startTime, endTime, studentList } = schedule;
 
 		if (!active) {
 			setAddFormState({
 				...addFormState,
 				active: true,
 				mode: 'edit',
-				title: title,
+				lectureCode: lectureCode,
+				name: name,
+				room: room,
 				teacher: teacher,
 				curDate: curDate,
 				startTime: { ...startTime}, // 새로운 시간 형식 적용
-				endTime: { ... endTime}
+				endTime: { ... endTime},
+				studentList: studentList
 			});
 		}
 	};
@@ -110,8 +116,8 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
   };
 
 	const onDragEnterCell = (e) => {
-		const { title,teacher, startTime, endTime } = dragAndDrop.from;
-		const newScheduleForm = { title: title, teacher:teacher, curDate: date, startTime: { ... startTime}, endTime: { ... endTime} };
+		const { lectureCode,name, room, teacher, startTime, endTime , studentList} = dragAndDrop.from;
+		const newScheduleForm = { lectureCode: lectureCode, name:name, room:room, teacher:teacher, curDate: date, startTime: { ... startTime}, endTime: { ... endTime}, studentList:studentList };
 		setDragAndDrop({ ...dragAndDrop, to: newScheduleForm });
 	};
 
@@ -134,7 +140,7 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 					onDragStart={(e) => onDragCell(e, a)}
 				>
 					<p>{a.startTime.hour+':'+a.startTime.minute+'~'+a.endTime.hour+':'+a.endTime.minute}</p>
-					<p>{a.title}</p>
+					<p>{a.name}</p>
 				</MonthlyCellDiv>
 			))}
 		</MonthlyCellContainer>

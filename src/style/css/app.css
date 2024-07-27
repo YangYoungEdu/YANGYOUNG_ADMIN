@@ -31,18 +31,24 @@ body.resizing {
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 7; }
+  z-index: 50; 
+  overflow-y: hidden;
+
+}
   #panel #add-form {
     margin-bottom: 100px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    width: 250px;
+    width: 1200px;
+    height:800px;
     background: #eee;
     color: #111;
     border-radius: 10px;
-    padding: 20px; }
+    padding: 20px; 
+    overflow: scroll;
+    } 
     #panel #add-form .label {
       font-weight: bold;
       color: #111;
@@ -110,33 +116,5 @@ body.resizing {
         background: #a5d6a7; }
       #panel #add-form #option-form #delete-btn {
         background: #ef7a8b; }
-
-#error-panel {
-  display: flex;
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 100px;
-  z-index: 4; }
-  #error-panel #error-popup {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 5px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    opacity: 0.8; }
-  #error-panel .add {
-    background: #769bff; }
-  #error-panel .edit {
-    background: #a5d6a7; }
-  #error-panel .fail {
-    background: #ef7a8b; }
-  #error-panel .delete {
-    background: #111;
-    color: #eee; }
 
     
