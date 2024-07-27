@@ -294,23 +294,23 @@ const AddForm = () => {
             </div>
           </div>
           <div id= 'select-student'>
-              {/* 검색 영역 
-              <AddStudentSearch
-                searchKeyword={searchKeyword}
-                setSearchKeyword={setSearchKeyword}
-              />*/}
-              {/* 테이블 
-              <AddGenericTable 
-                searchData={searchData}
-                setSearchData={setSearchData}
-                searchDataCount={searchDataCount}
-                setSearchDataCount={setSearchDataCount}
-                searchKeyword={searchKeyword}
-                handleCheckboxChange={handleCheckboxChange}
-                selectedStudent={selectedStudent}
-                active={active}
-                setSelectedStudent={setSelectedStudent}
-              />*/}
+            {/* 검색 영역 
+            <AddStudentSearch
+              searchKeyword={searchKeyword}
+              setSearchKeyword={setSearchKeyword}
+            />*/}
+            {/* 테이블 
+            <AddGenericTable 
+              searchData={searchData}
+              setSearchData={setSearchData}
+              searchDataCount={searchDataCount}
+              setSearchDataCount={setSearchDataCount}
+              searchKeyword={searchKeyword}
+              handleCheckboxChange={handleCheckboxChange}
+              selectedStudent={selectedStudent}
+              active={active}
+              setSelectedStudent={setSelectedStudent}
+            />*/}
           </div>
           <div id="option-form">
             <div id="cancel-btn" className="btn" onClick={onClickCancel}>
