@@ -121,6 +121,8 @@ const DailyCell = (props) => {
                     second: 0, 
                     nano: 0 
                 }, // 새로운 시간 형식 적용
+                lectureDateList : [],
+                lectureDayList: [],
                 studentList: []
             });
         }
@@ -129,7 +131,7 @@ const DailyCell = (props) => {
     // 일정을 클릭하여 수정하는 함수
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
-        const { lectureCode, name,room,teacher, curDate, startTime, endTime , studentList} = schedule;
+        const { lectureCode, name,room,teacher, curDate, startTime, endTime , lectureDateList, lectureDayList, studentList} = schedule;
         if (!active && !isResizing) { // 리사이징 중일 때 클릭 방지
             setAddFormState({
                 ...addFormState,
@@ -142,6 +144,8 @@ const DailyCell = (props) => {
                 curDate: curDate,
                 startTime: {...startTime},
                 endTime: {...endTime},
+                lectureDateList:lectureDateList,
+                lectureDayList:lectureDayList,
                 studentList : studentList
             });
         }
@@ -230,6 +234,8 @@ const DailyCell = (props) => {
                 hour: propsHour + Math.floor(diff / 60),
                 minute: propsMin + (diff % 60)
             },
+        lectureDateList:from.lectureDateList,
+        lectureDayList: from.lectureDayList,
         studentList: from.studentList};
 
         // 현재 Y좌표 저장

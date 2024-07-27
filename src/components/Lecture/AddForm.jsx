@@ -23,9 +23,11 @@ const AddForm = () => {
     curDate: new Date(),
     startTime: { hour: 0, minute: 0, second: 0, nano: 0 },
     endTime: { hour: 1, minute: 0, second: 0, nano: 0 },
+    lectureDateList: [],
+    lectureDayList: [],
     studentList: []
   });
-  const { lectureCode, name, room, teacher, curDate, startTime, endTime, studentList } = newAddFormState;
+  const { lectureCode, name, room, teacher, curDate, startTime, endTime, lectureDateList,lectureDayList,studentList } = newAddFormState;
   const [userData, setUserData] = useUserData();
   const { schedule } = userData;
   const [beforeEdit, setBeforeEdit] = useState();
@@ -48,7 +50,7 @@ const AddForm = () => {
   useEffect(() => {
 
     if (active) {
-      const { lectureCode,name, room, teacher, curDate, startTime, endTime , studentList} = addFormState;
+      const { lectureCode,name, room, teacher, curDate, startTime, endTime , lectureDateList,lectureDayList, studentList} = addFormState;
       console.log('스케줄 확인', studentList);
 
       setNewAddFormState({
@@ -59,11 +61,13 @@ const AddForm = () => {
         curDate: curDate || new Date(),
         startTime: startTime || { hour: 0, minute: 0, second: 0, nano: 0 },
         endTime: endTime || { hour: 1, minute: 0, second: 0, nano: 0 },
+        lectureDateList: lectureDateList || [],
+        lectureDayList: lectureDayList || [],
         studentList: studentList || []
       });
       if (mode === 'edit') {
 
-        setBeforeEdit({ lectureCode, name, room, teacher, curDate, startTime, endTime , studentList});
+        setBeforeEdit({ lectureCode, name, room, teacher, curDate, startTime, endTime , lectureDateList, lectureDayList, studentList});
       }
     }
   }, [active, addFormState, mode]);

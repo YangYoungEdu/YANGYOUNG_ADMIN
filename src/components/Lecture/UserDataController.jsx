@@ -49,11 +49,11 @@ export const isConflict = (curDate, startTime, endTime, schedule) => {
 
 //일정 데이터 add
 export const insertDate = (addFormState, schedule) => {
-	const { lectureCode,name, room, teacher, curDate, startTime, endTime, studentList } = addFormState;
+	const { lectureCode,name, room, teacher, curDate, startTime, endTime, lectureDateList,lectureDayList, studentList } = addFormState;
 	const index = isConflict(curDate, startTime, endTime, schedule);
 
 	if (index !== -1) {
-		const newItem = { lectureCode, name, room, teacher,  curDate, startTime, endTime, studentList };
+		const newItem = { lectureCode, name, room, teacher,  curDate, startTime, endTime,lectureDateList, lectureDayList, studentList };
 		return [ ...schedule.slice(0, index), newItem, ...schedule.slice(index) ];	
 	} else {
 		return false;
@@ -62,7 +62,7 @@ export const insertDate = (addFormState, schedule) => {
 
 //일정 데이터 patch
 export const editDate = (addFormState, beforeEdit, schedule) => {
-	const { lectureCode, name, room, teacher, curDate, startTime, endTime , studentList} = addFormState;
+	const { lectureCode, name, room, teacher, curDate, startTime, endTime , lectureDateList, lectureDayList, studentList} = addFormState;
 
 	// 이전 할일을 지우고
 	const newSchedule = deleteDate(beforeEdit.curDate, beforeEdit.startTime, beforeEdit.endTime, schedule);
@@ -71,7 +71,7 @@ export const editDate = (addFormState, beforeEdit, schedule) => {
 	const index = isConflict(curDate, startTime, endTime, newSchedule);
 	if (index !== -1) {
 		// 추가에 성공
-		const newItem = { lectureCode,name, room, teacher, curDate, startTime, endTime , studentList};
+		const newItem = { lectureCode,name, room, teacher, curDate, startTime, endTime , lectureDateList, lectureDayList, studentList};
 		console.log('edit', newItem);
 		return [ ...newSchedule.slice(0, index), newItem, ...newSchedule.slice(index) ];
 	} else {

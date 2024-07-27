@@ -54,6 +54,8 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 					minute: startMinute, 
 					second: 0, 
 					nano:0 }, // 새로운 시간 형식 적용
+				lectureDateList: [],
+				lectureDayList: [],
 				studentList: []
 			});
 		}
@@ -63,7 +65,7 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 	//일정 클릭 후 수정
 	const onClickSchedule = (e, schedule) => {
 		e.stopPropagation();
-		const { lectureCode, name, room, teacher, curDate, startTime, endTime, studentList } = schedule;
+		const { lectureCode, name, room, teacher, curDate, startTime, endTime,lectureDateList,lectureDayList, studentList } = schedule;
 
 		if (!active) {
 			setAddFormState({
@@ -77,6 +79,8 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 				curDate: curDate,
 				startTime: { ...startTime}, // 새로운 시간 형식 적용
 				endTime: { ... endTime},
+				lectureDateList:lectureDateList,
+				lectureDayList: lectureDayList,
 				studentList: studentList
 			});
 		}
@@ -116,8 +120,18 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
   };
 
 	const onDragEnterCell = (e) => {
-		const { lectureCode,name, room, teacher, startTime, endTime , studentList} = dragAndDrop.from;
-		const newScheduleForm = { lectureCode: lectureCode, name:name, room:room, teacher:teacher, curDate: date, startTime: { ... startTime}, endTime: { ... endTime}, studentList:studentList };
+		const { lectureCode,name, room, teacher, startTime, endTime , lectureDateList, lectureDayList, studentList} = dragAndDrop.from;
+		const newScheduleForm = { 
+			lectureCode: lectureCode, 
+			name:name, 
+			room:room, 
+			teacher:teacher, 
+			curDate: date, 
+			startTime: { ... startTime}, 
+			endTime: { ... endTime}, 
+			lectureDateList: lectureDateList,
+			lectureDayList: lectureDayList,
+			studentList:studentList };
 		setDragAndDrop({ ...dragAndDrop, to: newScheduleForm });
 	};
 
