@@ -1,42 +1,69 @@
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import styled from 'styled-components';
 // import '../../style/css/app.css';
 import { insertDate, deleteDate, editDate } from './UserDataController.jsx';
 // store
 import { useAddFormState } from '../../stores/addFormState.jsx';
 import { useUserData } from '../../stores/userData.jsx';
 import { useErrorState } from '../../stores/errorState.jsx';
+import AddGenericTable from './AddGenericTable.jsx';
+import AddStudentSearch from './AddStudentSearch.jsx';
 
 const AddForm = () => {
   const [addFormState, setAddFormState] = useAddFormState();
   const { active, mode } = addFormState;
 
   const [newAddFormState, setNewAddFormState] = useState({
-    title: '',
+    lectureCode: '',
+    name: '',
+    room: '',
     teacher: '',
     curDate: new Date(),
     startTime: { hour: 0, minute: 0, second: 0, nano: 0 },
-    endTime: { hour: 1, minute: 0, second: 0, nano: 0 }
+    endTime: { hour: 1, minute: 0, second: 0, nano: 0 },
+    studentList: []
   });
-  const { title, teacher, curDate, startTime, endTime } = newAddFormState;
+  const { lectureCode, name, room, teacher, curDate, startTime, endTime, studentList } = newAddFormState;
   const [userData, setUserData] = useUserData();
   const { schedule } = userData;
   const [beforeEdit, setBeforeEdit] = useState();
   const [errorState, setErrorState] = useErrorState();
 
+  // 학생 선택
+  const [searchData, setSearchData] = useState([]);
+  const [searchDataCount, setSearchDataCount] = useState(0);
+  const [searchKeyword, setSearchKeyword] = useState({
+    nameList: [],
+    schoolList: [],
+    gradeList: [],
+  });
+  const [selectedStudent, setSelectedStudent] =useState();
+
+  useEffect(()=>{
+    console.log('학번', selectedStudent);
+  },[selectedStudent])
+
   useEffect(() => {
+
     if (active) {
-      const { title,teacher, curDate, startTime, endTime } = addFormState;
+      const { lectureCode,name, room, teacher, curDate, startTime, endTime , studentList} = addFormState;
+      console.log('스케줄 확인', studentList);
+
       setNewAddFormState({
-        title: title || '',
-        teacher: teacher || '김삼유',
+        lectureCode: lectureCode || '',
+        name:name|| '' , 
+        room: room|| '',
+        teacher: teacher || '',
         curDate: curDate || new Date(),
         startTime: startTime || { hour: 0, minute: 0, second: 0, nano: 0 },
-        endTime: endTime || { hour: 1, minute: 0, second: 0, nano: 0 }
+        endTime: endTime || { hour: 1, minute: 0, second: 0, nano: 0 },
+        studentList: studentList || []
       });
       if (mode === 'edit') {
-        setBeforeEdit({ title, teacher, curDate, startTime, endTime });
+
+        setBeforeEdit({ lectureCode, name, room, teacher, curDate, startTime, endTime , studentList});
       }
     }
   }, [active, addFormState, mode]);
@@ -50,8 +77,14 @@ const AddForm = () => {
     console.log('밸류', value);
     const intValue = parseInt(value, 10);
     switch (id) {
-      case 'input-title':
-        setNewAddFormState({ ...newAddFormState, title: value });
+      case 'input-lectureCode':
+        setNewAddFormState({ ...newAddFormState, lectureCode: value });
+        break;
+      case 'input-name':
+        setNewAddFormState({ ...newAddFormState, name: value });
+        break;
+      case 'input-room':
+        setNewAddFormState({ ...newAddFormState, room: value });
         break;
       case 'teacher-select':
         setNewAddFormState({
@@ -83,6 +116,7 @@ const AddForm = () => {
           endTime: { ...endTime, minute: intValue }
         });
         break;
+
       default:
         break;
     }
@@ -93,11 +127,15 @@ const AddForm = () => {
   };
 
   const onClickAdd = () => {
-    if (title === '') return;
+    // 학생 리스트를 newAddFormState에 추가
+    const updatedFormState = {
+      ...newAddFormState,
+      studentList: selectedStudent
+    };
 
-    const newSchedule = insertDate(newAddFormState, schedule);
+    const newSchedule = insertDate(updatedFormState, schedule);
     if (newSchedule !== false) {
-			console.log("일정추가", newAddFormState);
+			console.log("일정추가", updatedFormState);
       setUserData({ ...userData, schedule: newSchedule });
       setAddFormState({ ...addFormState, active: false });
       setErrorState({
@@ -119,9 +157,14 @@ const AddForm = () => {
   };
 
   const onClickEdit = () => {
-    if (title === '') return;
+    // if (lectureCode === '') return;
 
-    const newSchedule = editDate(newAddFormState, beforeEdit, schedule);
+    const updatedFormState = {
+      ...newAddFormState,
+      studentList: selectedStudent
+    };
+
+    const newSchedule = editDate(updatedFormState, beforeEdit, schedule);
 
     if (newSchedule !== false) {
       setUserData({ ...userData, schedule: newSchedule });
@@ -154,6 +197,24 @@ const AddForm = () => {
     });
   };
 
+  // 학생 리스트 추가
+  const handleCheckboxChange = (id) => {
+    console.log('id 확인', id);
+    setSelectedStudent((prevSelectedStudent) => {
+      if (prevSelectedStudent.includes(id)) {
+        console.log('있음');
+        // 배열에서 해당 id를 제거
+        return prevSelectedStudent.filter((studentId) => studentId !== id);
+      } else {
+        console.log('없음');
+        // 배열에 해당 id를 추가
+        return [...prevSelectedStudent, id];
+      }
+    });
+
+    setNewAddFormState({ ...newAddFormState, studentList: selectedStudent });
+  };
+
   if (!active) return null;
   else if (active)
     return (
@@ -161,19 +222,29 @@ const AddForm = () => {
         <div id="add-form">
           <div id="add-form-title">{mode === 'add' ? '일정 추가' : '일정 수정'}</div>
           <div id="input-form">
-            <div className="label">제목</div>
-            <input id="input-title" value={title} onChange={onChangeNewAddFormState} />
+            <div className="label">강의코드</div>
+            <input id="input-lectureCode" value={lectureCode} onChange={onChangeNewAddFormState} />
+          </div>
+          <div id="input-form">
+            <div className="label">이름</div>
+            <input id="input-name" value={name} onChange={onChangeNewAddFormState} />
           </div>
           <div id="teacher-picker-form">
             <div className="label">담당 선생님</div>
             <div>
               <select id="teacher-select" value={teacher} onChange={onChangeNewAddFormState}>
+                <option value="">선택하세요</option>
                 <option value="김삼유">김삼유</option>
                 <option value="장영해">장영해</option>
                 <option value="전재우">전재우</option>
               </select>
             </div>
           </div>
+          <div id="input-form">
+            <div className="label">강의실</div>
+            <input id="input-room" value={room} onChange={onChangeNewAddFormState} />
+          </div>
+
           <div id="date-picker-form">
             <div className="label">날짜</div>
             <div id="date-picker">
@@ -221,6 +292,25 @@ const AddForm = () => {
               </select>
               분
             </div>
+          </div>
+          <div id= 'select-student'>
+            {/* 검색 영역 */}
+            <AddStudentSearch
+              searchKeyword={searchKeyword}
+              setSearchKeyword={setSearchKeyword}
+            />
+            {/* 테이블 */}
+            <AddGenericTable 
+              searchData={searchData}
+              setSearchData={setSearchData}
+              searchDataCount={searchDataCount}
+              setSearchDataCount={setSearchDataCount}
+              searchKeyword={searchKeyword}
+              handleCheckboxChange={handleCheckboxChange}
+              selectedStudent={selectedStudent}
+              active={active}
+              setSelectedStudent={setSelectedStudent}
+            />
           </div>
           <div id="option-form">
             <div id="cancel-btn" className="btn" onClick={onClickCancel}>
