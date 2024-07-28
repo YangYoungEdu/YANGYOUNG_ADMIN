@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 // import '../../style/css/app.css';
 // store
-import { useErrorState } from '../../stores/errorState';
-import { useAddFormState } from '../../stores/addFormState';
-import { useUserData } from '../../stores/userData';
-import { useDragAndDrop } from '../../stores/dragAndDrop';
+import { useAddFormState } from '../../../stores/addFormState';
+import { useUserData } from '../../../stores/userData';
+import { useDragAndDrop } from '../../../stores/dragAndDrop';
 import styled from 'styled-components';
 
 const oneCellHeight = 12.5;
@@ -13,13 +12,61 @@ const WeeklyCell = (props) => {
     const { index, day, date, startHour, schedule } = props;
     const [addFormState, setAddFormState] = useAddFormState();
     const { active } = addFormState;
-    const [errorState, setErrorState] = useErrorState();
     const [userData, setUserData] = useUserData();
     const [dragAndDrop, setDragAndDrop] = useDragAndDrop();
     const [isResizing, setIsResizing] = useState(false); // 리사이징 상태 추가
 
     // HH:MM 형태의 string 타입인 startHour를 숫자로 변환
     const [propsHour, propsMin] = (typeof startHour === 'string' ? startHour.split(':') : ['0', '0']).map(Number);
+
+    const calculateOverlappingSchedules = () => {
+        if (!schedule) return [];
+        return userData.schedule.filter(
+            (item) =>
+                item.curDate === schedule.curDate &&
+                (
+                    (item.startTime.hour < schedule.endTime.hour || (item.startTime.hour === schedule.endTime.hour && item.startTime.minute < schedule.endTime.minute)) &&
+                    (schedule.startTime.hour < item.endTime.hour || (schedule.startTime.hour === item.endTime.hour && schedule.startTime.minute < item.endTime.minute))
+                )
+        ).sort((a, b) => a.name.localeCompare(b.name)); // 이름 기준으로 정렬
+    };
+
+
+    const [overlappingSchedules, setOverlappingSchedules] = useState([]);
+    const [scheduleStyles, setScheduleStyles] = useState({}); // 스케줄 스타일을 저장할 상태
+
+    useEffect(() => {
+        const overlaps = calculateOverlappingSchedules();
+        setOverlappingSchedules(overlaps);
+
+        const styles = {};
+        if (overlaps.length > 1) {
+            const totalWidth = overlaps.length === 2 ? `calc(50% - 10px)` : 
+            overlaps.length === 3 ? `calc(33% - 10px)` : 
+            overlaps.length === 4 ? `calc(25% - 10px)` : `calc(${100 / overlaps.length}% - 10px)`;
+
+            const customLeft = overlaps.length === 2 ? [-25, 25] :
+            overlaps.length === 3 ? [-33.3, 0, 33.3] :
+            overlaps.length === 4 ? [-38, -13, 12, 37] :
+            Array.from({ length: overlaps.length }, (_, i) => (i * (100 / overlaps.length)) - (100 / overlaps.length / 2));
+
+            overlaps.forEach((item, i) => {
+                styles[item.name] = {
+                    width: totalWidth,
+                    left: `${customLeft[i]}%`,
+                };
+            });
+        } else if (schedule) {
+            styles[schedule.name] = {
+                width: '100%',
+                left: '0%',
+                height: calculateHeight(schedule.startTime, schedule.endTime)
+            };
+        }
+
+        setScheduleStyles(styles);
+        console.log('일정 배치',scheduleStyles );
+    }, [schedule, userData.schedule]);
 
     // 마우스 업 이벤트를 처리하여 리사이징 종료
     useEffect(() => {
@@ -45,6 +92,7 @@ const WeeklyCell = (props) => {
             document.removeEventListener('mouseup', handleMouseUp);
         };
     }, [isResizing]);
+
 
     //시작시간과 끝시간 사이의 15분 단위 타임스탬프 갯수 확인
     const toMinutes = (hour, minute) => hour * 60 + minute;
@@ -120,7 +168,9 @@ const WeeklyCell = (props) => {
                     minute: propsMin, 
                     second: 0, 
                     nano: 0 
-                } ,// 새로운 시간 형식 적용
+                } ,// 새로운 시간 형식 적용,
+                lectureDateList: [],
+                lectureDayList: [],
                 studentList: []
             });
         }
@@ -129,7 +179,7 @@ const WeeklyCell = (props) => {
     // 일정을 클릭하여 수정하는 함수
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
-        const { lectureCode, name, room, teacher, curDate, startTime, endTime , studentList} = schedule;
+        const { lectureCode, name, room, teacher, curDate, startTime, endTime , lectureDateList, lectureDayList, studentList} = schedule;
         if (!active && !isResizing) { // 리사이징 중일 때 클릭 방지
             setAddFormState({
                 ...addFormState,
@@ -142,6 +192,8 @@ const WeeklyCell = (props) => {
                 curDate: curDate,
                 startTime: {...startTime},
                 endTime: {...endTime},
+                lectureDateList: lectureDateList,
+                lectureDayList: lectureDayList,
                 studentList: studentList
             });
         }
@@ -177,7 +229,7 @@ const WeeklyCell = (props) => {
         const newEndHour = Math.floor(newEndTotalMin / 60);
         const newEndMinute = newEndTotalMin % 60;
 
-        // 기존 일정 업데이트
+        // 기존 일정 업데이트 -id로 구분 필요
         const updatedSchedule = userData.schedule.map(item =>
             item === from ? { ...item, 
                 startTime: { 
@@ -204,12 +256,6 @@ const WeeklyCell = (props) => {
         // 일정 업데이트
         setUserData({ ...userData, schedule: updatedSchedule });
         setAddFormState({ ...addFormState, active: false });
-        setErrorState({
-            ...errorState,
-            active: true,
-            mode: 'edit',
-            message: [['일정이 수정 되었습니다.']]
-        });
     };
 
     // 드래그가 들어왔을 때 호출되는 함수
@@ -230,6 +276,8 @@ const WeeklyCell = (props) => {
                 hour: propsHour + Math.floor(diff / 60),
                 minute: propsMin + (diff % 60)
             },
+        lectureDateList : from.lectureDateList,
+        lectureDayList: from.lectureDayList,
         studentList: from.studentList};
 
         // 현재 Y좌표 저장
@@ -275,6 +323,7 @@ const WeeklyCell = (props) => {
                 minute: newEndMinute % 60
             };
 
+            // id로 구분 필요
             setUserData({
                 ...userData,
                 schedule: userData.schedule.map((item) =>
@@ -335,6 +384,7 @@ const WeeklyCell = (props) => {
                 draggable
                 onDragStart={(e) => onDragCell(e)}
                 teacher= {schedule.teacher}
+                customStyle={scheduleStyles[schedule.name]} // 커스텀 스타일 추가
             >
                 <p>{`${formatTime(schedule.startTime.hour, schedule.startTime.minute)} ~ ${formatTime(schedule.endTime.hour, schedule.endTime.minute)}`}</p>
                 <p>{schedule.name}</p>
@@ -407,7 +457,12 @@ const WeeklyCellDiv = styled.div`
 const WeeklySchedule = styled.div`
     display: flex;
     flex-direction: column;
-    width: 100%;
+    /* width: 100%; */
+    ${(props) => props.customStyle && `
+        width: ${props.customStyle.width};
+        left: ${props.customStyle.left};
+    `}
+
     border-radius: 5px;
 
     background: ${(props) => {

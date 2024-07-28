@@ -3,20 +3,20 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 // store
-import { useErrorState } from '../../stores/errorState';
-import { useAddFormState } from '../../stores/addFormState';
-import { useUserData } from '../../stores/userData';
-import { useDragAndDrop } from '../../stores/dragAndDrop';
+import { useAddFormState } from '../../../stores/addFormState';
+import { useUserData } from '../../../stores/userData';
+import { useDragAndDrop } from '../../../stores/dragAndDrop';
 
 const oneCellHeight = 12.5;
 const DailyCell = (props) => {
     const { index, day, date, startHour, schedule } = props;
     const [addFormState, setAddFormState] = useAddFormState();
     const { active } = addFormState;
-    const [errorState, setErrorState] = useErrorState();
     const [userData, setUserData] = useUserData();
     const [dragAndDrop, setDragAndDrop] = useDragAndDrop();
     const [isResizing, setIsResizing] = useState(false); // 리사이징 상태 추가
+    const [isAdding, setIsAdding] = useState(false); // 일정 추가 상태
+    const [newSchedule, setNewSchedule] = useState(null); // 새로 추가되는 일정 상태
 
     // HH:MM 형태의 string 타입인 startHour를 숫자로 변환
     const [propsHour, propsMin] = (typeof startHour === 'string' ? startHour.split(':') : ['0', '0']).map(Number);
@@ -97,7 +97,7 @@ const DailyCell = (props) => {
         }
     }, [schedule]);
 
-    // 빈 셀을 클릭하여 일정을 추가하는 함수
+    // 빈 셀 클릭 시 새로운 일정을 즉시 생성
     const onClickDate = () => {
         if (!active && !isResizing) {
             setAddFormState({
@@ -121,6 +121,8 @@ const DailyCell = (props) => {
                     second: 0, 
                     nano: 0 
                 }, // 새로운 시간 형식 적용
+                lectureDateList : [],
+                lectureDayList: [],
                 studentList: []
             });
         }
@@ -129,7 +131,8 @@ const DailyCell = (props) => {
     // 일정을 클릭하여 수정하는 함수
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
-        const { lectureCode, name,room,teacher, curDate, startTime, endTime , studentList} = schedule;
+        console.log('특정 일정', schedule);
+        const { lectureCode, name,room,teacher, curDate, startTime, endTime , lectureDateList, lectureDayList, studentList} = schedule;
         if (!active && !isResizing) { // 리사이징 중일 때 클릭 방지
             setAddFormState({
                 ...addFormState,
@@ -142,9 +145,13 @@ const DailyCell = (props) => {
                 curDate: curDate,
                 startTime: {...startTime},
                 endTime: {...endTime},
+                lectureDateList:lectureDateList,
+                lectureDayList:lectureDayList,
                 studentList : studentList
             });
         }
+
+        setIsAdding(false); 
     };
 
     // 일정을 드래그 앤 드랍으로 이동시키는 함수
@@ -177,7 +184,7 @@ const DailyCell = (props) => {
         const newEndHour = Math.floor(newEndTotalMin / 60);
         const newEndMinute = newEndTotalMin % 60;
 
-        // 기존 일정 업데이트
+        // 기존 일정 업데이트-id로 구분 필요
         const updatedSchedule = userData.schedule.map(item =>
             item === from ? { ...item, 
                 startTime: { 
@@ -204,12 +211,7 @@ const DailyCell = (props) => {
         // 일정 업데이트
         setUserData({ ...userData, schedule: updatedSchedule });
         setAddFormState({ ...addFormState, active: false });
-        setErrorState({
-            ...errorState,
-            active: true,
-            mode: 'edit',
-            message: [['일정이 수정 되었습니다.']]
-        });
+
     };
 
     // 드래그가 들어왔을 때 호출되는 함수
@@ -230,6 +232,8 @@ const DailyCell = (props) => {
                 hour: propsHour + Math.floor(diff / 60),
                 minute: propsMin + (diff % 60)
             },
+        lectureDateList:from.lectureDateList,
+        lectureDayList: from.lectureDayList,
         studentList: from.studentList};
 
         // 현재 Y좌표 저장
@@ -275,6 +279,7 @@ const DailyCell = (props) => {
                 minute: newEndMinute % 60
             };
 
+            //-id로 구분 필요
             setUserData({
                 ...userData,
                 schedule: userData.schedule.map((item) =>
