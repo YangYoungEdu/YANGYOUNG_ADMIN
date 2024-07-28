@@ -129,6 +129,7 @@ const DailyCell = (props) => {
     // 일정을 클릭하여 수정하는 함수
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
+        console.log('특정 일정', schedule);
         const { lectureCode, name,room,teacher, curDate, startTime, endTime , lectureDateList, lectureDayList, studentList} = schedule;
         if (!active && !isResizing) { // 리사이징 중일 때 클릭 방지
             setAddFormState({
@@ -273,7 +274,7 @@ const DailyCell = (props) => {
                 hour: Math.floor(newEndMinute / 60),
                 minute: newEndMinute % 60
             };
-            
+
             //-id로 구분 필요
             setUserData({
                 ...userData,
