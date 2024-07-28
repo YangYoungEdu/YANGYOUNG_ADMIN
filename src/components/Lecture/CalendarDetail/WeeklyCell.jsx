@@ -19,54 +19,53 @@ const WeeklyCell = (props) => {
     // HH:MM 형태의 string 타입인 startHour를 숫자로 변환
     const [propsHour, propsMin] = (typeof startHour === 'string' ? startHour.split(':') : ['0', '0']).map(Number);
 
-    //겹치는 일정 스타일 지정
-    const [customStyle, setCustomStyle] = useState({
-        width: '100%',
-        left: '0%',
-    });
+    const calculateOverlappingSchedules = () => {
+        if (!schedule) return [];
+        return userData.schedule.filter(
+            (item) =>
+                item.curDate === schedule.curDate &&
+                (
+                    (item.startTime.hour < schedule.endTime.hour || (item.startTime.hour === schedule.endTime.hour && item.startTime.minute < schedule.endTime.minute)) &&
+                    (schedule.startTime.hour < item.endTime.hour || (schedule.startTime.hour === item.endTime.hour && schedule.startTime.minute < item.endTime.minute))
+                )
+        ).sort((a, b) => a.name.localeCompare(b.name)); // 이름 기준으로 정렬
+    };
+
+
+    const [overlappingSchedules, setOverlappingSchedules] = useState([]);
+    const [scheduleStyles, setScheduleStyles] = useState({}); // 스케줄 스타일을 저장할 상태
 
     useEffect(() => {
-        // 겹치는 일정 감지
-        let overlappingSchedules = [];
-        if (schedule) {
-            overlappingSchedules = userData.schedule.filter(
-                (item) =>
-                    item.curDate === schedule.curDate &&
-                    (
-                        (item.startTime.hour < schedule.endTime.hour || (item.startTime.hour === schedule.endTime.hour && item.startTime.minute < schedule.endTime.minute)) &&
-                        (schedule.startTime.hour < item.endTime.hour || (schedule.startTime.hour === item.endTime.hour && schedule.startTime.minute < item.endTime.minute))
-                    )
-            );
-        }
+        const overlaps = calculateOverlappingSchedules();
+        setOverlappingSchedules(overlaps);
 
-        // 스타일 설정
-        if (overlappingSchedules.length > 1) {
-            const index = overlappingSchedules.findIndex((item) => item === schedule);
+        const styles = {};
+        if (overlaps.length > 1) {
+            const totalWidth = overlaps.length === 2 ? `calc(50% - 10px)` : 
+            overlaps.length === 3 ? `calc(33% - 10px)` : 
+            overlaps.length === 4 ? `calc(25% - 10px)` : `calc(${100 / overlaps.length}% - 10px)`;
 
-            let totalWidth;
-            let customLeft;
+            const customLeft = overlaps.length === 2 ? [-25, 25] :
+            overlaps.length === 3 ? [-33.3, 0, 33.3] :
+            overlaps.length === 4 ? [-38, -13, 12, 37] :
+            Array.from({ length: overlaps.length }, (_, i) => (i * (100 / overlaps.length)) - (100 / overlaps.length / 2));
 
-            if (overlappingSchedules.length === 2) {
-                totalWidth = `calc(50% - 10px)`;
-                customLeft = [-25, 25];
-            } else if (overlappingSchedules.length === 3) {
-                totalWidth = `calc(33% - 10px)`;
-                customLeft = [-33.3, 0, 33.3];
-            } else if (overlappingSchedules.length === 4) {
-                totalWidth = `calc(25% - 10px)`;
-                customLeft = [-38, -13, 12, 37];
-            }
-
-            setCustomStyle({
-                width: totalWidth,
-                left: `${index < 4 ? customLeft[index] : customLeft[2]}%`,
+            overlaps.forEach((item, i) => {
+                styles[item.name] = {
+                    width: totalWidth,
+                    left: `${customLeft[i]}%`,
+                };
             });
-        } else {
-            setCustomStyle({
+        } else if (schedule) {
+            styles[schedule.name] = {
                 width: '100%',
                 left: '0%',
-            });
+                height: calculateHeight(schedule.startTime, schedule.endTime)
+            };
         }
+
+        setScheduleStyles(styles);
+        console.log('일정 배치',scheduleStyles );
     }, [schedule, userData.schedule]);
 
     // 마우스 업 이벤트를 처리하여 리사이징 종료
@@ -385,7 +384,7 @@ const WeeklyCell = (props) => {
                 draggable
                 onDragStart={(e) => onDragCell(e)}
                 teacher= {schedule.teacher}
-                customStyle={customStyle} // 커스텀 스타일 추가
+                customStyle={scheduleStyles[schedule.name]} // 커스텀 스타일 추가
             >
                 <p>{`${formatTime(schedule.startTime.hour, schedule.startTime.minute)} ~ ${formatTime(schedule.endTime.hour, schedule.endTime.minute)}`}</p>
                 <p>{schedule.name}</p>
