@@ -4,11 +4,11 @@ import DayTimeTable from "../../../components/Lecture/DayTimeTable";
 import { theme } from "../../../style/theme";
 
 import "../../../style/css/app.css";
-import { getSchedule } from "../../../components/Lecture/UserDataController.jsx";
+import { getSchedule } from "../../../components/Lecture/CalendarDetail/UserDataController.jsx";
 // store
 import { useCalendarState } from "../../../stores/calendarState.jsx";
 import { useUserData } from "../../../stores/userData.jsx";
-import MonthlyCell from "../../../components/Lecture/MonthlyCell.jsx";
+import MonthlyCell from "../../../components/Lecture/CalendarDetail/MonthlyCell.jsx";
 
 const MonthCalendar = ({
   currentDate,

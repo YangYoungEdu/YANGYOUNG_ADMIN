@@ -3,11 +3,11 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import '../../../style/css/app.css';
 // import WeeklyCell from './WeeklyCell';
-import { getSchedule } from '../../../components/Lecture/UserDataController';
+import { getSchedule } from '../../../components/Lecture/CalendarDetail/UserDataController';
 // store
 import { useCalendarState } from '../../../stores/calendarState';
 import { useUserData } from '../../../stores/userData';
-import WeeklyCell from "../../../components/Lecture/WeeklyCell";
+import WeeklyCell from "../../../components/Lecture/CalendarDetail/WeeklyCell";
 
 //15분 간격 배열 추가
 export const times = [
