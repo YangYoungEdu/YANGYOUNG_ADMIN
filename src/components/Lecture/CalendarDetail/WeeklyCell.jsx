@@ -19,6 +19,56 @@ const WeeklyCell = (props) => {
     // HH:MM 형태의 string 타입인 startHour를 숫자로 변환
     const [propsHour, propsMin] = (typeof startHour === 'string' ? startHour.split(':') : ['0', '0']).map(Number);
 
+    //겹치는 일정 스타일 지정
+    const [customStyle, setCustomStyle] = useState({
+        width: '100%',
+        left: '0%',
+    });
+
+    useEffect(() => {
+        // 겹치는 일정 감지
+        let overlappingSchedules = [];
+        if (schedule) {
+            overlappingSchedules = userData.schedule.filter(
+                (item) =>
+                    item.curDate === schedule.curDate &&
+                    (
+                        (item.startTime.hour < schedule.endTime.hour || (item.startTime.hour === schedule.endTime.hour && item.startTime.minute < schedule.endTime.minute)) &&
+                        (schedule.startTime.hour < item.endTime.hour || (schedule.startTime.hour === item.endTime.hour && schedule.startTime.minute < item.endTime.minute))
+                    )
+            );
+        }
+
+        // 스타일 설정
+        if (overlappingSchedules.length > 1) {
+            const index = overlappingSchedules.findIndex((item) => item === schedule);
+
+            let totalWidth;
+            let customLeft;
+
+            if (overlappingSchedules.length === 2) {
+                totalWidth = `calc(50% - 10px)`;
+                customLeft = [-25, 25];
+            } else if (overlappingSchedules.length === 3) {
+                totalWidth = `calc(33% - 10px)`;
+                customLeft = [-33.3, 0, 33.3];
+            } else if (overlappingSchedules.length === 4) {
+                totalWidth = `calc(25% - 10px)`;
+                customLeft = [-38, -13, 12, 37];
+            }
+
+            setCustomStyle({
+                width: totalWidth,
+                left: `${index < 4 ? customLeft[index] : customLeft[2]}%`,
+            });
+        } else {
+            setCustomStyle({
+                width: '100%',
+                left: '0%',
+            });
+        }
+    }, [schedule, userData.schedule]);
+
     // 마우스 업 이벤트를 처리하여 리사이징 종료
     useEffect(() => {
         const handleMouseUp = () => {
@@ -43,6 +93,7 @@ const WeeklyCell = (props) => {
             document.removeEventListener('mouseup', handleMouseUp);
         };
     }, [isResizing]);
+
 
     //시작시간과 끝시간 사이의 15분 단위 타임스탬프 갯수 확인
     const toMinutes = (hour, minute) => hour * 60 + minute;
@@ -334,6 +385,7 @@ const WeeklyCell = (props) => {
                 draggable
                 onDragStart={(e) => onDragCell(e)}
                 teacher= {schedule.teacher}
+                customStyle={customStyle} // 커스텀 스타일 추가
             >
                 <p>{`${formatTime(schedule.startTime.hour, schedule.startTime.minute)} ~ ${formatTime(schedule.endTime.hour, schedule.endTime.minute)}`}</p>
                 <p>{schedule.name}</p>
@@ -406,7 +458,12 @@ const WeeklyCellDiv = styled.div`
 const WeeklySchedule = styled.div`
     display: flex;
     flex-direction: column;
-    width: 100%;
+    /* width: 100%; */
+    ${(props) => props.customStyle && `
+        width: ${props.customStyle.width};
+        left: ${props.customStyle.left};
+    `}
+
     border-radius: 5px;
 
     background: ${(props) => {
