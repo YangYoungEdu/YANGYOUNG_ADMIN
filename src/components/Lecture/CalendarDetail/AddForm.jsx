@@ -9,15 +9,13 @@ import { useAddFormState } from '../../../stores/addFormState.jsx';
 import { useUserData } from '../../../stores/userData.jsx';
 import AddGenericTable from './AddGenericTable.jsx';
 import AddStudentSearch from './AddStudentSearch.jsx';
-import DateOrWeekdaySelector from './DateOrWeekdaySelector.jsx';
+import MultiDatePicker from './MultiDatePicker.jsx';
 
 const AddForm = () => {
   const [addFormState, setAddFormState] = useAddFormState();
   const { active, mode } = addFormState;
 
   const [newAddFormState, setNewAddFormState] = useState({
-    //id:number, finished:boolean 추가 필요 
-    lectureCode: '',
     name: '',
     room: '',
     teacher: '',
@@ -25,10 +23,9 @@ const AddForm = () => {
     startTime: { hour: 0, minute: 0, second: 0, nano: 0 },
     endTime: { hour: 1, minute: 0, second: 0, nano: 0 },
     lectureDateList: [],
-    lectureDayList: [],
     studentList: []
   });
-  const { lectureCode, name, room, teacher, curDate, startTime, endTime, lectureDateList,lectureDayList,studentList } = newAddFormState;
+  const { name, room, teacher, curDate, startTime, endTime, lectureDateList,studentList } = newAddFormState;
   const [userData, setUserData] = useUserData();
   const { schedule } = userData;
   const [beforeEdit, setBeforeEdit] = useState();
@@ -42,9 +39,8 @@ const AddForm = () => {
     gradeList: [],
   });
   const [selectedStudent, setSelectedStudent] =useState();
-  const [isDateSelected, setIsDateSelected] = useState(true); // 날짜 선택이 기본값
   const [multidates, setmultiDates] = useState([]); //날짜 선택
-  const [selectedDays, setSelectedDays] = useState([]); //요일 선택
+
 
   useEffect(()=>{
     console.log('학번', selectedStudent);
@@ -53,11 +49,10 @@ const AddForm = () => {
   useEffect(() => {
 
     if (active) {
-      const { lectureCode,name, room, teacher, curDate, startTime, endTime , lectureDateList,lectureDayList, studentList} = addFormState;
+      const { name, room, teacher, curDate, startTime, endTime , lectureDateList, studentList} = addFormState;
       console.log('스케줄 확인', studentList);
 
       setNewAddFormState({
-        lectureCode: lectureCode || '',
         name:name|| '' , 
         room: room|| '',
         teacher: teacher || '',
@@ -65,12 +60,11 @@ const AddForm = () => {
         startTime: startTime || { hour: 0, minute: 0, second: 0, nano: 0 },
         endTime: endTime || { hour: 1, minute: 0, second: 0, nano: 0 },
         lectureDateList: lectureDateList || [],
-        lectureDayList: lectureDayList || [],
         studentList: studentList || []
       });
       if (mode === 'edit') {
 
-        setBeforeEdit({ lectureCode, name, room, teacher, curDate, startTime, endTime , lectureDateList, lectureDayList, studentList});
+        setBeforeEdit({ name, room, teacher, curDate, startTime, endTime , lectureDateList, studentList});
       }
     }
   }, [active, addFormState, mode]);
@@ -84,9 +78,6 @@ const AddForm = () => {
     console.log('밸류', value);
     const intValue = parseInt(value, 10);
     switch (id) {
-      case 'input-lectureCode':
-        setNewAddFormState({ ...newAddFormState, lectureCode: value });
-        break;
       case 'input-name':
         setNewAddFormState({ ...newAddFormState, name: value });
         break;
@@ -139,7 +130,6 @@ const AddForm = () => {
       ...newAddFormState,
       studentList: selectedStudent,
       lectureDateList: multidates,
-      lectureDayList: selectedDays
     };
 
     const newSchedule = insertDate(updatedFormState, schedule);
@@ -151,13 +141,11 @@ const AddForm = () => {
     };
 
   const onClickEdit = () => {
-    // if (lectureCode === '') return;
 
     const updatedFormState = {
       ...newAddFormState,
       studentList: selectedStudent,
       lectureDateList: multidates,
-      lectureDayList: selectedDays
     };
 
     const newSchedule = editDate(updatedFormState, beforeEdit, schedule);
@@ -199,10 +187,6 @@ const AddForm = () => {
         <div id="add-form">
           <div id="add-form-title">{mode === 'add' ? '일정 추가' : '일정 수정'}</div>
           <div id="input-form">
-            <div className="label">강의코드</div>
-            <input id="input-lectureCode" value={lectureCode} onChange={onChangeNewAddFormState} />
-          </div>
-          <div id="input-form">
             <div className="label">이름</div>
             <input id="input-name" value={name} onChange={onChangeNewAddFormState} />
           </div>
@@ -227,17 +211,13 @@ const AddForm = () => {
               <DatePicker selected={curDate} onChange={onChangeCurDate} />
             </div>
           </div>
-          {/* <div id="date-picker-form">
+          <div id="date-picker-form">
             <div id="date-picker">
-              <DateOrWeekdaySelector  
-                isDateSelected={isDateSelected}
-                setIsDateSelected= {setIsDateSelected}
+              <MultiDatePicker  
                 multidates={multidates}
-                setmultiDates={setmultiDates}
-                selectedDays={selectedDays}
-                setSelectedDays={setSelectedDays} />
+                setmultiDates={setmultiDates} />
             </div>
-          </div> */}
+          </div>
           <div id="time-picker-form">
             <div className="label">시작 시간</div>
             <div>

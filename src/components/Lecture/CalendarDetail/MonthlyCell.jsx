@@ -37,7 +37,6 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 				...addFormState,
 				active: true,
 				mode: 'add',
-				lectureCode: '',
 				name: '',
 				room: '',
 				teacher: '',
@@ -63,14 +62,13 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 	//일정 클릭 후 수정
 	const onClickSchedule = (e, schedule) => {
 		e.stopPropagation();
-		const { lectureCode, name, room, teacher, curDate, startTime, endTime,lectureDateList,lectureDayList, studentList } = schedule;
+		const { name, room, teacher, curDate, startTime, endTime,lectureDateList,lectureDayList, studentList } = schedule;
 
 		if (!active) {
 			setAddFormState({
 				...addFormState,
 				active: true,
 				mode: 'edit',
-				lectureCode: lectureCode,
 				name: name,
 				room: room,
 				teacher: teacher,
@@ -105,9 +103,8 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
   };
 
 	const onDragEnterCell = (e) => {
-		const { lectureCode,name, room, teacher, startTime, endTime , lectureDateList, lectureDayList, studentList} = dragAndDrop.from;
+		const { name, room, teacher, startTime, endTime , lectureDateList, lectureDayList, studentList} = dragAndDrop.from;
 		const newScheduleForm = { 
-			lectureCode: lectureCode, 
 			name:name, 
 			room:room, 
 			teacher:teacher, 

@@ -154,7 +154,6 @@ const WeeklyCell = (props) => {
                 ...addFormState,
                 active: true,
                 mode: 'add',
-                lectureCode: '',
                 name: '',
                 room: '',
                 teacher: '',
@@ -172,7 +171,6 @@ const WeeklyCell = (props) => {
                     nano: 0 
                 } ,// 새로운 시간 형식 적용,
                 lectureDateList: [],
-                lectureDayList: [],
                 studentList: []
             });
         }
@@ -181,13 +179,12 @@ const WeeklyCell = (props) => {
     // 일정을 클릭하여 수정하는 함수
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
-        const { lectureCode, name, room, teacher, curDate, startTime, endTime , lectureDateList, lectureDayList, studentList} = schedule;
+        const { name, room, teacher, curDate, startTime, endTime , lectureDateList, studentList} = schedule;
         if (!active && !isResizing) { // 리사이징 중일 때 클릭 방지
             setAddFormState({
                 ...addFormState,
                 active: true,
                 mode: 'edit',
-                lectureCode: lectureCode,
                 name: name,
                 room:room,
                 teacher:teacher,
@@ -195,7 +192,6 @@ const WeeklyCell = (props) => {
                 startTime: {...startTime},
                 endTime: {...endTime},
                 lectureDateList: lectureDateList,
-                lectureDayList: lectureDayList,
                 studentList: studentList
             });
         }
@@ -267,7 +263,7 @@ const WeeklyCell = (props) => {
         console.log('드래그', from);
         const diff = (from.endTime.hour * 60 + from.endTime.minute) - (from.startTime.hour * 60 + from.startTime.minute);
 
-        const newScheduleForm = { lectureCode: from.lectureCode, name: from.name, room:from.room, teacher:from.teacher, curDate: date,
+        const newScheduleForm = { name: from.name, room:from.room, teacher:from.teacher, curDate: date,
             startTime: {
                 ...from.startTime,
                 hour: propsHour,
@@ -279,7 +275,6 @@ const WeeklyCell = (props) => {
                 minute: propsMin + (diff % 60)
             },
         lectureDateList : from.lectureDateList,
-        lectureDayList: from.lectureDayList,
         studentList: from.studentList};
 
         // 현재 Y좌표 저장
