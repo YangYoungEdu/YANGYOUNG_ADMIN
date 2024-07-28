@@ -107,6 +107,7 @@ const DailyCell = (props) => {
                 name: '',
                 room: '',
                 teacher: '',
+                lectureType: '',
                 curDate: date, // Date 객체 그대로 유지
                 startTime: { 
                     hour: propsHour, 
@@ -130,7 +131,7 @@ const DailyCell = (props) => {
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
         console.log('특정 일정', schedule);
-        const { name,room,teacher, curDate, startTime, endTime , lectureDateList, studentList} = schedule;
+        const { name,room,lectureType, teacher, curDate, startTime, endTime , lectureDateList, studentList} = schedule;
         if (!active && !isResizing) { // 리사이징 중일 때 클릭 방지
             setAddFormState({
                 ...addFormState,
@@ -138,6 +139,7 @@ const DailyCell = (props) => {
                 mode: 'edit',
                 name: name,
                 room:room,
+                lectureType: lectureType,
                 teacher:teacher,
                 curDate: curDate,
                 startTime: {...startTime},
@@ -217,7 +219,8 @@ const DailyCell = (props) => {
         console.log('드래그', from);
         const diff = (from.endTime.hour * 60 + from.endTime.minute) - (from.startTime.hour * 60 + from.startTime.minute);
 
-        const newScheduleForm = { name: from.name, room: from.room, teacher:from.teacher, curDate: date,
+        const newScheduleForm = { name: from.name, room: from.room, lectureType:from.lectureType, 
+            teacher:from.teacher, curDate: date,
             startTime: {
                 ...from.startTime,
                 hour: propsHour,

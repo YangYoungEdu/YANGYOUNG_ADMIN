@@ -27,7 +27,7 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
       newCurDateStr += " (" + schedule.length + ")";
     }
     setCurDateStr(newCurDateStr);
-  }, [schedule]);
+  }, [calSchedule, schedule]);
 
 	//빈 셀 클릭후 일정 추가
 	const onClickDate = () => {
@@ -44,6 +44,7 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 				active: true,
 				mode: 'add',
 				name: '',
+				lectureType: '',
 				teacher: '',
 				room: '',
 				curDate: date, // Date 객체 그대로 유지
@@ -67,7 +68,7 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 	//일정 클릭 후 수정
 	const onClickSchedule = (e, schedule) => {
 		e.stopPropagation();
-		const { name, room, teacher, curDate, startTime, endTime,lectureDateList, studentList } = schedule;
+		const { name, room,lectureType, teacher, curDate, startTime, endTime,lectureDateList, studentList } = schedule;
 
 	};
 
@@ -93,10 +94,11 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
   };
 
 	const onDragEnterCell = (e) => {
-		const { name, room, teacher, startTime, endTime , lectureDateList, studentList} = dragAndDrop.from;
+		const { name, room,lectureType, teacher, startTime, endTime , lectureDateList, studentList} = dragAndDrop.from;
 		const newScheduleForm = { 
 			name:name, 
 			room:room, 
+			lectureType:lectureType,
 			teacher:teacher, 
 			curDate: date, 
 			startTime: { ... startTime}, 

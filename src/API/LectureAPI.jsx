@@ -120,11 +120,10 @@ export const getOneLectureAPI = async (lectureId) => {
 // 강의 정보 등록 폼
 export const postLecture = async (data) => {
   try {
-    const response = await axios.post(`${server}lecture`, {
+    const response = await axios.post(`${server}lecture`, data, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
-      data
     });
     console.log(response.data);
     return response.data;

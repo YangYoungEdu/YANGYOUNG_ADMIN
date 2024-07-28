@@ -56,7 +56,7 @@ const MonthCalendar = ({
   useEffect(() => {
     const { firstDate, lastDate } = getFirstAndLastDate();
     setCurSchedule(getSchedule(firstDate, lastDate, lectures));
-  }, [lectures]);
+  }, [lectures, schedule]);
 
    // 주어진 달의 첫 번째와 마지막 날짜 계산하여 반환
    const getFirstAndLastDate = () => {

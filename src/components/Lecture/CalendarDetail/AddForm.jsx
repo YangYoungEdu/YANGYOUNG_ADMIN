@@ -20,6 +20,7 @@ const AddForm = () => {
   const [newAddFormState, setNewAddFormState] = useState({
     name: '',
     room: '',
+    lectureType: '',
     teacher: '',
     curDate: new Date(), //서버에 안 들어가는 변수
     startTime: { hour: 0, minute: 0, second: 0, nano: 0 },
@@ -27,7 +28,7 @@ const AddForm = () => {
     lectureDateList: [],
     studentList: []
   });
-  const { name, room, teacher, curDate, startTime, endTime } = newAddFormState;
+  const { name, room,lectureType, teacher, curDate, startTime, endTime } = newAddFormState;
 
   const [schedule, setCalSchedule] = useRecoilState(getCalendarData
   );
@@ -54,12 +55,13 @@ const AddForm = () => {
   useEffect(() => {
 
     if (active) {
-      const { name, room, teacher, curDate, startTime, endTime , lectureDateList, studentList} = addFormState;
+      const { name, room,lectureType, teacher, curDate, startTime, endTime , lectureDateList, studentList} = addFormState;
       console.log('스케줄 확인', studentList);
 
       setNewAddFormState({
         name:name|| '' , 
         room: room|| '',
+        lectureType: lectureType || '일반',
         teacher: teacher || '',
         curDate: curDate || new Date(),
         startTime: startTime || { hour: 0, minute: 0, second: 0, nano: 0 },
@@ -69,7 +71,7 @@ const AddForm = () => {
       });
       if (mode === 'edit') {
 
-        setBeforeEdit({ name, room, teacher, curDate, startTime, endTime , lectureDateList, studentList});
+        setBeforeEdit({ name, room,lectureType, teacher, curDate, startTime, endTime , lectureDateList, studentList});
       }
     }
   }, [active, addFormState, mode]);
@@ -85,6 +87,9 @@ const AddForm = () => {
     switch (id) {
       case 'input-name':
         setNewAddFormState({ ...newAddFormState, name: value });
+        break;
+      case 'lectureType-select':
+        setNewAddFormState({ ...newAddFormState, lectureType: value });
         break;
       case 'input-room':
         setNewAddFormState({ ...newAddFormState, room: value });
@@ -143,6 +148,7 @@ const AddForm = () => {
     if (newSchedule) {
       console.log("일정추가", newSchedule);
       setCalSchedule((schedule)=>[ ...schedule, newSchedule ]); //api부르고 리스폰스를 넣어야함. 
+      console.log('schedule', schedule.length);
       setAddFormState({ ...addFormState, active: false });
     }
   };
@@ -197,6 +203,15 @@ const AddForm = () => {
             <div className="label">이름</div>
             <input id="input-name" value={name} onChange={onChangeNewAddFormState} />
           </div>
+          <div id="lectureType-picker-form">
+            <div className="label">강의타입</div>
+            <div>
+              <select id="lectureType-select" value={lectureType} onChange={onChangeNewAddFormState} >
+              <option value="일반">일반</option>
+              <option value="특반">특반</option>
+              </select>
+            </div>
+          </div>
           <div id="teacher-picker-form">
             <div className="label">담당 선생님</div>
             <div>
@@ -215,7 +230,7 @@ const AddForm = () => {
           <div id="date-picker-form">
             <div className="label">날짜</div>
             <div id="date-picker">
-              <DatePicker selected={curDate} onChange={onChangeCurDate} />
+              <DatePicker selected={curDate} onChange={onChangeCurDate} curDate={curDate} />
             </div>
           </div>
           <div id="date-picker-form">
