@@ -47,4 +47,5 @@ export const selectedStudentState = atom({
 export const getCalendarData = atom({
   key: "getCalendarData",
   default: [],
+  effects_UNSTABLE: [persistAtom]
 });

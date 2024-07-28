@@ -5,12 +5,18 @@ import { useAddFormState } from '../../../stores/addFormState';
 import { useUserData } from '../../../stores/userData';
 import { useDragAndDrop } from '../../../stores/dragAndDrop';
 import styled from 'styled-components';
+import { useRecoilState } from 'recoil';
+import { getCalendarData } from '../../../Atom';
+import { format } from 'date-fns';
 
 const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
   //   const { date, schedule } = props;
   const [addFormState, setAddFormState] = useAddFormState();
   const { active } = addFormState;
-  const [userData, setUserData] = useUserData();
+	
+	const [calSchedule, setCalSchedule] = useRecoilState(getCalendarData
+  );
+  // const [userData, setUserData] = useUserData();
   const [dragAndDrop, setDragAndDrop] = useDragAndDrop();
   const [curDateStr, setCurDateStr] = useState("");
   //   const [isSelected, setIsSelected] = useState(false);
@@ -38,8 +44,8 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 				active: true,
 				mode: 'add',
 				name: '',
-				room: '',
 				teacher: '',
+				room: '',
 				curDate: date, // Date 객체 그대로 유지
 				startTime: { 
 					hour: startHour, 
@@ -51,8 +57,7 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 					minute: startMinute, 
 					second: 0, 
 					nano:0 }, // 새로운 시간 형식 적용
-				lectureDateList: [],
-				lectureDayList: [],
+				lectureDateList: [], //보낼때는 배열 받을 때는 string
 				studentList: []
 			});
 		}
@@ -62,39 +67,24 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 	//일정 클릭 후 수정
 	const onClickSchedule = (e, schedule) => {
 		e.stopPropagation();
-		const { name, room, teacher, curDate, startTime, endTime,lectureDateList,lectureDayList, studentList } = schedule;
+		const { name, room, teacher, curDate, startTime, endTime,lectureDateList, studentList } = schedule;
 
-		if (!active) {
-			setAddFormState({
-				...addFormState,
-				active: true,
-				mode: 'edit',
-				name: name,
-				room: room,
-				teacher: teacher,
-				curDate: curDate,
-				startTime: { ...startTime}, // 새로운 시간 형식 적용
-				endTime: { ... endTime},
-				lectureDateList:lectureDateList,
-				lectureDayList: lectureDayList,
-				studentList: studentList
-			});
-		}
 	};
 
+	//수정
   const onDropSchedule = (e) => {
     console.log("드로그", e);
 
     const newSchedule = editDate(
       dragAndDrop.to,
       dragAndDrop.from,
-      userData.schedule
+      // userData.schedule
     );
 
-		if (newSchedule !== false) {
-			setUserData({ ...userData, schedule: newSchedule });
-			setAddFormState({ ...addFormState, active: false });
-		} 
+		// if (newSchedule !== false) {
+		// 	setUserData({ ...userData, schedule: newSchedule });
+		// 	setAddFormState({ ...addFormState, active: false });
+		// } 
 	};
 
   const onDragCell = (e, schedule) => {
@@ -103,7 +93,7 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
   };
 
 	const onDragEnterCell = (e) => {
-		const { name, room, teacher, startTime, endTime , lectureDateList, lectureDayList, studentList} = dragAndDrop.from;
+		const { name, room, teacher, startTime, endTime , lectureDateList, studentList} = dragAndDrop.from;
 		const newScheduleForm = { 
 			name:name, 
 			room:room, 
@@ -112,7 +102,6 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 			startTime: { ... startTime}, 
 			endTime: { ... endTime}, 
 			lectureDateList: lectureDateList,
-			lectureDayList: lectureDayList,
 			studentList:studentList };
 		setDragAndDrop({ ...dragAndDrop, to: newScheduleForm });
 	};

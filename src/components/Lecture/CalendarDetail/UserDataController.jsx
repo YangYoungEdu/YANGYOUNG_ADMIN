@@ -1,3 +1,5 @@
+import { postLecture } from "../../../API/LectureAPI";
+
 //일정 데이터 get
 export const getSchedule = (startDate, endDate, schedule) => {
 	if (schedule.length === 0) return [];
@@ -15,7 +17,7 @@ export const getSchedule = (startDate, endDate, schedule) => {
 		const curDate = new Date(schedule[i].lectureDate).setHours(0,0,0,0);
 		if (startDate.getTime() <= curDate && endDate.getTime() >= curDate) {
 			newSchedule.push(schedule[i]);
-			console.log("e", schedule[i]);
+			// console.log("e", schedule[i]);
 		} else if (newSchedule.length !== 0) {
 			break;
 		}
@@ -26,47 +28,47 @@ export const getSchedule = (startDate, endDate, schedule) => {
 
 //일정 데이터 충돌확인
 export const isConflict = (curDate, startTime, endTime, schedule) => {
-	for (let i = 0; i < schedule.length; i++) {
-			const { curDate: scheduleDate, startTime: scheduleStart, endTime: scheduleEnd } = schedule[i];
-
-			// 동일 날짜인 경우에만 충돌 확인
-			if (curDate.getTime() === scheduleDate.getTime()) {
-					// 충돌 여부를 확인
-					const isStartBeforeExistingEnd = 
-							(startTime.hour < scheduleEnd.hour) || 
-							(startTime.hour === scheduleEnd.hour && startTime.minute < scheduleEnd.minute) ||
-							(startTime.hour === scheduleEnd.hour && startTime.minute === scheduleEnd.minute && startTime.second < scheduleEnd.second);
-
-					const isEndAfterExistingStart = 
-							(endTime.hour > scheduleStart.hour) || 
-							(endTime.hour === scheduleStart.hour && endTime.minute > scheduleStart.minute) ||
-							(endTime.hour === scheduleStart.hour && endTime.minute === scheduleStart.minute && endTime.second > scheduleStart.second);
-
-					// if (isStartBeforeExistingEnd && isEndAfterExistingStart) {
-					// 		return -1; // 충돌 발생
-					// }
-			}
-	}
 
 	return schedule.length; // 충돌이 없으므로 배열 끝 인덱스 반환
 };
 
 //일정 데이터 add
-export const insertDate = (addFormState, schedule) => {
-	const { lectureCode,name, room, teacher, curDate, startTime, endTime, lectureDateList,lectureDayList, studentList } = addFormState;
-	const index = isConflict(curDate, startTime, endTime, schedule);
+export const insertDateAPI = async(addFormState) => {
+	const { name, room, teacher, startTime, endTime, lectureDateList, studentList } = addFormState;
 
-	if (index !== -1) {
-		const newItem = { lectureCode, name, room, teacher,  curDate, startTime, endTime,lectureDateList, lectureDayList, studentList };
-		return [ ...schedule.slice(0, index), newItem, ...schedule.slice(index) ];	
-	} else {
-		return false;
+	// const data ={
+	// 	name: name,
+	// 	teacher: teacher,
+	// 	room: room,
+	// 	startTime: startTime,
+	// 	endTime: endTime,
+	// 	lectureDateList: lectureDateList,
+	// 	studentList: studentList
+	// }
+
+	const data ={
+		name: "ㅋㅁㅇㅁㅇㅁㅇㅁㅇㅊㅍ",
+		teacher: "ㅁㅇㅁㅇㅁㅇ",
+		room: "ㅁㅇㅁㅇㅁㅇㅁ",
+		startTime: "15:51:26",
+		endTime: "15:51:27",
+		lectureDateList: [
+			"2024-04-19", "2024-04-12"
+		],
+		studentList: [2221333]
 	}
+
+	console.log("post 보내는 데이터 확인", data);
+	const response =await postLecture(data);
+
+	return response;
 };
+
+// ------- 위에는 수정함
 
 //일정 데이터 patch -id로 구분 필요
 export const editDate = (addFormState, beforeEdit, schedule) => {
-	const { lectureCode, name, room, teacher, curDate, startTime, endTime , lectureDateList, lectureDayList, studentList} = addFormState;
+	const { name, room, teacher, curDate, startTime, endTime , lectureDateList, studentList} = addFormState;
 
 	// 이전 할일을 지우고
 	const newSchedule = deleteDate(beforeEdit.curDate, beforeEdit.startTime, beforeEdit.endTime, beforeEdit.name, schedule);
@@ -75,7 +77,7 @@ export const editDate = (addFormState, beforeEdit, schedule) => {
 	const index = isConflict(curDate, startTime, endTime, newSchedule);
 	if (index !== -1) {
 		// 추가에 성공
-		const newItem = { lectureCode,name, room, teacher, curDate, startTime, endTime , lectureDateList, lectureDayList, studentList};
+		const newItem = { name, room, teacher, curDate, startTime, endTime , lectureDateList, studentList};
 		console.log('edit', newItem);
 		return [ ...newSchedule.slice(0, index), newItem, ...newSchedule.slice(index) ];
 	} else {

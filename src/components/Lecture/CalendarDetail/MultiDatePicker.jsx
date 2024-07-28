@@ -9,12 +9,12 @@ const MultiDatePicker = ({ multidates, setmultiDates }) => {
   const handleChange = (date) => {
     if (date) {
       const newDate = format(date, 'yyyy-MM-dd');
-      if (multidates.some(d => format(d, 'yyyy-MM-dd') === newDate)) {
+      if (multidates.includes(newDate)) {
         // 이미 선택된 날짜라면 제거
-        setmultiDates(multidates.filter(d => format(d, 'yyyy-MM-dd') !== newDate));
+        setmultiDates(multidates.filter(d => d !== newDate));
       } else {
         // 새로운 날짜 추가
-        setmultiDates([...multidates, date]);
+        setmultiDates([...multidates, newDate]);
       }
     }
   };
@@ -32,13 +32,13 @@ const MultiDatePicker = ({ multidates, setmultiDates }) => {
         startDate={startDate}
         dateFormat="yyyy/MM/dd"
         inline
-        highlightDates={multidates}
+        highlightDates={multidates.map(d => new Date(d))}
       />
       <div>
         <h3>선택한 날짜들:</h3>
         <ul>
           {multidates.length > 0 && multidates.map(date => (
-            <li key={format(date, 'yyyy-MM-dd')}>{format(date, 'yyyy-MM-dd')}</li>
+            <li key={date}>{date}</li>
           ))}
         </ul>
       </div>

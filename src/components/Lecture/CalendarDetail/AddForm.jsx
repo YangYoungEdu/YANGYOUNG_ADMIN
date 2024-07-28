@@ -3,13 +3,15 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import styled from 'styled-components';
 // import '../../style/css/app.css';
-import { insertDate, deleteDate, editDate } from './UserDataController.jsx';
+import { deleteDate, editDate, insertDateAPI } from './UserDataController.jsx';
 // store
 import { useAddFormState } from '../../../stores/addFormState.jsx';
 import { useUserData } from '../../../stores/userData.jsx';
 import AddGenericTable from './AddGenericTable.jsx';
 import AddStudentSearch from './AddStudentSearch.jsx';
 import MultiDatePicker from './MultiDatePicker.jsx';
+import { getCalendarData } from '../../../Atom.js';
+import { useRecoilState } from 'recoil';
 
 const AddForm = () => {
   const [addFormState, setAddFormState] = useAddFormState();
@@ -25,9 +27,12 @@ const AddForm = () => {
     lectureDateList: [],
     studentList: []
   });
-  const { name, room, teacher, curDate, startTime, endTime, lectureDateList, studentList } = newAddFormState;
-  const [userData, setUserData] = useUserData();
-  const { schedule } = userData;
+  const { name, room, teacher, curDate, startTime, endTime } = newAddFormState;
+
+  const [schedule, setCalSchedule] = useRecoilState(getCalendarData
+  );
+  // const [userData, setUserData] = useUserData();
+  // const { schedule } = userData;
   const [beforeEdit, setBeforeEdit] = useState();
 
   // 학생 선택
@@ -124,7 +129,7 @@ const AddForm = () => {
     setAddFormState({ ...addFormState, active: false });
   };
 
-  const onClickAdd = () => {
+  const onClickAdd = async() => {
     // 학생 리스트를 newAddFormState에 추가
     const updatedFormState = {
       ...newAddFormState,
@@ -132,13 +137,15 @@ const AddForm = () => {
       lectureDateList: multidates,
     };
 
-    const newSchedule = insertDate(updatedFormState, schedule);
-    if (newSchedule !== false) {
-			console.log("일정추가", updatedFormState);
-      setUserData({ ...userData, schedule: newSchedule });
+    console.log("날짜 타입 확인", multidates)
+    const newSchedule = await insertDateAPI(updatedFormState);
+
+    if (newSchedule) {
+      console.log("일정추가", newSchedule);
+      setCalSchedule((schedule)=>[ ...schedule, newSchedule ]); //api부르고 리스폰스를 넣어야함. 
       setAddFormState({ ...addFormState, active: false });
-      }
-    };
+    }
+  };
 
   const onClickEdit = () => {
 
@@ -151,14 +158,14 @@ const AddForm = () => {
     const newSchedule = editDate(updatedFormState, beforeEdit, schedule);
 
     if (newSchedule !== false) {
-      setUserData({ ...userData, schedule: newSchedule });
+      setCalSchedule({ ...schedule, schedule: newSchedule });
       setAddFormState({ ...addFormState, active: false });
       }
     };
 
   const onClickDelete = () => {
     const newSchedule = deleteDate(curDate, startTime, endTime, name, schedule); //id로 변경필요
-    setUserData({ ...userData, schedule: newSchedule });
+    setCalSchedule({ ...schedule, schedule: newSchedule });
     setAddFormState({ ...addFormState, active: false });
   };
 
@@ -204,6 +211,12 @@ const AddForm = () => {
           <div id="input-form">
             <div className="label">강의실</div>
             <input id="input-room" value={room} onChange={onChangeNewAddFormState} />
+          </div>
+          <div id="date-picker-form">
+            <div className="label">날짜</div>
+            <div id="date-picker">
+              <DatePicker selected={curDate} onChange={onChangeCurDate} />
+            </div>
           </div>
           <div id="date-picker-form">
             <div id="date-picker">
