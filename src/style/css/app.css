@@ -39,11 +39,9 @@ body.resizing {
     margin-bottom: 100px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: flex-start;
-    width: 400px;
-    /* width: 1200px;
-    height:800px; */
+    width: 1200px;
+    height:800px;
     background: #eee;
     color: #111;
     border-radius: 10px;

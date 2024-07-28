@@ -25,7 +25,7 @@ const AddForm = () => {
     lectureDateList: [],
     studentList: []
   });
-  const { name, room, teacher, curDate, startTime, endTime, lectureDateList,studentList } = newAddFormState;
+  const { name, room, teacher, curDate, startTime, endTime, lectureDateList, studentList } = newAddFormState;
   const [userData, setUserData] = useUserData();
   const { schedule } = userData;
   const [beforeEdit, setBeforeEdit] = useState();
@@ -206,12 +206,6 @@ const AddForm = () => {
             <input id="input-room" value={room} onChange={onChangeNewAddFormState} />
           </div>
           <div id="date-picker-form">
-            <div className="label">날짜</div>
-            <div id="date-picker">
-              <DatePicker selected={curDate} onChange={onChangeCurDate} />
-            </div>
-          </div>
-          <div id="date-picker-form">
             <div id="date-picker">
               <MultiDatePicker  
                 multidates={multidates}
@@ -261,12 +255,12 @@ const AddForm = () => {
             </div>
           </div>
           <div id= 'select-student'>
-            {/* 검색 영역 
+            검색 영역 
             <AddStudentSearch
               searchKeyword={searchKeyword}
               setSearchKeyword={setSearchKeyword}
-            />*/}
-            {/* 테이블 
+            />
+            테이블 
             <AddGenericTable 
               searchData={searchData}
               setSearchData={setSearchData}
@@ -277,7 +271,7 @@ const AddForm = () => {
               selectedStudent={selectedStudent}
               active={active}
               setSelectedStudent={setSelectedStudent}
-            />*/}
+            />
           </div>
           <div id="option-form">
             <div id="cancel-btn" className="btn" onClick={onClickCancel}>
