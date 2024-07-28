@@ -19,6 +19,9 @@ const WeeklyCell = (props) => {
     // HH:MM 형태의 string 타입인 startHour를 숫자로 변환
     const [propsHour, propsMin] = (typeof startHour === 'string' ? startHour.split(':') : ['0', '0']).map(Number);
 
+    const [overlappingSchedules, setOverlappingSchedules] = useState([]);
+    const [scheduleStyles, setScheduleStyles] = useState({}); // 스케줄 스타일을 저장할 상태
+
     const calculateOverlappingSchedules = () => {
         if (!schedule) return [];
         return userData.schedule.filter(
@@ -31,12 +34,9 @@ const WeeklyCell = (props) => {
         ).sort((a, b) => a.name.localeCompare(b.name)); // 이름 기준으로 정렬
     };
 
-
-    const [overlappingSchedules, setOverlappingSchedules] = useState([]);
-    const [scheduleStyles, setScheduleStyles] = useState({}); // 스케줄 스타일을 저장할 상태
-
     useEffect(() => {
         const overlaps = calculateOverlappingSchedules();
+        console.log("오버랩 확인", overlaps);
         setOverlappingSchedules(overlaps);
 
         const styles = {};
