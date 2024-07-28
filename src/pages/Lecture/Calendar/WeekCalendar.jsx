@@ -8,6 +8,8 @@ import { getSchedule } from '../../../components/Lecture/CalendarDetail/UserData
 import { useCalendarState } from '../../../stores/calendarState';
 import { useUserData } from '../../../stores/userData';
 import WeeklyCell from "../../../components/Lecture/CalendarDetail/WeeklyCell";
+import { useRecoilState } from "recoil";
+import { getCalendarData } from "../../../Atom";
 
 //15분 간격 배열 추가
 export const times = [
@@ -37,8 +39,10 @@ const WeekCalendar = ({ currentDate, lectures }) => {
 	const [ dates, setDates ] = useState([]);
 	const [timeTable, setTimeTable] = useState(['', '', ...times]); 
 
-	const [ userData, setUserData ] = useUserData();
-	const { schedule } = userData;
+	const [schedule, setSchedule] = useRecoilState(getCalendarData
+	);
+	// const [ userData, setUserData ] = useUserData();
+	// const { schedule } = userData;
 
 	const [ curSchedule, setCurSchedule ] = useState([]);
 
@@ -46,6 +50,7 @@ const WeekCalendar = ({ currentDate, lectures }) => {
 		() => {
 			const { firstDate, lastDate } = getFirstAndLastDate();
 			setDates(makeCalendar(firstDate, lastDate));
+			setSchedule(lectures);
 		},
 		[ date ]
 	);
@@ -53,10 +58,10 @@ const WeekCalendar = ({ currentDate, lectures }) => {
 	useEffect(
 		() => {
 			const { firstDate, lastDate } = getFirstAndLastDate();
-			setCurSchedule(getSchedule(firstDate, lastDate, schedule));
+			setCurSchedule(getSchedule(firstDate, lastDate, lectures));
 			console.log('주간 일정',curSchedule );
 		},
-		[ userData ]
+		[ lectures ]
 	);
 
 	const getFirstAndLastDate = () => {
@@ -106,8 +111,11 @@ const WeekCalendar = ({ currentDate, lectures }) => {
 	};
 
 		for (let i = 0; i < curSchedule.length; i++) {
-
-			if (curDate.getTime() === curSchedule[i].curDate.getTime() && curSchedule[i].startTime.hour === propsHour && to15MinRange(curSchedule[i].startTime.minute) === propsMin ) {
+			console.log("주간 오고있나요?" , curSchedule);
+				if (curDate.getFullYear() === new Date(curSchedule[i].lectureDate).getFullYear() &&
+				curDate.getMonth() === new Date(curSchedule[i].lectureDate).getMonth()&&
+				curDate.getDate() === new Date(curSchedule[i].lectureDate).getDate()&&
+				curSchedule[i].startTime.hour === propsHour && to15MinRange(curSchedule[i].startTime.minute) === propsMin ) {
 				curDateSchedule = curSchedule[i];
 				break;
 			}

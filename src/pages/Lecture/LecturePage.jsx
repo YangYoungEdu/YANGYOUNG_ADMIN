@@ -75,6 +75,7 @@ const LecturePage = () => {
           break;
         case "day":
           response = await getAllLectureByDayAPI(currentDate);
+          console.log('일 일정', response);
           break;
         default:
           response = [];

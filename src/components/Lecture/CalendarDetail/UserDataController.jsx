@@ -2,16 +2,20 @@
 export const getSchedule = (startDate, endDate, schedule) => {
 	if (schedule.length === 0) return [];
 
-	const start = new Date(schedule[0].lectureDate).getTime();
-	const end = new Date(schedule[schedule.length - 1].lectureDate).getTime();
+	const fistSchedule = new Date(schedule[0].lectureDate).setHours(0,0,0,0);
+	const lastSchedule = new Date(schedule[schedule.length - 1].lectureDate).setHours(0,0,0,0);
+
+	const start = fistSchedule
+	const end = lastSchedule.lectureDate
 	if (endDate.getTime() < start) return [];
 	else if (startDate.getTime() > end) return [];
 
 	const newSchedule = [];
 	for (let i = 0; i < schedule.length; i++) {
-		const curDate = new Date(schedule[i].lectureDate).getTime();
+		const curDate = new Date(schedule[i].lectureDate).setHours(0,0,0,0);
 		if (startDate.getTime() <= curDate && endDate.getTime() >= curDate) {
 			newSchedule.push(schedule[i]);
+			console.log("e", schedule[i]);
 		} else if (newSchedule.length !== 0) {
 			break;
 		}
