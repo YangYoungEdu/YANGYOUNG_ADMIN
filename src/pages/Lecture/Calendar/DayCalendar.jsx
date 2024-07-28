@@ -1,11 +1,11 @@
 import DayTable from "../../../components/Lecture/DayTable";
 import React, { useState, useEffect } from 'react';
 import '../../../style/css/app.css';
-import { getSchedule } from '../../../components/Lecture/UserDataController.jsx';
+import { getSchedule } from '../../../components/Lecture/CalendarDetail/UserDataController.jsx';
 // store
 import { useCalendarState } from '../../../stores/calendarState.jsx';
 import { useUserData } from '../../../stores/userData.jsx';
-import DailyCell from "../../../components/Lecture/DailyCell.jsx";
+import DailyCell from "../../../components/Lecture/CalendarDetail/DailyCell.jsx";
 import styled from 'styled-components';
 
 //15분 간격 배열 추가

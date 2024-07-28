@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import Select from "react-select";
 import { useRecoilState } from "recoil";
 import styled, { keyframes } from "styled-components";
-import { ReactComponent as Cancel } from "../../Assets/Cancel.svg";
-import { ReactComponent as DClose } from "../../Assets/DropdownClosed.svg";
-import { ReactComponent as DOpen } from "../../Assets/DropdownOpened.svg";
-import { MainDiv, RowDiv } from "../../style/CommonStyle";
+import { ReactComponent as Cancel } from "../../../Assets/Cancel.svg";
+import { ReactComponent as DClose } from "../../../Assets/DropdownClosed.svg";
+import { ReactComponent as DOpen } from "../../../Assets/DropdownOpened.svg";
+import { MainDiv, RowDiv } from "../../../style/CommonStyle";
 
 const options = [
   { value: "M3", label: "중3" },

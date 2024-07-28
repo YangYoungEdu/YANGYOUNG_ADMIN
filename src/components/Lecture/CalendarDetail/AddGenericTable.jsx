@@ -6,12 +6,12 @@ import {
   getAllStudentAPI,
   getHiddenStudentAPI,
   searchStudentAPI,
-} from "../../API/StudentAPI";
-import { MainDiv } from "../../style/CommonStyle";
-import { theme } from "../../style/theme";
-import PaginationComponent from "../General/Pagination";
-import TableMenus from "../Student/TableMenus";
-import { useAddFormState } from "../../stores/addFormState";
+} from "../../../API/StudentAPI";
+import { MainDiv } from "../../../style/CommonStyle";
+import { theme } from "../../../style/theme";
+import PaginationComponent from "../../General/Pagination";
+import TableMenus from "../../Student/TableMenus";
+import { useAddFormState } from "../../../stores/addFormState";
 
 const columns = [
   { key: "index", label: "순번" },

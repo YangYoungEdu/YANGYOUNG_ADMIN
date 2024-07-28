@@ -5,31 +5,33 @@ import styled from 'styled-components';
 // import '../../style/css/app.css';
 import { insertDate, deleteDate, editDate } from './UserDataController.jsx';
 // store
-import { useAddFormState } from '../../stores/addFormState.jsx';
-import { useUserData } from '../../stores/userData.jsx';
-import { useErrorState } from '../../stores/errorState.jsx';
+import { useAddFormState } from '../../../stores/addFormState.jsx';
+import { useUserData } from '../../../stores/userData.jsx';
 import AddGenericTable from './AddGenericTable.jsx';
 import AddStudentSearch from './AddStudentSearch.jsx';
+import DateOrWeekdaySelector from './DateOrWeekdaySelector.jsx';
 
 const AddForm = () => {
   const [addFormState, setAddFormState] = useAddFormState();
   const { active, mode } = addFormState;
 
   const [newAddFormState, setNewAddFormState] = useState({
+    //id:number, finished:boolean 추가 필요 
     lectureCode: '',
     name: '',
     room: '',
     teacher: '',
-    curDate: new Date(),
+    curDate: new Date(), //서버에 안 들어가는 변수
     startTime: { hour: 0, minute: 0, second: 0, nano: 0 },
     endTime: { hour: 1, minute: 0, second: 0, nano: 0 },
+    lectureDateList: [],
+    lectureDayList: [],
     studentList: []
   });
-  const { lectureCode, name, room, teacher, curDate, startTime, endTime, studentList } = newAddFormState;
+  const { lectureCode, name, room, teacher, curDate, startTime, endTime, lectureDateList,lectureDayList,studentList } = newAddFormState;
   const [userData, setUserData] = useUserData();
   const { schedule } = userData;
   const [beforeEdit, setBeforeEdit] = useState();
-  const [errorState, setErrorState] = useErrorState();
 
   // 학생 선택
   const [searchData, setSearchData] = useState([]);
@@ -40,6 +42,9 @@ const AddForm = () => {
     gradeList: [],
   });
   const [selectedStudent, setSelectedStudent] =useState();
+  const [isDateSelected, setIsDateSelected] = useState(true); // 날짜 선택이 기본값
+  const [multidates, setmultiDates] = useState([]); //날짜 선택
+  const [selectedDays, setSelectedDays] = useState([]); //요일 선택
 
   useEffect(()=>{
     console.log('학번', selectedStudent);
@@ -48,7 +53,7 @@ const AddForm = () => {
   useEffect(() => {
 
     if (active) {
-      const { lectureCode,name, room, teacher, curDate, startTime, endTime , studentList} = addFormState;
+      const { lectureCode,name, room, teacher, curDate, startTime, endTime , lectureDateList,lectureDayList, studentList} = addFormState;
       console.log('스케줄 확인', studentList);
 
       setNewAddFormState({
@@ -59,11 +64,13 @@ const AddForm = () => {
         curDate: curDate || new Date(),
         startTime: startTime || { hour: 0, minute: 0, second: 0, nano: 0 },
         endTime: endTime || { hour: 1, minute: 0, second: 0, nano: 0 },
+        lectureDateList: lectureDateList || [],
+        lectureDayList: lectureDayList || [],
         studentList: studentList || []
       });
       if (mode === 'edit') {
 
-        setBeforeEdit({ lectureCode, name, room, teacher, curDate, startTime, endTime , studentList});
+        setBeforeEdit({ lectureCode, name, room, teacher, curDate, startTime, endTime , lectureDateList, lectureDayList, studentList});
       }
     }
   }, [active, addFormState, mode]);
@@ -130,7 +137,9 @@ const AddForm = () => {
     // 학생 리스트를 newAddFormState에 추가
     const updatedFormState = {
       ...newAddFormState,
-      studentList: selectedStudent
+      studentList: selectedStudent,
+      lectureDateList: multidates,
+      lectureDayList: selectedDays
     };
 
     const newSchedule = insertDate(updatedFormState, schedule);
@@ -138,30 +147,17 @@ const AddForm = () => {
 			console.log("일정추가", updatedFormState);
       setUserData({ ...userData, schedule: newSchedule });
       setAddFormState({ ...addFormState, active: false });
-      setErrorState({
-        ...errorState,
-        active: true,
-        mode: 'add',
-        message: [['일정이 추가 되었습니다.']]
-      });
-
-
-    } else {
-      setErrorState({
-        ...errorState,
-        active: true,
-        mode: 'fail',
-        message: [['일정을 추가할 수 없습니다.'], ['해당 시간에 이미 다른 일정이 존재합니다.']]
-      });
-    }
-  };
+      }
+    };
 
   const onClickEdit = () => {
     // if (lectureCode === '') return;
 
     const updatedFormState = {
       ...newAddFormState,
-      studentList: selectedStudent
+      studentList: selectedStudent,
+      lectureDateList: multidates,
+      lectureDayList: selectedDays
     };
 
     const newSchedule = editDate(updatedFormState, beforeEdit, schedule);
@@ -169,32 +165,13 @@ const AddForm = () => {
     if (newSchedule !== false) {
       setUserData({ ...userData, schedule: newSchedule });
       setAddFormState({ ...addFormState, active: false });
-      setErrorState({
-        ...errorState,
-        active: true,
-        mode: 'edit',
-        message: [['일정이 수정 되었습니다.']]
-      });
-    } else {
-      setErrorState({
-        ...errorState,
-        active: true,
-        mode: 'fail',
-        message: [['일정을 수정할 수 없습니다.'], ['해당 시간에 이미 다른 일정이 존재합니다.']]
-      });
-    }
-  };
+      }
+    };
 
   const onClickDelete = () => {
-    const newSchedule = deleteDate(curDate, startTime, endTime, schedule);
+    const newSchedule = deleteDate(curDate, startTime, endTime, name, schedule); //id로 변경필요
     setUserData({ ...userData, schedule: newSchedule });
     setAddFormState({ ...addFormState, active: false });
-    setErrorState({
-      ...errorState,
-      active: true,
-      mode: 'delete',
-      message: [['일정이 삭제 되었습니다.']]
-    });
   };
 
   // 학생 리스트 추가
@@ -244,13 +221,23 @@ const AddForm = () => {
             <div className="label">강의실</div>
             <input id="input-room" value={room} onChange={onChangeNewAddFormState} />
           </div>
-
           <div id="date-picker-form">
             <div className="label">날짜</div>
             <div id="date-picker">
               <DatePicker selected={curDate} onChange={onChangeCurDate} />
             </div>
           </div>
+          {/* <div id="date-picker-form">
+            <div id="date-picker">
+              <DateOrWeekdaySelector  
+                isDateSelected={isDateSelected}
+                setIsDateSelected= {setIsDateSelected}
+                multidates={multidates}
+                setmultiDates={setmultiDates}
+                selectedDays={selectedDays}
+                setSelectedDays={setSelectedDays} />
+            </div>
+          </div> */}
           <div id="time-picker-form">
             <div className="label">시작 시간</div>
             <div>
