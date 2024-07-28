@@ -169,7 +169,7 @@ const AddForm = () => {
     };
 
   const onClickDelete = () => {
-    const newSchedule = deleteDate(curDate, startTime, endTime, schedule);
+    const newSchedule = deleteDate(curDate, startTime, endTime, name, schedule); //id로 변경필요
     setUserData({ ...userData, schedule: newSchedule });
     setAddFormState({ ...addFormState, active: false });
   };

@@ -65,7 +65,7 @@ export const editDate = (addFormState, beforeEdit, schedule) => {
 	const { lectureCode, name, room, teacher, curDate, startTime, endTime , lectureDateList, lectureDayList, studentList} = addFormState;
 
 	// 이전 할일을 지우고
-	const newSchedule = deleteDate(beforeEdit.curDate, beforeEdit.startTime, beforeEdit.endTime, schedule);
+	const newSchedule = deleteDate(beforeEdit.curDate, beforeEdit.startTime, beforeEdit.endTime, beforeEdit.name, schedule);
 
 	// 새 할일을 추가하는데
 	const index = isConflict(curDate, startTime, endTime, newSchedule);
@@ -81,7 +81,7 @@ export const editDate = (addFormState, beforeEdit, schedule) => {
 };
 
 //일정 데이터 delete -id로 구분 필요
-export const deleteDate = (curDate, startTime, endTime, schedule) => {
+export const deleteDate = (curDate, startTime, endTime, name, schedule) => {
 	// 기존 schedule에서 curDate, startTime, endTime와 일치하는 항목을 찾아서 삭제
 	return schedule.filter(
 			(item) =>
@@ -89,7 +89,9 @@ export const deleteDate = (curDate, startTime, endTime, schedule) => {
 						item.startTime.hour === startTime.hour &&
 						item.startTime.minute === startTime.minute &&
 						item.endTime.hour === endTime.hour &&
-						item.endTime.minute === endTime.minute)
+						item.endTime.minute === endTime.minute&&
+						item.name === name //id
+					)
 	);
 };
 
