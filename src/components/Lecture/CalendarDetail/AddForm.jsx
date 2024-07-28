@@ -56,7 +56,7 @@ const AddForm = () => {
 
     if (active) {
       const { name, room,lectureType, teacher, curDate, startTime, endTime , lectureDateList, studentList} = addFormState;
-      console.log('스케줄 확인', studentList);
+      console.log('스케줄 확인', curDate);
 
       setNewAddFormState({
         name:name|| '' , 
@@ -227,17 +227,18 @@ const AddForm = () => {
             <div className="label">강의실</div>
             <input id="input-room" value={room} onChange={onChangeNewAddFormState} />
           </div>
-          <div id="date-picker-form">
+          {/* <div id="date-picker-form">
             <div className="label">날짜</div>
             <div id="date-picker">
-              <DatePicker selected={curDate} onChange={onChangeCurDate} curDate={curDate} />
+              <DatePicker selected={curDate} onChange={onChangeCurDate} />
             </div>
-          </div>
+          </div> */}
           <div id="date-picker-form">
             <div id="date-picker">
               <MultiDatePicker  
                 multidates={multidates}
-                setmultiDates={setmultiDates} />
+                setmultiDates={setmultiDates} 
+                curDate={curDate}/>
             </div>
           </div>
           <div id="time-picker-form">
