@@ -13,10 +13,10 @@ import DayCalendar from "./Calendar/DayCalendar";
 import WeekCalendar from "./Calendar/WeekCalendar";
 import MonthCalendar from "./Calendar/MonthCalendar";
 
-import { useUserData } from '../../stores/userData.jsx';
-import AddForm from "../../components/Lecture/CalendarDetail/AddForm.jsx";
 import { useRecoilState } from "recoil";
 import { getCalendarData } from "../../Atom.js";
+import CalendarModal from "../../components/Lecture/CalendarModal/CalendarModal.jsx";
+// import CalendarModal from "../../components/Lecture/CalendarDetail/CalendarModal.jsx";
 
 const LecturePage = () => {
   const [mode, setMode] = useState("day");
@@ -106,7 +106,7 @@ const LecturePage = () => {
           {/* 캘린더 */}
           {renderCalendar()}
         </RowDiv>
-        <AddForm/>
+        <CalendarModal/>
       </ColumnDiv>
     </ThemeProvider>
   );
