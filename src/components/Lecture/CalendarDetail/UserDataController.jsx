@@ -1,5 +1,13 @@
 import { patchLecture, postLecture } from "../../../API/LectureAPI";
 
+	//서버에 시간 보내는 형식 변경
+export const serverformatTime = (hour, minute) => {
+		const formattedHour = String(hour).padStart(2, '0');
+		const formattedMinute = String(minute).padStart(2, '0');
+		return `${formattedHour}:${formattedMinute}:00`;
+	};
+
+
 //일정 데이터 get
 export const getSchedule = (startDate, endDate, schedule) => {
 	if (schedule.length === 0) return [];
@@ -36,15 +44,8 @@ export const isConflict = (lectureDate, startTime, endTime, schedule) => {
 export const insertDateAPI = async(addFormState) => {
 	const { name, room, lectureType, teacher, startTime, endTime, lectureDateList, studentList } = addFormState;
 
-	//서버에 시간 보내는 형식 변경
-	const formatTime = (hour, minute) => {
-    const formattedHour = String(hour).padStart(2, '0');
-    const formattedMinute = String(minute).padStart(2, '0');
-    return `${formattedHour}:${formattedMinute}:00`;
-  };
-
-  const startTimeStr = formatTime(startTime.hour, startTime.minute);
-  const endTimeStr = formatTime(endTime.hour, endTime.minute);
+  const startTimeStr = serverformatTime(startTime.hour, startTime.minute);
+  const endTimeStr = serverformatTime(endTime.hour, endTime.minute);
 
 	const data ={
 		name: name,
@@ -63,9 +64,18 @@ export const insertDateAPI = async(addFormState) => {
 	return response;
 };
 
+export const DragNDropPatchAPI = async (data) =>{
+
+	console.log('수정할 데이터', data);
+	const response =await patchLecture(data);
+	console.log('수정한 데이터', response);
+	return response;
+
+}
+
 // ------- 위에는 수정함
 
-//드래그할 때 일정 데이터 patch -id로 구분 필요
+//일정 데이터 patch -id로 구분 필요
 export const editDateAPI = async (addFormState, beforeEdit, schedule) => {
 	const { id, lectureCode, name, lectureType, teacher, room, startTime, endTime , lectureDate} = addFormState;
 
@@ -77,14 +87,9 @@ export const editDateAPI = async (addFormState, beforeEdit, schedule) => {
 		
 	//날짜 형식 변경
 	const newDateForm = lectureDate.toLocaleDateString("en-CA");
-	//서버에 시간 보내는 형식 변경
-	const formatTime = (hour, minute) => {
-		const formattedHour = String(hour).padStart(2, '0');
-		const formattedMinute = String(minute).padStart(2, '0');
-		return `${formattedHour}:${formattedMinute}:00`;
-	};
-	const startTimeStr = formatTime(startTime.hour, startTime.minute);
-  const endTimeStr = formatTime(endTime.hour, endTime.minute);
+
+	const startTimeStr = serverformatTime(startTime.hour, startTime.minute);
+  const endTimeStr = serverformatTime(endTime.hour, endTime.minute);
 
 	const data ={
 		id: id,
@@ -93,13 +98,13 @@ export const editDateAPI = async (addFormState, beforeEdit, schedule) => {
 		room: room,
 		startTime: startTimeStr,
 		endTime:endTimeStr,
-		lectureDate: newDateForm,
+		newLecturerDate: newDateForm,
 		allUpdate: false
 	}
 
-	console.log('수정할 데이터', data);
+	// console.log('수정할 데이터', data);
 	const response =await patchLecture(data);
-	console.log('수정한 데이터', response);
+	// console.log('수정한 데이터', response);
 
 	return [ ...newSchedule.slice(0, index), response, ...newSchedule.slice(index) ];
 };

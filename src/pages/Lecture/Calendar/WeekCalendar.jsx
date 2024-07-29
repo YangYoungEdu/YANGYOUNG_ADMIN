@@ -2,7 +2,6 @@ import { render } from "@testing-library/react";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import '../../../style/css/app.css';
-// import WeeklyCell from './WeeklyCell';
 import { getSchedule } from '../../../components/Lecture/CalendarDetail/UserDataController';
 // store
 import { useCalendarState } from '../../../stores/calendarState';
@@ -57,7 +56,7 @@ const WeekCalendar = ({ currentDate, lectures }) => {
 		() => {
 			const { firstDate, lastDate } = getFirstAndLastDate();
 			setCurSchedule(getSchedule(firstDate, lastDate, lectures));
-			console.log('주간 일정',curSchedule );
+			// console.log('주간 일정',curSchedule );
 		},
 		[ lectures, schedule ]
 	);
@@ -109,7 +108,7 @@ const WeekCalendar = ({ currentDate, lectures }) => {
 	};
 
 		for (let i = 0; i < curSchedule.length; i++) {
-			console.log("주간 오고있나요?" , curSchedule);
+			// console.log("주간 오고있나요?" , curSchedule);
 				if (curDate.getFullYear() === new Date(curSchedule[i].lectureDate).getFullYear() &&
 				curDate.getMonth() === new Date(curSchedule[i].lectureDate).getMonth()&&
 				curDate.getDate() === new Date(curSchedule[i].lectureDate).getDate()&&
@@ -138,7 +137,7 @@ const WeekCalendar = ({ currentDate, lectures }) => {
 					</HourCell>
 				))}
 			</HourCol>
-			{console.log('주간 dates형식', dates)}
+			{/* {console.log('주간 dates형식', dates)} */}
 			{dates.map((a, i) => (
 				<WeeklyCol key={i} className="weekly-col">
 					{a.map((b, j) => (
