@@ -27,7 +27,7 @@ export const getSchedule = (startDate, endDate, schedule) => {
 };
 
 //일정 데이터 충돌확인
-export const isConflict = (curDate, startTime, endTime, schedule) => {
+export const isConflict = (lectureDate, startTime, endTime, schedule) => {
 
 	return schedule.length; // 충돌이 없으므로 배열 끝 인덱스 반환
 };
@@ -67,17 +67,20 @@ export const insertDateAPI = async(addFormState) => {
 
 //일정 데이터 patch -id로 구분 필요
 export const editDate = (addFormState, beforeEdit, schedule) => {
-	const { name, room,lectureType, teacher, curDate, startTime, endTime , lectureDateList, studentList} = addFormState;
+	const { id, lectureCode, name, lectureType, teacher, room, startTime, endTime , lectureDate} = addFormState;
 
 	// 이전 할일을 지우고
-	const newSchedule = deleteDate(beforeEdit.curDate, beforeEdit.startTime, beforeEdit.endTime, beforeEdit.name, schedule);
+	const newSchedule = deleteDate(beforeEdit.id, schedule);
 
 	// 새 할일을 추가하는데
-	const index = isConflict(curDate, startTime, endTime, newSchedule);
+	const index = isConflict(lectureDate, startTime, endTime, newSchedule);
+
 	if (index !== -1) {
 		// 추가에 성공
-		const newItem = { name, room, lectureType, teacher, curDate, startTime, endTime , lectureDateList, studentList};
+		const newItem = { id,lectureCode, name,lectureType, teacher, room, startTime, endTime , lectureDate}; 
+
 		console.log('edit', newItem);
+
 		return [ ...newSchedule.slice(0, index), newItem, ...newSchedule.slice(index) ];
 	} else {
 		// 추가하려는 곳이 중복이면 작업 취소
@@ -86,16 +89,12 @@ export const editDate = (addFormState, beforeEdit, schedule) => {
 };
 
 //일정 데이터 delete -id로 구분 필요
-export const deleteDate = (curDate, startTime, endTime, name, schedule) => {
-	// 기존 schedule에서 curDate, startTime, endTime와 일치하는 항목을 찾아서 삭제
+export const deleteDate = (id, schedule) => {
+	// 기존 schedule에서 id와 일치하는 항목을 찾아서 삭제
 	return schedule.filter(
 			(item) =>
-					!(item.curDate.getTime() === curDate.getTime() &&
-						item.startTime.hour === startTime.hour &&
-						item.startTime.minute === startTime.minute &&
-						item.endTime.hour === endTime.hour &&
-						item.endTime.minute === endTime.minute&&
-						item.name === name //id
+					!(
+						item.id === id //id
 					)
 	);
 };

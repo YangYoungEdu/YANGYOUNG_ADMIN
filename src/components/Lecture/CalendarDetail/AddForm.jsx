@@ -76,10 +76,6 @@ const AddForm = () => {
     }
   }, [active, addFormState, mode]);
 
-  const onChangeCurDate = (value) => {
-    setNewAddFormState({ ...newAddFormState, curDate: value });
-  };
-
   const onChangeNewAddFormState = (e) => {
     const { id, value } = e.target;
     console.log('밸류', value);
@@ -155,24 +151,24 @@ const AddForm = () => {
 
   const onClickEdit = () => {
 
-    const updatedFormState = {
-      ...newAddFormState,
-      studentList: selectedStudent,
-      lectureDateList: multidates,
-    };
+    // const updatedFormState = {
+    //   ...newAddFormState,
+    //   studentList: selectedStudent,
+    //   lectureDateList: multidates,
+    // };
 
-    const newSchedule = editDate(updatedFormState, beforeEdit, schedule);
+    // const newSchedule = editDate(updatedFormState, beforeEdit, schedule);
 
-    if (newSchedule !== false) {
-      setCalSchedule({ ...schedule, schedule: newSchedule });
-      setAddFormState({ ...addFormState, active: false });
-      }
+    // if (newSchedule !== false) {
+    //   setCalSchedule({ ...schedule, schedule: newSchedule });
+    //   setAddFormState({ ...addFormState, active: false });
+    //   }
     };
 
   const onClickDelete = () => {
-    const newSchedule = deleteDate(curDate, startTime, endTime, name, schedule); //id로 변경필요
-    setCalSchedule({ ...schedule, schedule: newSchedule });
-    setAddFormState({ ...addFormState, active: false });
+    // const newSchedule = deleteDate(curDate, startTime, endTime, name, schedule); //id로 변경필요
+    // setCalSchedule({ ...schedule, schedule: newSchedule });
+    // setAddFormState({ ...addFormState, active: false });
   };
 
   // 학생 리스트 추가

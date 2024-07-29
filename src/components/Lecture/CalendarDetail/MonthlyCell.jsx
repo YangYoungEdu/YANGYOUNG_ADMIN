@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 
 const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
   //   const { date, schedule } = props;
+  console.log('date 형식 확인 중', date);
   const [addFormState, setAddFormState] = useAddFormState();
   const { active } = addFormState;
 	
@@ -68,7 +69,7 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 	//일정 클릭 후 수정
 	const onClickSchedule = (e, schedule) => {
 		e.stopPropagation();
-		const { name, room,lectureType, teacher, curDate, startTime, endTime,lectureDateList, studentList } = schedule;
+		const { name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate, studentList } = schedule;
 
 	};
 
@@ -79,7 +80,7 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
     const newSchedule = editDate(
       dragAndDrop.to,
       dragAndDrop.from,
-      // userData.schedule
+      schedule
     );
 
 		// if (newSchedule !== false) {
@@ -94,17 +95,19 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
   };
 
 	const onDragEnterCell = (e) => {
-		const { name, room,lectureType, teacher, startTime, endTime , lectureDateList, studentList} = dragAndDrop.from;
+		const { id, lectureCode, name,lectureType, teacher,room, startTime, endTime , lectureDate} = dragAndDrop.from;
 		const newScheduleForm = { 
+      id: id,
+      lectureCode:lectureCode,
 			name:name, 
+      lectureType:lectureType,
+      teacher:teacher, 
 			room:room, 
-			lectureType:lectureType,
-			teacher:teacher, 
-			curDate: date, 
-			startTime: { ... startTime}, 
+      startTime: { ... startTime}, 
 			endTime: { ... endTime}, 
-			lectureDateList: lectureDateList,
-			studentList:studentList };
+			lectureDate: date, //데이터 형식 고려
+			// studentList:studentList 
+      };
 		setDragAndDrop({ ...dragAndDrop, to: newScheduleForm });
 	};
 
