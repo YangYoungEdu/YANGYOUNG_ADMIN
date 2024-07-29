@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 // import '../../style/css/app.css';
-import { editDate } from './UserDataController';
+import { editDateAPI } from './UserDataController';
 import { useAddFormState } from '../../../stores/addFormState';
 import { useUserData } from '../../../stores/userData';
 import { useDragAndDrop } from '../../../stores/dragAndDrop';
@@ -74,19 +74,19 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 	};
 
 	//수정
-  const onDropSchedule = (e) => {
+  const onDropSchedule = async(e) => {
     console.log("드로그", e);
 
-    const newSchedule = editDate(
+    const newSchedule =  await editDateAPI(
       dragAndDrop.to,
       dragAndDrop.from,
       schedule
     );
 
-		// if (newSchedule !== false) {
-		// 	setUserData({ ...userData, schedule: newSchedule });
-		// 	setAddFormState({ ...addFormState, active: false });
-		// } 
+		if (newSchedule !== false) {
+			setCalSchedule({ ...calSchedule, newSchedule });
+			setAddFormState({ ...addFormState, active: false });
+		} 
 	};
 
   const onDragCell = (e, schedule) => {
