@@ -6,13 +6,18 @@ import styled from 'styled-components';
 import { useAddFormState } from '../../../stores/addFormState';
 import { useUserData } from '../../../stores/userData';
 import { useDragAndDrop } from '../../../stores/dragAndDrop';
+import { useRecoilState } from 'recoil';
+import { getCalendarData } from '../../../Atom';
 
 const oneCellHeight = 12.5;
 const DailyCell = (props) => {
     const { index, day, date, startHour, schedule } = props;
     const [addFormState, setAddFormState] = useAddFormState();
     const { active } = addFormState;
+
+    // const [calSchedule, setCalSchedule] = useRecoilState(getCalendarData);
     const [userData, setUserData] = useUserData();
+
     const [dragAndDrop, setDragAndDrop] = useDragAndDrop();
     const [isResizing, setIsResizing] = useState(false); // 리사이징 상태 추가
     const [isAdding, setIsAdding] = useState(false); // 일정 추가 상태

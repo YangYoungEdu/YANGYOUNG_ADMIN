@@ -41,8 +41,6 @@ const WeekCalendar = ({ currentDate, lectures }) => {
 
 	const [schedule, setSchedule] = useRecoilState(getCalendarData
 	);
-	// const [ userData, setUserData ] = useUserData();
-	// const { schedule } = userData;
 
 	const [ curSchedule, setCurSchedule ] = useState([]);
 
@@ -61,7 +59,7 @@ const WeekCalendar = ({ currentDate, lectures }) => {
 			setCurSchedule(getSchedule(firstDate, lastDate, lectures));
 			console.log('주간 일정',curSchedule );
 		},
-		[ lectures ]
+		[ lectures, schedule ]
 	);
 
 	const getFirstAndLastDate = () => {

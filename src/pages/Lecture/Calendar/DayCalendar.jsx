@@ -56,7 +56,7 @@ const DayCalendar = ({ currentDate, lectureOfDay }) => {
       // userData가 변경될 때마다, 현재 일정을 업데이트합니다.
       const { firstDate, lastDate } = getFirstAndLastDate();
       setCurSchedule(getSchedule(firstDate, lastDate, lectureOfDay));
-  }, [lectureOfDay]);
+  }, [lectureOfDay, schedule]);
 
   const getFirstAndLastDate = () => {
       // 단일 날짜를 반환하도록 수정된 함수
