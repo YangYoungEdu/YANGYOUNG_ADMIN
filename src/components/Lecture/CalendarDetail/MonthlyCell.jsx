@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 // import '../../style/css/app.css';
 import { editDateAPI } from './UserDataController';
 import { useAddFormState } from '../../../stores/addFormState';
-import { useUserData } from '../../../stores/userData';
 import { useDragAndDrop } from '../../../stores/dragAndDrop';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
@@ -17,16 +16,14 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 	
 	const [calSchedule, setCalSchedule] = useRecoilState(getCalendarData
   );
-  // const [userData, setUserData] = useUserData();
   const [dragAndDrop, setDragAndDrop] = useDragAndDrop();
   const [curDateStr, setCurDateStr] = useState("");
-  //   const [isSelected, setIsSelected] = useState(false);
 
   useEffect(() => {
     let newCurDateStr = date.getDate();
-    if (schedule.length !== 0) {
-      newCurDateStr += " (" + schedule.length + ")";
-    }
+    // if (schedule.length !== 0) {
+    //   newCurDateStr += " (" + schedule.length + ")";
+    // }
     setCurDateStr(newCurDateStr);
   }, [calSchedule, schedule]);
 
@@ -73,64 +70,34 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 
 	};
 
-	//수정
-  const onDropSchedule = async(e) => {
-    console.log("드로그", e);
+  // 선생님별로 일정을 그룹화
+  const groupedSchedules = schedule.reduce((acc, curr) => {
+    if (!acc[curr.teacher]) {
+      acc[curr.teacher] = [];
+    }
+    acc[curr.teacher].push(curr);
+    return acc;
+  }, {});
 
-    const newSchedule =  await editDateAPI(
-      dragAndDrop.to,
-      dragAndDrop.from,
-      schedule
-    );
-
-		if (newSchedule !== false) {
-			setCalSchedule({ ...calSchedule, newSchedule });
-			setAddFormState({ ...addFormState, active: false });
-		} 
-	};
-
-  const onDragCell = (e, schedule) => {
-    console.log("드로그", e);
-    setDragAndDrop({ ...dragAndDrop, from: schedule });
-  };
-
-	const onDragEnterCell = (e) => {
-		const { id, lectureCode, name,lectureType, teacher,room, startTime, endTime , lectureDate} = dragAndDrop.from;
-		const newScheduleForm = { 
-      id: id,
-      lectureCode:lectureCode,
-			name:name, 
-      lectureType:lectureType,
-      teacher:teacher, 
-			room:room, 
-      startTime: { ... startTime}, 
-			endTime: { ... endTime}, 
-			lectureDate: date, //데이터 형식 고려
-			// studentList:studentList 
-      };
-		setDragAndDrop({ ...dragAndDrop, to: newScheduleForm });
-	};
+  console.log("그룹화 확인", groupedSchedules);
+  const teacherNames = Object.keys(groupedSchedules);
 
   return (
     <MonthlyCellContainer
       // className="monthly-cell"
       onClick={onClickDate}
-      //   onClick = {onClick}
-      onDragEnter={onDragEnterCell}
-      onDragEnd={onDropSchedule}
     >
-      <DateText isSelected={isSelected}>{curDateStr}</DateText>
+      <DateText 
+      isSelected={isSelected}>{curDateStr}</DateText>
 
-			{schedule.map((a, i) => (
+			{teacherNames.map((teacher, i) => (
 				<MonthlyCellDiv
-					key={i} //id로 구분 필요
-					// className="monthly-schedule"
-					onClick={(e) => onClickSchedule(e, a)}
-					draggable
-					onDragStart={(e) => onDragCell(e, a)}
-				>
-					<p>{a.startTime.hour+':'+a.startTime.minute+'~'+a.endTime.hour+':'+a.endTime.minute}</p>
-					<p>{a.name}</p>
+					key={i} 
+					onClick={(e) => onClickSchedule(e, groupedSchedules[teacher])}>
+          <TeacherNameDiv teacher={teacher}>
+            <span>{teacher}</span>
+          </TeacherNameDiv>
+          <CountCourseDiv>수업 {groupedSchedules[teacher].length}개</CountCourseDiv>
 				</MonthlyCellDiv>
 			))}
 		</MonthlyCellContainer>
@@ -148,6 +115,7 @@ const MonthlyCellContainer = styled.div`
 
   box-sizing: border-box;
   border-right: solid 1px #e0e0e0;
+  gap:12px;
 
   cursor: pointer;
   overflow: scroll;
@@ -183,25 +151,59 @@ const DateText = styled.div`
 `;
 
 const MonthlyCellDiv = styled.div`
-  padding: 5px;
-  font-size: 12px;
-  /* font-size: 50px; */
-  background: #111;
-  color: #eee;
-  border-radius: 5px;
+  /* padding: 5px; */
   z-index: 2;
-  margin-bottom: 10px;
-  cursor: grab;
-  /* all: initial; */
+  /* margin-top: 12px; */
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 
   &:hover {
     opacity: 0.5;
   }
+`;
 
-  & > p {
-    background: #111;
-    margin: 0;
+const TeacherNameDiv = styled.div`
+  display: inline-flex;
+  height: 25px;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 100px;
+  background:${(props) => {
+    switch (props.teacher) {
+        case "김삼유":
+        return "#95C25C";
+        case "장영해":
+        return "#D8CD63";
+        case "전재우":
+        return  "#BCD7EA"
+        default:
+        return "gray";
+    }
+    }};
+  margin-right: 5px;
+  text-align: center;
+
+  &> span{
+    color: var(--Color-Background, #FFF);
+    padding: 10px;
+    font-family: "Pretendard Variable";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
   }
+`;
+
+const CountCourseDiv =styled.span`
+  color: #000;
+  font-family: "Pretendard Variable";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+
 `;
 
 export default MonthlyCell;
