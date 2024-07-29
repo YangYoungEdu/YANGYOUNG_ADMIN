@@ -161,11 +161,10 @@ export const deleteLecture = async (lectureIds) => {
 // 강의 정보 수정
 export const patchLecture = async (data) => {
   try {
-    const response = await axios.patch(`${server}lecture`, {
+    const response = await axios.patch(`${server}lecture`, data,{
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
-      data,
     });
     console.log(response.data);
     return response.data;

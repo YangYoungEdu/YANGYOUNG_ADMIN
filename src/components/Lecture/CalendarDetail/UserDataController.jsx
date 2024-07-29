@@ -1,4 +1,4 @@
-import { postLecture } from "../../../API/LectureAPI";
+import { patchLecture, postLecture } from "../../../API/LectureAPI";
 
 //일정 데이터 get
 export const getSchedule = (startDate, endDate, schedule) => {
@@ -65,8 +65,8 @@ export const insertDateAPI = async(addFormState) => {
 
 // ------- 위에는 수정함
 
-//일정 데이터 patch -id로 구분 필요
-export const editDate = (addFormState, beforeEdit, schedule) => {
+//드래그할 때 일정 데이터 patch -id로 구분 필요
+export const editDateAPI = async (addFormState, beforeEdit, schedule) => {
 	const { id, lectureCode, name, lectureType, teacher, room, startTime, endTime , lectureDate} = addFormState;
 
 	// 이전 할일을 지우고
@@ -74,18 +74,34 @@ export const editDate = (addFormState, beforeEdit, schedule) => {
 
 	// 새 할일을 추가하는데
 	const index = isConflict(lectureDate, startTime, endTime, newSchedule);
+		
+	//날짜 형식 변경
+	const newDateForm = lectureDate.toLocaleDateString("en-CA");
+	//서버에 시간 보내는 형식 변경
+	const formatTime = (hour, minute) => {
+		const formattedHour = String(hour).padStart(2, '0');
+		const formattedMinute = String(minute).padStart(2, '0');
+		return `${formattedHour}:${formattedMinute}:00`;
+	};
+	const startTimeStr = formatTime(startTime.hour, startTime.minute);
+  const endTimeStr = formatTime(endTime.hour, endTime.minute);
 
-	if (index !== -1) {
-		// 추가에 성공
-		const newItem = { id,lectureCode, name,lectureType, teacher, room, startTime, endTime , lectureDate}; 
-
-		console.log('edit', newItem);
-
-		return [ ...newSchedule.slice(0, index), newItem, ...newSchedule.slice(index) ];
-	} else {
-		// 추가하려는 곳이 중복이면 작업 취소
-		return false;
+	const data ={
+		id: id,
+		name: name,
+		teacher: teacher,
+		room: room,
+		startTime: startTimeStr,
+		endTime:endTimeStr,
+		lectureDate: newDateForm,
+		allUpdate: false
 	}
+
+	console.log('수정할 데이터', data);
+	const response =await patchLecture(data);
+	console.log('수정한 데이터', response);
+
+	return [ ...newSchedule.slice(0, index), response, ...newSchedule.slice(index) ];
 };
 
 //일정 데이터 delete -id로 구분 필요
