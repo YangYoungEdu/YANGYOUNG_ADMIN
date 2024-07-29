@@ -6,13 +6,18 @@ import styled from 'styled-components';
 import { useAddFormState } from '../../../stores/addFormState';
 import { useUserData } from '../../../stores/userData';
 import { useDragAndDrop } from '../../../stores/dragAndDrop';
+import { useRecoilState } from 'recoil';
+import { getCalendarData } from '../../../Atom';
 
 const oneCellHeight = 12.5;
 const DailyCell = (props) => {
     const { index, day, date, startHour, schedule } = props;
     const [addFormState, setAddFormState] = useAddFormState();
     const { active } = addFormState;
+
+    // const [calSchedule, setCalSchedule] = useRecoilState(getCalendarData);
     const [userData, setUserData] = useUserData();
+
     const [dragAndDrop, setDragAndDrop] = useDragAndDrop();
     const [isResizing, setIsResizing] = useState(false); // 리사이징 상태 추가
     const [isAdding, setIsAdding] = useState(false); // 일정 추가 상태
@@ -104,10 +109,10 @@ const DailyCell = (props) => {
                 ...addFormState,
                 active: true,
                 mode: 'add',
-                lectureCode: '',
                 name: '',
                 room: '',
                 teacher: '',
+                lectureType: '',
                 curDate: date, // Date 객체 그대로 유지
                 startTime: { 
                     hour: propsHour, 
@@ -122,7 +127,6 @@ const DailyCell = (props) => {
                     nano: 0 
                 }, // 새로운 시간 형식 적용
                 lectureDateList : [],
-                lectureDayList: [],
                 studentList: []
             });
         }
@@ -132,21 +136,20 @@ const DailyCell = (props) => {
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
         console.log('특정 일정', schedule);
-        const { lectureCode, name,room,teacher, curDate, startTime, endTime , lectureDateList, lectureDayList, studentList} = schedule;
+        const { name,room,lectureType, teacher, curDate, startTime, endTime , lectureDateList, studentList} = schedule;
         if (!active && !isResizing) { // 리사이징 중일 때 클릭 방지
             setAddFormState({
                 ...addFormState,
                 active: true,
                 mode: 'edit',
-                lectureCode: lectureCode,
                 name: name,
                 room:room,
+                lectureType: lectureType,
                 teacher:teacher,
                 curDate: curDate,
                 startTime: {...startTime},
                 endTime: {...endTime},
                 lectureDateList:lectureDateList,
-                lectureDayList:lectureDayList,
                 studentList : studentList
             });
         }
@@ -221,7 +224,8 @@ const DailyCell = (props) => {
         console.log('드래그', from);
         const diff = (from.endTime.hour * 60 + from.endTime.minute) - (from.startTime.hour * 60 + from.startTime.minute);
 
-        const newScheduleForm = { lectureCode: from.lectureCode, name: from.name, room: from.room, teacher:from.teacher, curDate: date,
+        const newScheduleForm = { name: from.name, room: from.room, lectureType:from.lectureType, 
+            teacher:from.teacher, curDate: date,
             startTime: {
                 ...from.startTime,
                 hour: propsHour,
@@ -233,7 +237,6 @@ const DailyCell = (props) => {
                 minute: propsMin + (diff % 60)
             },
         lectureDateList:from.lectureDateList,
-        lectureDayList: from.lectureDayList,
         studentList: from.studentList};
 
         // 현재 Y좌표 저장

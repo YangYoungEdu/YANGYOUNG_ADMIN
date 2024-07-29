@@ -9,6 +9,8 @@ import { getSchedule } from "../../../components/Lecture/CalendarDetail/UserData
 import { useCalendarState } from "../../../stores/calendarState.jsx";
 import { useUserData } from "../../../stores/userData.jsx";
 import MonthlyCell from "../../../components/Lecture/CalendarDetail/MonthlyCell.jsx";
+import { getCalendarData } from "../../../Atom.js";
+import { useRecoilState } from "recoil";
 
 const MonthCalendar = ({
   currentDate,
@@ -33,8 +35,11 @@ const MonthCalendar = ({
 
   const [weekDays] = useState(["월", "화", "수", "목", "금", "토", "일"]);
   const [dates, setDates] = useState([]); // 달력의 행
-  const [userData] = useUserData();
-  const { schedule } = userData; // 유저의 스케쥴
+
+  const [schedule, setSchedule] = useRecoilState(getCalendarData);
+  // const [userData] = useUserData();
+  // const { schedule } = userData; // 유저의 스케쥴
+
   const [curSchedule, setCurSchedule] = useState([]); // 현재 달력 날짜 안에 포함된 스케쥴
 
   const handleDateClick = (date) => {
@@ -45,12 +50,13 @@ const MonthCalendar = ({
   useEffect(() => {
     const { firstDate, lastDate } = getFirstAndLastDate();
     setDates(makeCalendar(firstDate, lastDate));
+    setSchedule(lectures);
   }, [date]);
 
   useEffect(() => {
     const { firstDate, lastDate } = getFirstAndLastDate();
-    setCurSchedule(getSchedule(firstDate, lastDate, schedule));
-  }, [userData]);
+    setCurSchedule(getSchedule(firstDate, lastDate, lectures));
+  }, [lectures, schedule]);
 
    // 주어진 달의 첫 번째와 마지막 날짜 계산하여 반환
    const getFirstAndLastDate = () => {
@@ -78,7 +84,7 @@ const MonthCalendar = ({
       );
       index++;
     }
-    setCurSchedule(getSchedule(firstDate, lastDate, schedule));
+    setCurSchedule(getSchedule(firstDate, lastDate, lectures));
     return newDates.slice();
   };
 
@@ -86,13 +92,19 @@ const MonthCalendar = ({
   const getCurDateSchedule = (curDate) => {
     const curDateSchedule = [];
     curSchedule.forEach((date) => {
-      if (date.curDate.getTime() - curDate.getTime() === 0) {
+      const lectureDate = new Date(date.lectureDate);
+      // 날짜만 비교 (연도, 월, 일)
+      if (
+        lectureDate.getFullYear() === curDate.getFullYear() &&
+        lectureDate.getMonth() === curDate.getMonth() &&
+        lectureDate.getDate() === curDate.getDate()
+      ) {
         curDateSchedule.push(date);
       }
     });
-
     return curDateSchedule;
   };
+  
 
 	return (
 			<MonthlyView id="monthly-view">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 export const addFormState = {
-	state: { active: false, mode: null, name:null, room:null, lectureCode: null, teacher:null, curDate: null, startTime: null, endTime: null , studentList: [], lectureDateList: [],lectureDayList:[] },
+	state: { active: false, mode: null, name:null, room:null, lectureType:null, teacher:null,  curDate: null, startTime: null, endTime: null , studentList: [], lectureDateList: [] },
 	setState(addFormState) {
 		this.state = addFormState;
 		this.setters.forEach((setter) => setter(this.state));

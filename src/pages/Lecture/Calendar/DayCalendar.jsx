@@ -7,6 +7,8 @@ import { useCalendarState } from '../../../stores/calendarState.jsx';
 import { useUserData } from '../../../stores/userData.jsx';
 import DailyCell from "../../../components/Lecture/CalendarDetail/DailyCell.jsx";
 import styled from 'styled-components';
+import { useRecoilState } from "recoil";
+import { getCalendarData } from "../../../Atom.js";
 
 //15분 간격 배열 추가
 export const times = [
@@ -35,8 +37,10 @@ const DayCalendar = ({ currentDate, lectureOfDay }) => {
 
   const [timeTable, setTimeTable] = useState([...times]);
 
-  const [userData, setUserData] = useUserData();
-  const { schedule } = userData;
+  const [schedule, setSchedule] = useRecoilState(getCalendarData
+  );  
+  // const [userData, setUserData] = useUserData();
+  // const { schedule } = userData;
 
   const [curSchedule, setCurSchedule] = useState([]);
   const [dates, setDates] = useState([]);
@@ -45,13 +49,14 @@ const DayCalendar = ({ currentDate, lectureOfDay }) => {
       // date가 변경될 때마다, 해당 날짜에 대한 일정을 생성합니다.
       const { firstDate, lastDate } = getFirstAndLastDate();
       setDates(makeCalendar(firstDate));
+      setSchedule(lectureOfDay);
   }, [date]);
 
   useEffect(() => {
       // userData가 변경될 때마다, 현재 일정을 업데이트합니다.
       const { firstDate, lastDate } = getFirstAndLastDate();
-      setCurSchedule(getSchedule(firstDate, lastDate, schedule));
-  }, [userData]);
+      setCurSchedule(getSchedule(firstDate, lastDate, lectureOfDay));
+  }, [lectureOfDay, schedule]);
 
   const getFirstAndLastDate = () => {
       // 단일 날짜를 반환하도록 수정된 함수
@@ -65,15 +70,15 @@ const DayCalendar = ({ currentDate, lectureOfDay }) => {
   const makeCalendar = (currentDate) => {
     const timeArray = timeTable;
     const newDates = [[currentDate].concat(timeArray)]; // 현재 날짜와 시간 배열을 결합
-      setCurSchedule(getSchedule(currentDate, currentDate, schedule)); // 현재 날짜에 해당하는 일정을 설정
+      setCurSchedule(getSchedule(currentDate, currentDate, lectureOfDay)); // 현재 날짜에 해당하는 일정을 설정
       return newDates;
   };
 
   const getCurDateSchedule = (curDate, startHour) => {
-  let curDateSchedule = null;
-
+    let curDateSchedule = null;
+    
       // HH:MM string 형식 분할 후 number 타입 변환
-  const [propsHour, propsMin] = (typeof startHour === 'string' ? startHour.split(':') : ['0', '0']).map(Number);
+    const [propsHour, propsMin] = (typeof startHour === 'string' ? startHour.split(':') : ['0', '0']).map(Number);
 
       // 분값을 15분 단위로 구간 나누어 변환하는 함수
       const to15MinRange = (minutes) => {
@@ -85,7 +90,9 @@ const DayCalendar = ({ currentDate, lectureOfDay }) => {
 
   for (let i = 0; i < curSchedule.length; i++) {
 
-    if (curDate.getTime() === curSchedule[i].curDate.getTime() && curSchedule[i].startTime.hour === propsHour && to15MinRange(curSchedule[i].startTime.minute) === propsMin ) {
+    if (curDate.getFullYear() === new Date(curSchedule[i].lectureDate).getFullYear() &&
+    curDate.getMonth() === new Date(curSchedule[i].lectureDate).getMonth()&&
+    curDate.getDate() === new Date(curSchedule[i].lectureDate).getDate()&& curSchedule[i].startTime.hour === propsHour && to15MinRange(curSchedule[i].startTime.minute) === propsMin ) {
         curDateSchedule = curSchedule[i];
         break;
       }

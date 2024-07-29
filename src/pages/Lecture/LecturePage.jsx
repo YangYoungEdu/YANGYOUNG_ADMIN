@@ -15,6 +15,8 @@ import MonthCalendar from "./Calendar/MonthCalendar";
 
 import { useUserData } from '../../stores/userData.jsx';
 import AddForm from "../../components/Lecture/CalendarDetail/AddForm.jsx";
+import { useRecoilState } from "recoil";
+import { getCalendarData } from "../../Atom.js";
 
 const LecturePage = () => {
   const [mode, setMode] = useState("day");
@@ -29,37 +31,8 @@ const LecturePage = () => {
     isHighlight: false,
   });
 
-  const [ userData, setUserData ] = useUserData();
-
-	useEffect(() => {
-		loadUserData();
-	}, []);
-
-	useEffect(
-		() => {
-			saveUserData();
-		},
-		[ userData ]
-	);
-
-	const saveUserData = () => {
-		const data = JSON.stringify(userData);
-		localStorage.setItem('userData', data);
-	};
-
-	const loadUserData = () => {
-		const data = JSON.parse(localStorage.getItem('userData'));
-    if (!data || !Array.isArray(data.schedule)) {
-      // If data is undefined or data.schedule is not an array, use default empty array
-      return;
-    }
-		setUserData({
-			...userData,
-			schedule: data.schedule.map((a) => {
-				return { ...a, curDate: new Date(a.curDate) };
-			})
-		});
-	};
+  const [calSchedule, setCalSchedule] = useRecoilState(getCalendarData
+  );
 
   useEffect(() => {
     const fetchLectures = async () => {
@@ -67,12 +40,15 @@ const LecturePage = () => {
       switch (mode) {
         case "month":
           response = await getAllLectureByMonthAPI(currentDate);
+          console.log('월 일정', response);
           break;
         case "week":
           response = await getAllLectureByWeekAPI(currentDate);
+          console.log('주 일정', response);
           break;
         case "day":
           response = await getAllLectureByDayAPI(currentDate);
+          console.log('일 일정', response);
           break;
         default:
           response = [];
@@ -82,7 +58,7 @@ const LecturePage = () => {
     };
 
     fetchLectures();
-  }, [mode, currentDate]);
+  }, [mode, currentDate, calSchedule]);
 
   const renderCalendar = () => {
     switch (mode) {
