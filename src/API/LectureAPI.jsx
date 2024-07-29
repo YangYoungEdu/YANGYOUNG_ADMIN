@@ -21,7 +21,7 @@ export const getAllLectureByMonthAPI = async (date) => {
     console.log(response.data);
     return response.data;
   } catch (error) {
-    if(error.response.status === 403){
+    if (error.response.status === 403) {
       alert("로그인 후 이용해주세요.");
       window.location.href = "/";
     }
@@ -46,7 +46,7 @@ export const getAllLectureByWeekAPI = async (date) => {
     console.log(response.data);
     return response.data;
   } catch (error) {
-    if(error.response.status === 403){
+    if (error.response.status === 403) {
       alert("로그인 후 이용해주세요.");
       window.location.href = "/";
     }
@@ -90,7 +90,7 @@ export const getLectureByStudentAPI = async (studentId) => {
     console.log(response.data);
     return response.data;
   } catch (error) {
-    if(error.response.status === 403){
+    if (error.response.status === 403) {
       alert("로그인 후 이용해주세요.");
       window.location.href = "/";
     }
@@ -109,7 +109,7 @@ export const getOneLectureAPI = async (lectureId) => {
     console.log(response.data);
     return response.data;
   } catch (error) {
-    if(error.response.status === 403){
+    if (error.response.status === 403) {
       alert("로그인 후 이용해주세요.");
       window.location.href = "/";
     }
@@ -128,7 +128,7 @@ export const postLecture = async (data) => {
     console.log(response.data);
     return response.data;
   } catch (error) {
-    if(error.response.status === 403){
+    if (error.response.status === 403) {
       alert("로그인 후 이용해주세요.");
       window.location.href = "/";
     }
@@ -150,7 +150,7 @@ export const deleteLecture = async (lectureIds) => {
     console.log(response.data);
     return response.data;
   } catch (error) {
-    if(error.response.status === 403){
+    if (error.response.status === 403) {
       alert("로그인 후 이용해주세요.");
       window.location.href = "/";
     }
@@ -165,12 +165,12 @@ export const patchLecture = async (data) => {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
-      data
+      data,
     });
     console.log(response.data);
     return response.data;
   } catch (error) {
-    if(error.response.status === 403){
+    if (error.response.status === 403) {
       alert("로그인 후 이용해주세요.");
       window.location.href = "/";
     }
