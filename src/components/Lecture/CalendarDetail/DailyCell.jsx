@@ -134,7 +134,7 @@ const DailyCell = (props) => {
 
     // 일정을 클릭하여 수정하는 함수
     const onClickSchedule = (e, schedule) => {
-        e.stopPropagation();
+        // e.stopPropagation();
 
     };
 

@@ -18,14 +18,20 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
   );
   const [dragAndDrop, setDragAndDrop] = useDragAndDrop();
   const [curDateStr, setCurDateStr] = useState("");
+  const [isCurrentMonth, setIsCurrentMonth] = useState(true);
 
   useEffect(() => {
     let newCurDateStr = date.getDate();
-    // if (schedule.length !== 0) {
-    //   newCurDateStr += " (" + schedule.length + ")";
-    // }
     setCurDateStr(newCurDateStr);
-  }, [calSchedule, schedule]);
+
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    // Check if the date is in the current month
+    const isInCurrentMonth = date.getMonth() === currentMonth && date.getFullYear() === currentYear;
+    setIsCurrentMonth(isInCurrentMonth);
+  }, [calSchedule, schedule, date]);
 
 	//빈 셀 클릭후 일정 추가
 	const onClickDate = () => {
@@ -79,21 +85,28 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
     return acc;
   }, {});
 
-  console.log("그룹화 확인", groupedSchedules);
   const teacherNames = Object.keys(groupedSchedules);
+
 
   return (
     <MonthlyCellContainer
       // className="monthly-cell"
-      onClick={onClickDate}
+      onClick={isCurrentMonth ? onClickDate : undefined} 
+      isCurrentMonth={isCurrentMonth}
     >
       <DateText 
-      isSelected={isSelected}>{curDateStr}</DateText>
+      isSelected={isSelected}
+      isCurrentMonth={isCurrentMonth}
+      curDateStr={curDateStr}
+      >
+        {curDateStr}
+      </DateText>
 
 			{teacherNames.map((teacher, i) => (
 				<MonthlyCellDiv
 					key={i} 
-					onClick={(e) => onClickSchedule(e, groupedSchedules[teacher])}>
+					onClick={(e) => onClickSchedule(e, groupedSchedules[teacher])}
+          isCurrentMonth={isCurrentMonth}>
           <TeacherNameDiv teacher={teacher}>
             <span>{teacher}</span>
           </TeacherNameDiv>
@@ -115,9 +128,9 @@ const MonthlyCellContainer = styled.div`
 
   box-sizing: border-box;
   border-right: solid 1px #e0e0e0;
-  gap:12px;
+  gap: 6px;
 
-  cursor: pointer;
+  cursor: ${({ isCurrentMonth }) => (isCurrentMonth ? 'pointer' : 'default')};
   overflow: scroll;
 
   &:nth-child(1) {
@@ -130,9 +143,10 @@ const DateText = styled.div`
   align-items: center;
   justify-content: center;
   margin: 0;
+  padding: ${({ curDateStr }) => (curDateStr < 10? '5% 7.5%' : '5% 6.5%')};
 
-  width: 20%;
-  height: 21.9%;
+  /* width: 20%;
+  height: 21.9%; */
 
   z-index: 3;
   position: sticky;
@@ -143,11 +157,18 @@ const DateText = styled.div`
   font-weight: 400;
   font-size: 12px;
 
-  &:hover {
-    box-shadow: inset 0 0 0 1px #15521d;
-  }
-  background-color: ${({ isSelected }) => (isSelected ? "#15521d" : "inherit")};
-  color: ${({ isSelected }) => (isSelected ? "white" : "inherit")};
+  ${({ isCurrentMonth }) =>
+    isCurrentMonth &&
+    `
+    &:hover {
+      box-shadow: inset 0 0 0 1px #15521d;
+    }
+  `}
+  
+  background-color: ${({ isSelected, isCurrentMonth }) => (isCurrentMonth ? (isSelected ? "#15521d" : "inherit"): "inherit")};
+  color: ${({ isSelected, isCurrentMonth }) => (isCurrentMonth ? (isSelected ? "white" : "inherit") : " #BABABA")};
+  z-index: 3;
+
 `;
 
 const MonthlyCellDiv = styled.div`
@@ -156,7 +177,7 @@ const MonthlyCellDiv = styled.div`
   /* margin-top: 12px; */
   display: flex;
   align-items: center;
-  cursor: pointer;
+  cursor: ${({ isCurrentMonth }) => (isCurrentMonth ? 'pointer' : 'default')};
 
   &:hover {
     opacity: 0.5;

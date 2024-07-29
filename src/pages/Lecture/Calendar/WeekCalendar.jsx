@@ -158,7 +158,7 @@ const WeekCalendar = ({ currentDate, lectures }) => {
 
 const WeeklyView = styled.div`
    /* width: 900px;  */
-	 	width: 85%;
+	 	/* width: 85%; */
     display: flex;
     flex-direction: row;
     justify-content: center;

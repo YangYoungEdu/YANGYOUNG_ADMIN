@@ -138,7 +138,7 @@ const DayCalendar = ({ currentDate, lectureOfDay }) => {
 
 const WeeklyView = styled.div`
   /* width: 900px; */
-  width: 85%;
+  /* width: 85%; */
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -182,7 +182,7 @@ const HourCell = styled.div`
 const WeeklyCol = styled.div`
   /* width: 120px; */
   /* margin-top: 6px; */
-  width: 80%;
+  width: 1060px;
   display: flex;
   flex-direction: column;
   /* justify-content: center; */
