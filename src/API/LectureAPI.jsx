@@ -21,7 +21,7 @@ export const getAllLectureByMonthAPI = async (date) => {
     console.log(response.data);
     return response.data;
   } catch (error) {
-    if(error.response.status === 403){
+    if (error.response.status === 403) {
       alert("로그인 후 이용해주세요.");
       window.location.href = "/";
     }
@@ -46,7 +46,7 @@ export const getAllLectureByWeekAPI = async (date) => {
     console.log(response.data);
     return response.data;
   } catch (error) {
-    if(error.response.status === 403){
+    if (error.response.status === 403) {
       alert("로그인 후 이용해주세요.");
       window.location.href = "/";
     }
@@ -90,7 +90,7 @@ export const getLectureByStudentAPI = async (studentId) => {
     console.log(response.data);
     return response.data;
   } catch (error) {
-    if(error.response.status === 403){
+    if (error.response.status === 403) {
       alert("로그인 후 이용해주세요.");
       window.location.href = "/";
     }
@@ -109,7 +109,68 @@ export const getOneLectureAPI = async (lectureId) => {
     console.log(response.data);
     return response.data;
   } catch (error) {
-    if(error.response.status === 403){
+    if (error.response.status === 403) {
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
+    console.error(error);
+  }
+};
+
+// 강의 정보 등록 폼
+export const postLecture = async (data) => {
+  try {
+    const response = await axios.post(`${server}lecture`, data, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    if (error.response.status === 403) {
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
+    console.error(error);
+  }
+};
+
+// 강의 정보 삭제
+export const deleteLecture = async (lectureIds) => {
+  try {
+    const response = await axios.post(`${server}lecture`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+      params: {
+        lectureIds: lectureIds,
+      },
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    if (error.response.status === 403) {
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
+    console.error(error);
+  }
+};
+
+// 강의 정보 수정
+export const patchLecture = async (data) => {
+  try {
+    const response = await axios.patch(`${server}lecture`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+      data,
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    if (error.response.status === 403) {
       alert("로그인 후 이용해주세요.");
       window.location.href = "/";
     }
