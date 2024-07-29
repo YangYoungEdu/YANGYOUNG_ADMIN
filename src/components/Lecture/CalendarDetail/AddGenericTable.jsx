@@ -18,9 +18,6 @@ const columns = [
   { key: "name", label: "이름" },
   { key: "school", label: "학교" },
   { key: "grade", label: "학년" },
-  { key: "studentPhoneNumber", label: "학생 연락처" },
-  { key: "parentPhoneNumber", label: "부모님 연락처" },
-  { key: "id", label: "학번" },
 ];
 
 const AddGenericTable = ({

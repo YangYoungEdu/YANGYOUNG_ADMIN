@@ -15,7 +15,7 @@ import LectureTask from "./LectureTask.jsx";
 import LectureMaterial from "./LectureMaterial.jsx";
 
 import { ReactComponent as LightX } from "../../../Assets/LightX.svg";
-
+import { format } from "date-fns";
 //보여주는 모달 디자인
 const ModalDesign = ({
   mode,
@@ -46,6 +46,10 @@ const ModalDesign = ({
     task: false,
     material: false,
   });
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [startDate, setStartDate] = useState(
+    mode === "add" ? newAddFormState.curDate : null
+  );
 
   const handleButtonClick = (type) => {
     setOnClicked((prevState) => ({
@@ -57,13 +61,39 @@ const ModalDesign = ({
     }));
   };
 
+  const handleDatePickerOpen = () => {
+    setIsDatePickerOpen(!isDatePickerOpen);
+  };
+
+  // 컴포넌트가 마운트될 때 multidates를 리셋하고 curDate를 추가
+  useEffect(() => {
+    if (newAddFormState.curDate) {
+      const formattedDate = format(newAddFormState.curDate, "yyyy-MM-dd");
+      // multidates를 새롭게 설정 (리셋)하고 curDate를 추가
+      setmultiDates([formattedDate]);
+      setStartDate(newAddFormState.curDate); // DatePicker의 시작 날짜도 curDate로 설정
+    }
+  }, [newAddFormState.curDate, setmultiDates]);
+
+  const handleChange = (date) => {
+    console.log("받은 날자 확인", newAddFormState.curDate);
+    if (date) {
+      const newDate = format(date, "yyyy-MM-dd");
+      if (multidates.includes(newDate)) {
+        // 이미 선택된 날짜라면 제거
+        setmultiDates(multidates.filter((d) => d !== newDate));
+      } else {
+        // 새로운 날짜 추가
+        setmultiDates([...multidates, newDate]);
+      }
+    }
+  };
   return (
     <Panel id="panel">
       <StyledAddForm id="add-form">
         <TopDiv>
           {/* 강의제목, 저장 버튼, 닫기 버튼 */}
           <UpperDiv id="input-form">
-            {/* <div className="label">이름</div> */}
             <input
               id="input-name"
               value={mode === "add" ? newAddFormState.name : null}
@@ -94,21 +124,111 @@ const ModalDesign = ({
           </UpperDiv>
 
           <MiddleDiv>
-            {/* datepicker 먼저 */}
-            {/* <div id="date-picker-form">
-            <div id="date-picker">
-              <MultiDatePicker
-                multidates={multidates}
-                setmultiDates={setmultiDates}
-                curDate={mode === "add" ? newAddFormState.curDate : null}
-              />
-            </div>
-          </div> */}
+            {/* 수업일자 + 수업시간, 일자 추가 옵션 버튼 */}
+            <DetailInfo1>
+              <Left>
+                <Label className="label">수업 일자</Label>
+                <AddDatesOption onClick={handleDatePickerOpen}>
+                  날짜 추가
+                </AddDatesOption>
+              </Left>
+              <Right id="date-picker-form">
+                {/* 선택된 날짜들은 datepicker 달력 노출 여부와 상관 없이 항상 보여야 함 */}
+                <DateItemContainer>
+                  {multidates.length > 0 &&
+                    multidates.map((date) => (
+                      <DateItem key={date}>{date}</DateItem>
+                    ))}
+                </DateItemContainer>
+                {/* 날짜 추가 div를 누르면 date picker 나옴 */}
+                <div id="date-picker">
+                  {isDatePickerOpen && (
+                    <div>
+                      <DatePicker
+                        selected={startDate}
+                        onChange={(date) => {
+                          setStartDate(date);
+                          handleChange(date);
+                        }}
+                        onClickOutside={() => setStartDate(null)}
+                        selectsStart
+                        startDate={startDate}
+                        dateFormat="yyyy/MM/dd"
+                        inline
+                        highlightDates={multidates.map((d) => new Date(d))}
+                      />
+                    </div>
+                  )}
+                </div>
+              </Right>
+            </DetailInfo1>
 
             {/* 수업시간, 선생님, 강의실, 강의타입 */}
-            <DetailInfo id="time-picker-form">
+            <DetailInfo id="lectureTime-picker-form">
               <Label className="label">수업 시간</Label>
+
+              {/* 드롭다운 대신 텍스트 입력 받는 게 ux적으로 나을 것 같다는 판단 */}
               <TimePicker>
+                <input
+                  type="number"
+                  id="start-hour"
+                  value={mode === "add" ? newAddFormState.startTime.hour : ""}
+                  onChange={(e) =>
+                    onChangeNewAddFormState({
+                      target: { id: "start-hour", value: e.target.value },
+                    })
+                  }
+                  placeholder="시"
+                  min="0"
+                  max="23"
+                />
+                :
+                <input
+                  type="number"
+                  id="start-minute"
+                  value={mode === "add" ? newAddFormState.startTime.minute : ""}
+                  onChange={(e) =>
+                    onChangeNewAddFormState({
+                      target: { id: "start-minute", value: e.target.value },
+                    })
+                  }
+                  placeholder="분"
+                  min="0"
+                  max="59"
+                  step="1"
+                />
+                -
+                <input
+                  type="number"
+                  id="end-hour"
+                  value={mode === "add" ? newAddFormState.endTime.hour : ""}
+                  onChange={(e) =>
+                    onChangeNewAddFormState({
+                      target: { id: "end-hour", value: e.target.value },
+                    })
+                  }
+                  placeholder="시"
+                  min="0"
+                  max="23"
+                />
+                :
+                <input
+                  type="number"
+                  id="end-minute"
+                  value={mode === "add" ? newAddFormState.endTime.minute : ""}
+                  onChange={(e) =>
+                    onChangeNewAddFormState({
+                      target: { id: "end-minute", value: e.target.value },
+                    })
+                  }
+                  placeholder="분"
+                  min="0"
+                  max="59"
+                  step="1"
+                />
+              </TimePicker>
+
+              {/* <TimePicker>
                 <select
                   id="start-hour"
                   value={mode === "add" ? newAddFormState.startTime.hour : null}
@@ -120,7 +240,7 @@ const ModalDesign = ({
                     </option>
                   ))}
                 </select>
-                시
+                :
                 <select
                   id="start-minute"
                   value={
@@ -134,7 +254,7 @@ const ModalDesign = ({
                     </option>
                   ))}
                 </select>
-                분 ~
+              ~
                 <select
                   id="end-hour"
                   value={mode === "add" ? newAddFormState.endTime.hour : null}
@@ -146,7 +266,7 @@ const ModalDesign = ({
                     </option>
                   ))}
                 </select>
-                시
+                :
                 <select
                   id="end-minute"
                   value={mode === "add" ? newAddFormState.endTime.minute : null}
@@ -158,12 +278,11 @@ const ModalDesign = ({
                     </option>
                   ))}
                 </select>
-                분
-              </TimePicker>
+                
+              </TimePicker> */}
             </DetailInfo>
-
             <DetailInfo id="lectureType-picker-form">
-              <Label className="label">강의타입</Label>
+              <Label className="label">강의 타입</Label>
               <SelectWrapper>
                 <select
                   id="lectureType-select"
@@ -176,7 +295,7 @@ const ModalDesign = ({
               </SelectWrapper>
             </DetailInfo>
             <DetailInfo id="teacher-picker-form">
-              <Label className="label">담당 선생님</Label>
+              <Label className="label">선생님</Label>
               <SelectWrapper>
                 <select
                   id="teacher-select"
@@ -202,61 +321,11 @@ const ModalDesign = ({
           </MiddleDiv>
 
           <LowerDiv>
-            {/* 학생, 출석, 과제 버튼*/}
-            <ButtonWrapper>
-              <Button
-                isActive={onClicked.student}
-                onClick={() => handleButtonClick("student")}
-              >
-                학생
-              </Button>
-              <Button
-                isActive={onClicked.attendance}
-                onClick={() => handleButtonClick("attendance")}
-              >
-                출석 체크
-              </Button>
-              <Button
-                isActive={onClicked.task}
-                onClick={() => handleButtonClick("task")}
-              >
-                과제
-              </Button>
-              <Button
-                isActive={onClicked.material}
-                onClick={() => handleButtonClick("material")}
-              >
-                {/* {" "} */}
-                수업 자료
-              </Button>
-            </ButtonWrapper>
-
-            {/* ToDo: 조건에 따라 정보 표시 */}
-            {/* 강의별 학생 목록*/}
-            {onClicked.student && <LectureStudent />}
-
-            {/* 강의별 출석 목록*/}
-            {onClicked.attendance && <LectureAttendance />}
-
-            {/* 강의별 과제 목록*/}
-            {onClicked.task && <LectureTask />}
-
-            {/* 강의별 자료 목록 */}
-            {/* ToDo: 강의별 자료 목록 API 연동 */}
-            {onClicked.material && <LectureMaterial />}
-          </LowerDiv>
-
-          {/* <div id="select-student"> */}
-          {/* 검색 영역  */}
-          {/* {mode === "add" ? (
-            <AddStudentSearch
-              searchKeyword={searchKeyword}
-              setSearchKeyword={setSearchKeyword}
-            />
-          ) : null} */}
-          {/* 테이블  */}
-          {/* {mode === "add" ? (
-            <AddGenericTable
+            {mode === "add" ? (<AddStudentContainer>
+              <AddStudentSearch
+                searchKeyword={searchKeyword}
+                setSearchKeyword={setSearchKeyword}
+              /> <AddGenericTable
               searchData={searchData}
               setSearchData={setSearchData}
               searchDataCount={searchDataCount}
@@ -267,8 +336,76 @@ const ModalDesign = ({
               active={active}
               setSelectedStudent={setSelectedStudent}
             />
-          ) : null}
-        </div> */}
+            </AddStudentContainer>) : (
+              <>
+                {/* 학생, 출석, 과제 버튼*/}
+                <ButtonWrapper>
+                  <Button
+                    isActive={onClicked.student}
+                    onClick={() => handleButtonClick("student")}
+                  >
+                    학생
+                  </Button>
+                  <Button
+                    isActive={onClicked.attendance}
+                    onClick={() => handleButtonClick("attendance")}
+                  >
+                    출석 체크
+                  </Button>
+                  <Button
+                    isActive={onClicked.task}
+                    onClick={() => handleButtonClick("task")}
+                  >
+                    과제
+                  </Button>
+                  <Button
+                    isActive={onClicked.material}
+                    onClick={() => handleButtonClick("material")}
+                  >
+                    {/* {" "} */}
+                    수업 자료
+                  </Button>
+                </ButtonWrapper>
+
+                {/* 강의별 학생 목록*/}
+                {onClicked.student && <LectureStudent />}
+
+                {/* 강의별 출석 목록*/}
+                {onClicked.attendance && <LectureAttendance />}
+
+                {/* 강의별 과제 목록*/}
+                {onClicked.task && <LectureTask />}
+
+                {/* 강의별 자료 목록 */}
+                {/* ToDo: 강의별 자료 목록 API 연동 */}
+                {onClicked.material && <LectureMaterial />}
+              </>
+            )}
+          </LowerDiv>
+
+          {/* <div id="select-student"> */}
+            {/* 검색 영역  */}
+            {/* {mode === "add" ? (
+              <AddStudentSearch
+                searchKeyword={searchKeyword}
+                setSearchKeyword={setSearchKeyword}
+              />
+            ) : null} */}
+            {/* 테이블  */}
+            {/* {mode === "add" ? (
+              <AddGenericTable
+                searchData={searchData}
+                setSearchData={setSearchData}
+                searchDataCount={searchDataCount}
+                setSearchDataCount={setSearchDataCount}
+                searchKeyword={searchKeyword}
+                handleCheckboxChange={handleCheckboxChange}
+                selectedStudent={selectedStudent}
+                active={active}
+                setSelectedStudent={setSelectedStudent}
+              />
+            ) : null}
+          </div> */}
         </TopDiv>
       </StyledAddForm>
     </Panel>
@@ -353,6 +490,52 @@ const MiddleDiv = styled.div`
   gap: 17px;
 `;
 
+const DetailInfo1 = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 22px;
+`;
+
+const Left = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+const Right = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
+
+const DateItemContainer = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, auto));
+  margin-bottom: 5px;
+`;
+
+const DateItem = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin-bottom: 5px;
+  padding: 5px 0;
+  box-sizing: border-box;
+
+  width: 100px;
+  background-color: #efefef;
+  border-radius: 50px;
+
+  font-family: Pretendard Variable;
+  font-size: 14px;
+  font-weight: 400;
+  text-align: center;
+`;
+
 const DetailInfo = styled.div`
   display: flex;
   flex-direction: row;
@@ -366,8 +549,19 @@ const Label = styled.label`
   font-size: 14px;
   font-weight: 700;
   text-align: left;
+  min-width: 60px;
+  white-space: nowrap;
 `;
 
+const AddDatesOption = styled.button`
+  font-family: Pretendard Variable;
+  font-size: 14px;
+  font-weight: 400;
+  text-align: left;
+  color: #bababa;
+  text-decoration: underline;
+  cursor: pointer;
+`;
 const StyledMiddleInput = styled.input`
   font-family: Pretendard Variable;
   font-size: 14px;
@@ -388,6 +582,15 @@ const TimePicker = styled.div`
   font-size: 14px;
   font-weight: 400;
   text-align: left;
+
+  input {
+    /* Chrome, Safari, Edge, Opera */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
 `;
 
 const SelectWrapper = styled.div`
@@ -436,5 +639,10 @@ const Button = styled.button`
 const LowerDiv = styled.div`
   margin-top: 42px;
   width: 100%;
+`;
+
+const AddStudentContainer = styled.div`
+  width: 100%;
+  box-sizing: border-box;
 `;
 export default ModalDesign;
