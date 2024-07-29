@@ -7,7 +7,7 @@ import { useDragAndDrop } from '../../../stores/dragAndDrop';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
 import { getCalendarData } from '../../../Atom';
-import { DragNDropPatchAPI, serverformatTime } from './UserDataController';
+import { DragNDropPatchAPI, ResizingPatchAPI, serverformatTime } from './UserDataController';
 
 const oneCellHeight = 12.5;
 
@@ -18,12 +18,15 @@ const WeeklyCell = (props) => {
 
     const [calSchedule, setCalSchedule] = useRecoilState(getCalendarData
     );
+
     // const [userData, setUserData] = useUserData();
     const [dragAndDrop, setDragAndDrop] = useDragAndDrop();
     const [isResizing, setIsResizing] = useState(false); // 리사이징 상태 추가
 
     // HH:MM 형태의 string 타입인 startHour를 숫자로 변환
     const [propsHour, propsMin] = (typeof startHour === 'string' ? startHour.split(':') : ['0', '0']).map(Number);
+
+    const [storeID , setStoreId] =useState(0);
 
     // 마우스 업 이벤트를 처리하여 리사이징 종료
     useEffect(() => {
@@ -179,14 +182,18 @@ const WeeklyCell = (props) => {
             const data ={
                 startTime : startTimeStr,
                 endTime: endTimeStr,
-                newLecturerDate: newDateForm,
-                allUpdate:false
+                isAllUpdate:false
             }
+            const dataDate = {
+                updatedLectureDateList: [newDateForm]
+            }
+
             //patch
-            const response = await DragNDropPatchAPI(data);
+            await ResizingPatchAPI(data);
+            const response = await DragNDropPatchAPI(dataDate);
             // 일정 업데이트
-            // const newSchedules = [...updatedSchedules, response];
-            // setCalSchedule(newSchedules);
+            const newSchedules = [...updatedSchedules, response];
+            setCalSchedule(newSchedules);
             setAddFormState({ ...addFormState, active: false });
         }
         catch(err){
@@ -233,8 +240,13 @@ const WeeklyCell = (props) => {
     const onResizeMouseDown = (e, schedule) => {
         e.preventDefault();
         e.stopPropagation();
+        if(schedule){
+            setStoreId(schedule.id);
+        }
 
-        console.log('주간 리사이징', schedule);
+        const updatedSchedules = calSchedule.filter(item => item.id !== storeID);
+
+        console.log("없애버림", updatedSchedules);
 
         const initialY = e.clientY;
         const initialEndMinute = schedule.endTime.hour * 60 + schedule.endTime.minute;
@@ -258,17 +270,17 @@ const WeeklyCell = (props) => {
                 minute: newEndMinute % 60
             };
 
+            const StartTimeStr = serverformatTime(schedule.startTime.hour, schedule.startTime.minute)
             const endTimeStr = serverformatTime(newEndTime.hour, newEndTime.minute);
 
             //patch
             const data ={
+                startTime: StartTimeStr,
                 endTime: endTimeStr,
-                allUpdate: false
+                isAllUpdate: false
             }
 
-            const response = await DragNDropPatchAPI(data);
-
-            const updatedSchedules = calSchedule.filter(item => item.id !== schedule.id);
+            const response = await ResizingPatchAPI(data);
             const newSchedules = [...updatedSchedules, response];
             // 상태 업데이트
             setCalSchedule(newSchedules);

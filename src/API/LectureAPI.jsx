@@ -176,3 +176,23 @@ export const patchLecture = async (data) => {
     console.error(error);
   }
 };
+
+
+// 강의 수업 날짜 수정
+export const patchDateLecture = async (data) => {
+  try {
+    const response = await axios.patch(`${server}lecture/date`, data,{
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    if (error.response.status === 403) {
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
+    console.error(error);
+  }
+};

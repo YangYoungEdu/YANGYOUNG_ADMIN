@@ -1,4 +1,4 @@
-import { patchLecture, postLecture } from "../../../API/LectureAPI";
+import { patchDateLecture, patchLecture, postLecture } from "../../../API/LectureAPI";
 
 	//서버에 시간 보내는 형식 변경
 export const serverformatTime = (hour, minute) => {
@@ -64,11 +64,22 @@ export const insertDateAPI = async(addFormState) => {
 	return response;
 };
 
+//리사이징 
+export const ResizingPatchAPI = async (data) =>{
+
+	console.log('전전 리사이징', data);
+	const response =await patchLecture(data);
+	console.log('수정한 데이터 리사이징', response);
+	return response;
+
+}
+
+//드래그앤 드랍
 export const DragNDropPatchAPI = async (data) =>{
 
-	console.log('수정할 데이터', data);
-	const response =await patchLecture(data);
-	console.log('수정한 데이터', response);
+	console.log('전전 드래그앤 드랍', data);
+	const response =await patchDateLecture(data);
+	console.log('수정한 데이터 드래그앤 드랍', response);
 	return response;
 
 }
