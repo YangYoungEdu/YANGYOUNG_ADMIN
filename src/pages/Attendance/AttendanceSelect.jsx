@@ -56,23 +56,34 @@ const AttendanceSelect = () => {
 
   const formatLectures = () => {
     const timeSlotMap = new Map();
+  console.log ("lectures: ", lectures);
     (lectures || []).forEach((lecture) => {
-      const startTime = moment(lecture.startTime, "HH:mm", true);
-      const endTime = moment(lecture.endTime, "HH:mm", true);
+      const startTime = moment({
+        hour: lecture.startTime.hour,
+        minute: lecture.startTime.minute,
+      });
+      const endTime = moment({
+        hour: lecture.endTime.hour,
+        minute: lecture.endTime.minute,
+      });
+  
       if (!startTime.isValid() || !endTime.isValid()) {
         return;
       }
+  
       const formattedStartTime = formatTime(startTime);
       const formattedEndTime = formatTime(endTime);
       const timeSlot = `${formattedStartTime} ~ ${formattedEndTime}`;
+  
       if (!timeSlotMap.has(timeSlot)) {
         timeSlotMap.set(timeSlot, []);
       }
       timeSlotMap.get(timeSlot).push({ name: lecture.name, id: lecture.id });
     });
+  
     return Array.from(timeSlotMap.entries());
   };
-
+  
   const formatTime = (time) => {
     const hour = time.hour();
     const minute = time.minute();
@@ -80,6 +91,7 @@ const AttendanceSelect = () => {
     const hour12 = hour % 12 === 0 ? 12 : hour % 12;
     return `${period} ${hour12}:${minute < 10 ? `0${minute}` : minute}`;
   };
+  
 
   const handleLectureSelect = async (lectureId) => {
     setSelectedLecture(lectureId);
@@ -141,7 +153,7 @@ const AttendanceSelect = () => {
   };
 
   const formattedLectures = formatLectures();
-
+  console.log ("formattedLectures", formattedLectures);
   return (
     <MainDiv>
       <UpperDiv>
