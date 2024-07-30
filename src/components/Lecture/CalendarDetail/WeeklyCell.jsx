@@ -211,14 +211,13 @@ const WeeklyCell = (props) => {
                 id: from.id,
                 updatedLectureDateList: [newDateForm]
             }
-
+            const response2 = await DragNDropPatchAPI(dataDate);
+            // // 일정 업데이트
+            setCalSchedule([...calSchedule, response2]);
             //patch
             const response =await ResizingPatchAPI(data);
             setCalSchedule([...calSchedule, response]);
 
-            const response2 = await DragNDropPatchAPI(dataDate);
-            // // 일정 업데이트
-            setCalSchedule([...calSchedule, response2]);
         }
         catch(err){
             console.error(err);
@@ -265,6 +264,7 @@ const WeeklyCell = (props) => {
         e.preventDefault();
         e.stopPropagation();
 
+        let data;
         const initialY = e.clientY;
         const initialEndMinute = schedule.endTime.hour * 60 + schedule.endTime.minute;
 
@@ -291,7 +291,7 @@ const WeeklyCell = (props) => {
             const endTimeStr = serverformatTime(newEndTime.hour, newEndTime.minute);
 
             //patch
-            const data ={
+            data ={
                 id: schedule.id,
                 name: schedule.name,
                 lectureType: schedule.lectureType,
@@ -302,15 +302,32 @@ const WeeklyCell = (props) => {
                 isAllUpdate: false
             }
 
-            const response = await ResizingPatchAPI(data);
+            console.log(data);
             // setCalSchedule([...calSchedule, response]);
         };
 
-        const onResizeMouseUp = () => {
+        const onResizeMouseUp = async() => {
             document.removeEventListener('mousemove', onResizeMouseMove);
             document.removeEventListener('mouseup', onResizeMouseUp);
             setIsResizing(false);
             document.body.classList.remove('resizing');
+            if (data) {
+                try {
+                    const response = await ResizingPatchAPI(data);
+            
+                    // 상태 업데이트를 위한 새로운 상태 배열 생성
+                    const updatedSchedule = calSchedule.map((item) =>
+                        item === response ? { ...item, endTime: response.response } : item
+                    );
+            
+                    // 상태 업데이트
+                    setCalSchedule(updatedSchedule);
+                } catch (error) {
+                    // 오류 처리
+                    console.error("Error updating schedule:", error);
+                }
+            }
+            
         };
 
         document.addEventListener('mousemove', onResizeMouseMove);
