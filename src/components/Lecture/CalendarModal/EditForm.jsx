@@ -30,7 +30,8 @@ const EditForm = () => {
     startTime: { hour: 0, minute: 0, second: 0, nano: 0 },
     endTime: { hour: 1, minute: 0, second: 0, nano: 0 },
     lectureDateList: [],
-    studentList: []
+    studentList: [],
+    lectureDate:'',
   });
   const { name, room,lectureType, teacher, curDate, startTime, endTime } = newAddFormState;
 
@@ -48,7 +49,7 @@ const EditForm = () => {
   useEffect(() => {
 
     if (active) {
-      const { id, name, room,lectureType, teacher, curDate, startTime, endTime , lectureDateList, studentList} = addFormState;
+      const { id, name, room,lectureType, teacher, curDate, startTime, endTime , lectureDateList, studentList, lectureDate} = addFormState;
 
       setNewAddFormState({
         id: id || null,
@@ -61,7 +62,8 @@ const EditForm = () => {
         startTime: startTime || { hour: 0, minute: 0, second: 0, nano: 0 },
         endTime: endTime || { hour: 1, minute: 0, second: 0, nano: 0 },
         lectureDateList: lectureDateList || [],
-        studentList: studentList || []
+        studentList: studentList || [],
+        lectureDate: lectureDate || ''
       });
     }
   }, [active, addFormState, mode]);

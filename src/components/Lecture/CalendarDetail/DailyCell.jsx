@@ -150,7 +150,8 @@ const DailyCell = (props) => {
               curDate: curDate,
               startTime: {...startTime},
               endTime: {...endTime},
-              studentList: studentList
+              studentList: studentList,
+              lectureDate:lectureDate,
           });
         }
     };
