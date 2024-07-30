@@ -69,7 +69,7 @@ const LectureFilter = ({ mode, originLectures, setLectures }) => {
 
   return (
     <SearchWrapper>
-      {mode === "month" ? <Line /> : null}
+       <Line /> 
       {/* 선생님 필터 */}
       <FilterSection
         title="선생님"

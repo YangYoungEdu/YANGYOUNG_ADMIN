@@ -9,6 +9,7 @@ import DailyCell from "../../../components/Lecture/CalendarDetail/DailyCell.jsx"
 import styled from 'styled-components';
 import { useRecoilState } from "recoil";
 import { getCalendarData } from "../../../Atom.js";
+import { determineLefts, determineWidths, getOverlappingIds } from "../../../components/Lecture/CalendarDetail/CustumStyle.jsx";
 
 //15분 간격 배열 추가
 export const times = [
@@ -44,6 +45,8 @@ const DayCalendar = ({ currentDate, lectureOfDay }) => {
 
   const [curSchedule, setCurSchedule] = useState([]);
   const [dates, setDates] = useState([]);
+  const [widths, setWidths] = useState({}); 
+	const [lefts, setLefts] = useState({});
 
   useEffect(() => {
       // date가 변경될 때마다, 해당 날짜에 대한 일정을 생성합니다.
@@ -56,7 +59,19 @@ const DayCalendar = ({ currentDate, lectureOfDay }) => {
       // userData가 변경될 때마다, 현재 일정을 업데이트합니다.
       const { firstDate, lastDate } = getFirstAndLastDate();
       setCurSchedule(getSchedule(firstDate, lastDate, lectureOfDay));
-  }, [lectureOfDay, schedule]);
+
+      const type = "day"
+      // 겹치는 강의 ID와 width, left 값을 계산
+			const overlapMap = getOverlappingIds(lectureOfDay,);
+
+			const lefts = determineLefts(overlapMap,schedule);
+      const widths = determineWidths(overlapMap,);
+			setLefts(lefts);
+      setWidths(widths);
+      console.log("width", widths);
+      console.log("lefts", lefts);
+
+  }, [lectureOfDay, schedule]); 
 
   const getFirstAndLastDate = () => {
       // 단일 날짜를 반환하도록 수정된 함수
@@ -75,31 +90,31 @@ const DayCalendar = ({ currentDate, lectureOfDay }) => {
   };
 
   const getCurDateSchedule = (curDate, startHour) => {
-    let curDateSchedule = null;
-    
-      // HH:MM string 형식 분할 후 number 타입 변환
+    let curDateSchedule = [];
+    // HH:MM string 형식 분할 후 number 타입 변환
     const [propsHour, propsMin] = (typeof startHour === 'string' ? startHour.split(':') : ['0', '0']).map(Number);
 
-      // 분값을 15분 단위로 구간 나누어 변환하는 함수
-      const to15MinRange = (minutes) => {
-              if (minutes < 15) return 0;
-              if (minutes < 30) return 15;
-              if (minutes < 45) return 30;
-              return 45;
-      };
+    // 분값을 15분 단위로 구간 나누어 변환하는 함수
+    const to15MinRange = (minutes) => {
+        if (minutes < 15) return 0;
+        if (minutes < 30) return 15;
+        if (minutes < 45) return 30;
+        return 45;
+    };
 
-  for (let i = 0; i < curSchedule.length; i++) {
-
-    if (curDate.getFullYear() === new Date(curSchedule[i].lectureDate).getFullYear() &&
-    curDate.getMonth() === new Date(curSchedule[i].lectureDate).getMonth()&&
-    curDate.getDate() === new Date(curSchedule[i].lectureDate).getDate()&& curSchedule[i].startTime.hour === propsHour && to15MinRange(curSchedule[i].startTime.minute) === propsMin ) {
-        curDateSchedule = curSchedule[i];
-        break;
-      }
+    // 현재 날짜와 시간에 해당하는 모든 일정을 찾음
+    for (let i = 0; i < curSchedule.length; i++) {
+        if (curDate.getFullYear() === new Date(curSchedule[i].lectureDate).getFullYear() &&
+            curDate.getMonth() === new Date(curSchedule[i].lectureDate).getMonth() &&
+            curDate.getDate() === new Date(curSchedule[i].lectureDate).getDate() &&
+            curSchedule[i].startTime.hour === propsHour &&
+            to15MinRange(curSchedule[i].startTime.minute) === propsMin) {
+            curDateSchedule.push(curSchedule[i]); // 배열에 추가
+        }
     }
 
     return curDateSchedule;
-  };
+};
 
   function formatTime(time) {
     const [hours, minutes] = time.split(':').map(Number);
@@ -127,6 +142,8 @@ const DayCalendar = ({ currentDate, lectureOfDay }) => {
                               date={a[0]}
                               startHour={b}
                               schedule={getCurDateSchedule(a[0], b)}
+                              styleWidths={widths}
+                              StyleLefts={lefts}
                           />
                       )
                   ))}
@@ -138,7 +155,7 @@ const DayCalendar = ({ currentDate, lectureOfDay }) => {
 
 const WeeklyView = styled.div`
   /* width: 900px; */
-  width: 85%;
+  /* width: 85%; */
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -182,7 +199,7 @@ const HourCell = styled.div`
 const WeeklyCol = styled.div`
   /* width: 120px; */
   /* margin-top: 6px; */
-  width: 80%;
+  width: 1060px;
   display: flex;
   flex-direction: column;
   /* justify-content: center; */

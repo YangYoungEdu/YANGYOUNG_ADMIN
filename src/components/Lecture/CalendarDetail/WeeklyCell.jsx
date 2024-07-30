@@ -5,70 +5,28 @@ import { useAddFormState } from '../../../stores/addFormState';
 import { useUserData } from '../../../stores/userData';
 import { useDragAndDrop } from '../../../stores/dragAndDrop';
 import styled from 'styled-components';
+import { useRecoilState } from 'recoil';
+import { getCalendarData } from '../../../Atom';
+import { DragNDropPatchAPI, ResizingPatchAPI, serverformatTime } from './UserDataController';
 
 const oneCellHeight = 12.5;
 
 const WeeklyCell = (props) => {
-    const { index, day, date, startHour, schedule } = props;
+    const { index, day, date, startHour, schedule, styleWidths, StyleLefts } = props;
     const [addFormState, setAddFormState] = useAddFormState();
     const { active } = addFormState;
-    const [userData, setUserData] = useUserData();
+
+    const [calSchedule, setCalSchedule] = useRecoilState(getCalendarData
+    );
+
+    // const [userData, setUserData] = useUserData();
     const [dragAndDrop, setDragAndDrop] = useDragAndDrop();
     const [isResizing, setIsResizing] = useState(false); // 리사이징 상태 추가
 
     // HH:MM 형태의 string 타입인 startHour를 숫자로 변환
     const [propsHour, propsMin] = (typeof startHour === 'string' ? startHour.split(':') : ['0', '0']).map(Number);
 
-    let overlappingSchedules = [];
-    if (schedule) {
-        overlappingSchedules = userData.schedule.filter(
-            (item) =>
-                item.curDate === schedule.curDate &&
-                (
-                    (item.startTime.hour < schedule.endTime.hour || (item.startTime.hour === schedule.endTime.hour && item.startTime.minute < schedule.endTime.minute)) &&
-                    (schedule.startTime.hour < item.endTime.hour || (schedule.startTime.hour === item.endTime.hour && schedule.startTime.minute < item.endTime.minute))
-                )
-        );
-    }
-
-    //겹치는 일정 스타일 지정
-    const [customStyle, setCustomStyle] = useState({
-        width: '100%',
-        left: '0%',
-    });
-
-    useEffect(() => {
-        // 겹치는 일정 감지
-
-        // 스타일 설정
-        if (overlappingSchedules.length > 1) {
-            const index = overlappingSchedules.findIndex((item) => item === schedule);
-
-            let totalWidth;
-            let customLeft;
-
-            if (overlappingSchedules.length === 2) {
-                totalWidth = `calc(50% - 10px)`;
-                customLeft = [-25, 25];
-            } else if (overlappingSchedules.length === 3) {
-                totalWidth = `calc(33% - 10px)`;
-                customLeft = [-33.3, 0, 33.3];
-            } else if (overlappingSchedules.length === 4) {
-                totalWidth = `calc(25% - 10px)`;
-                customLeft = [-38, -13, 12, 37];
-            }
-
-            setCustomStyle({
-                width: totalWidth,
-                left: `${index < 4 ? customLeft[index] : customLeft[2]}%`,
-            });
-        } else {
-            setCustomStyle({
-                width: '100%',
-                left: '0%',
-            });
-        }
-    }, [schedule, userData.schedule]);
+    const [storeID , setStoreId] =useState(0);
 
     // 마우스 업 이벤트를 처리하여 리사이징 종료
     useEffect(() => {
@@ -180,65 +138,83 @@ const WeeklyCell = (props) => {
     // 일정을 클릭하여 수정하는 함수
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
-    };
+        const { name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate, studentList } = schedule;
+        if (!active) { // 리사이징 중일 때 클릭 방지
+          setAddFormState({
+              ...addFormState,
+              active: true,
+              mode: 'edit',
+              name: name,
+              room:room,
+              lectureType:lectureType,
+              teacher:teacher,
+              curDate: curDate,
+              startTime: {...startTime},
+              endTime: {...endTime},
+              studentList: studentList
+          });
+        }
+      };
 
     // 일정을 드래그 앤 드랍으로 이동시키는 함수
-    const onDropSchedule = (e) => {
+    const onDropSchedule = async(e) => {
         e.preventDefault();
+        try{
+            // 드래그 앤 드랍 데이터 확인
+            if (!dragAndDrop.from) return;
 
-        // 드래그 앤 드랍 데이터 확인
-        if (!dragAndDrop.from) return;
+            const { from, to, initialY } = dragAndDrop;
 
-        const { from, to, initialY } = dragAndDrop;
+            // Y좌표의 차이 계산
+            const yDifference = e.clientY - initialY;
+            const differenceInMinutes = Math.round(yDifference / oneCellHeight) * 15; // 50px = 15분
 
-        // Y좌표의 차이 계산
-        const yDifference = e.clientY - initialY;
-        const differenceInMinutes = Math.round(yDifference / oneCellHeight) * 15; // 50px = 15분
+            // 새로운 시작 시간과 끝 시간 계산
+            const newStartTotalMin = (to.startTime.hour * 60) + to.startTime.minute + differenceInMinutes;
 
-        // 새로운 시작 시간과 끝 시간 계산
-        const newStartTotalMin = (to.startTime.hour * 60) + to.startTime.minute + differenceInMinutes;
+            // 시간 값이 음수가 되지 않도록 조정
+            const newStartHour = Math.max(Math.floor(newStartTotalMin / 60), 0);
+            const newStartMinute = Math.max(newStartTotalMin % 60, 0);
 
-        // 시간 값이 음수가 되지 않도록 조정
-        const newStartHour = Math.max(Math.floor(newStartTotalMin / 60), 0);
-        const newStartMinute = Math.max(newStartTotalMin % 60, 0);
+            // 기존 시간차 유지 + 끝 시간이 24:를 넘지 않도록 보장
+            const durationInMinutes = (from.endTime.hour * 60 + from.endTime.minute) - (from.startTime.hour * 60 + from.startTime.minute);
+            let newEndTotalMin = newStartTotalMin + durationInMinutes;
 
-        // 기존 시간차 유지 + 끝 시간이 24:를 넘지 않도록 보장
-        const durationInMinutes = (from.endTime.hour * 60 + from.endTime.minute) - (from.startTime.hour * 60 + from.startTime.minute);
-        let newEndTotalMin = newStartTotalMin + durationInMinutes;
+            const maxEndMinute = 24 * 60;
+            newEndTotalMin = Math.min(newEndTotalMin, maxEndMinute);
 
-        const maxEndMinute = 24 * 60;
-        newEndTotalMin = Math.min(newEndTotalMin, maxEndMinute);
+            const newEndHour = Math.floor(newEndTotalMin / 60);
+            const newEndMinute = newEndTotalMin % 60;
 
-        const newEndHour = Math.floor(newEndTotalMin / 60);
-        const newEndMinute = newEndTotalMin % 60;
+            console.log("드래그앤드랍은 아이디가 없나요?", calSchedule[0].id, from.id);
+            const updatedSchedules = calSchedule.filter(item => item.id !== from.id);
+            console.log("updatedSchedules", updatedSchedules);
 
-        // 기존 일정 업데이트 -id로 구분 필요
-        const updatedSchedule = userData.schedule.map(item =>
-            item === from ? { ...item, 
-                startTime: { 
-                    ...from.startTime, 
-                    hour: newStartHour,
-                    minute: newStartMinute
-                }, 
-                endTime: {
-                    ...from.endTime,
-                    hour: newEndHour,
-                    minute: newEndMinute
-                }, 
-                curDate: date } : item
-        );
+            //서버에 보낼 데이터 가공
+            const newDateForm = date.toLocaleDateString("en-CA");
+            const startTimeStr = serverformatTime(newStartHour, newStartMinute);
+            const endTimeStr = serverformatTime(newEndHour, newEndMinute);
+        
+            const data ={
+                startTime : startTimeStr,
+                endTime: endTimeStr,
+                isAllUpdate:false
+            }
+            const dataDate = {
+                updatedLectureDateList: [newDateForm]
+            }
 
-        console.log("from", from);
-        console.log("to", to);
-        console.log("Y difference:", yDifference);
-        console.log("New start hour:", newStartHour);
-        console.log("New start minute:", newStartMinute);
-        console.log("New end hour:", newEndHour);
-        console.log("New end minute:", newEndMinute);
-
-        // 일정 업데이트
-        setUserData({ ...userData, schedule: updatedSchedule });
-        setAddFormState({ ...addFormState, active: false });
+            //patch
+            await ResizingPatchAPI(data);
+            const response = await DragNDropPatchAPI(dataDate);
+            // 일정 업데이트
+            const newSchedules = [...updatedSchedules, response];
+            setCalSchedule(newSchedules);
+            setAddFormState({ ...addFormState, active: false });
+        }
+        catch(err){
+            console.error(err);
+        }
     };
 
     // 드래그가 들어왔을 때 호출되는 함수
@@ -248,8 +224,7 @@ const WeeklyCell = (props) => {
         console.log('드래그', from);
         const diff = (from.endTime.hour * 60 + from.endTime.minute) - (from.startTime.hour * 60 + from.startTime.minute);
 
-        const newScheduleForm = { name: from.name, room:from.room, 
-            lectureType: from.lectureType, teacher:from.teacher, curDate: date,
+        const newScheduleForm = { ...from, lectureDate: date.toLocaleDateString("en-CA"),
             startTime: {
                 ...from.startTime,
                 hour: propsHour,
@@ -259,12 +234,11 @@ const WeeklyCell = (props) => {
                 ...from.endTime,
                 hour: propsHour + Math.floor(diff / 60),
                 minute: propsMin + (diff % 60)
-            },
-        lectureDateList : from.lectureDateList,
-        studentList: from.studentList};
+            }, };
 
         // 현재 Y좌표 저장
         setDragAndDrop({ ...dragAndDrop, to: newScheduleForm, initialY: e.clientY });
+        console.log("newScheduleForm", newScheduleForm);
 
         // 콘솔에 시작 시간 변화를 로그로 출력
         console.log("Original start hour:", from.startTime.hour);
@@ -282,13 +256,19 @@ const WeeklyCell = (props) => {
     const onResizeMouseDown = (e, schedule) => {
         e.preventDefault();
         e.stopPropagation();
+        if(schedule){
+            setStoreId(schedule.id);
+        }
 
-        console.log('주간 리사이징', schedule);
+        const updatedSchedules = calSchedule.filter(item => item.id !== storeID);
+
+        console.log("없애버림", updatedSchedules);
 
         const initialY = e.clientY;
         const initialEndMinute = schedule.endTime.hour * 60 + schedule.endTime.minute;
 
-        const onResizeMouseMove = (e) => {
+        const onResizeMouseMove = async (e) => {
+            
             const newY = e.clientY;
             const minDifference = Math.round((newY - initialY) / oneCellHeight) * 15; // oneCellHeight px = 15분
             let newEndMinute = initialEndMinute + minDifference;
@@ -306,13 +286,20 @@ const WeeklyCell = (props) => {
                 minute: newEndMinute % 60
             };
 
-            // id로 구분 필요
-            setUserData({
-                ...userData,
-                schedule: userData.schedule.map((item) =>
-                    item === schedule ? { ...item, endTime: newEndTime } : item
-                ),
-            });
+            const StartTimeStr = serverformatTime(schedule.startTime.hour, schedule.startTime.minute)
+            const endTimeStr = serverformatTime(newEndTime.hour, newEndTime.minute);
+
+            //patch
+            const data ={
+                startTime: StartTimeStr,
+                endTime: endTimeStr,
+                isAllUpdate: false
+            }
+
+            const response = await ResizingPatchAPI(data);
+            const newSchedules = [...updatedSchedules, response];
+            // 상태 업데이트
+            setCalSchedule(newSchedules);
         };
 
         const onResizeMouseUp = () => {
@@ -354,7 +341,6 @@ const WeeklyCell = (props) => {
 
     return (
         <WeeklyCellDiv 
-            // className="weekly-cell" 
             onClick={onClickDate}
             onDragEnter={onDragEnterCell}
             onDragOver={(e) => e.preventDefault()}
@@ -367,7 +353,8 @@ const WeeklyCell = (props) => {
                 draggable
                 onDragStart={(e) => onDragCell(e)}
                 teacher= {schedule.teacher}
-                customStyle={customStyle} // 커스텀 스타일 추가
+                customStyleWidth={styleWidths[schedule.id]} 
+                customStyleLeft={StyleLefts[schedule.id]} 
             >
                 <p>{`${formatTime(schedule.startTime.hour, schedule.startTime.minute)} ~ ${formatTime(schedule.endTime.hour, schedule.endTime.minute)}`}</p>
                 <p>{schedule.name}</p>
@@ -441,10 +428,14 @@ const WeeklySchedule = styled.div`
     display: flex;
     flex-direction: column;
     /* width: 100%; */
-    ${(props) => props.customStyle && `
-        width: ${props.customStyle.width};
-        left: ${props.customStyle.left};
-    `}
+
+    width: ${props => {
+        if (props.customStyleWidth === '100%') {
+            return 'calc(100% - 10px)'; // 100%인 경우 10px 빼기
+        }
+        return props.customStyleWidth ? `calc(${props.customStyleWidth} - 10px)` : '100%';
+    }};
+    left: ${props => props.customStyleLeft || '100%'};
 
     border-radius: 5px;
 

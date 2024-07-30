@@ -20,6 +20,7 @@ const AddForm = () => {
   const { active, mode } = addFormState;
 
   const [newAddFormState, setNewAddFormState] = useState({
+    mode: 'add',
     name: '',
     room: '',
     lectureType: '',
@@ -58,6 +59,7 @@ const AddForm = () => {
       console.log('스케줄 확인', curDate);
 
       setNewAddFormState({
+        mode: 'add',
         name:name|| '' , 
         room: room|| '',
         lectureType: lectureType || '일반',
