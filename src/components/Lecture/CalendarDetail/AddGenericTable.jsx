@@ -141,10 +141,11 @@ const AddGenericTable = ({
   );
 };
 
-const Container = styled.div``;
+const Container = styled.div`
+width: 100%`;
 
 const StyledTable = styled.table`
-  width: 1050px;
+  width: 100%;
   margin-bottom: 34px;
 `;
 

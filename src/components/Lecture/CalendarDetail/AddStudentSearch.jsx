@@ -209,18 +209,18 @@ const slideIn = keyframes`
 const DropdownContainer = styled.div`
   position: relative;
   display: inline-block;
+  width: 100%;
 `;
 
 const DropdownButtonContainer = styled.div`
-  width: 1050px;
-  height: 58px;
+  width: 100%;
+  height: 50px;
   box-sizing: border-box;
   line-height: 58px;
   display: flex;
   justify-content: space-between;
-  padding-left: 34px;
-  padding-right: 34px;
-  margin-top: 60px;
+  padding-left: 25px;
+  padding-right: 25px;
   border-radius: 100px;
   border-width: 0px 0px 1px 0px;
   border-style: solid;
@@ -233,21 +233,19 @@ const DropdownButtonContainer = styled.div`
   border-bottom-right-radius: ${(props) => (props.isOpen ? "0px" : "100px")};
   color: ${(props) => (props.isOpen ? "#000000" : "#BABABA")};
   font-weight: 500px;
-  font-size: ${(props) => props.theme.fontSizes.textField1};
+  font-size: 15px;
   align-items: center;
 `;
 
 const DropdownContent = styled.div`
   box-sizing: border-box;
   gap: 36px;
-  padding-top: 41px;
-  padding-left: 34px;
-  padding-right: 34px;
-  height: 195px;
+  padding: 40px 30px;
+  min-height: 195px;
   background-color: white;
   display: none;
   position: absolute;
-  width: 1050px;
+  width: 100%;
   box-shadow: 0px 4px 4px 0px #00000040;
 
   animation: ${slideIn} 0.3s ease;
@@ -269,27 +267,45 @@ const SearchArea = styled.div`
   flex-direction: column;
   width: 100%;
   gap: 51px;
+  @media (max-width: 1440px) { /* 화면 크기가 768px 이하일 때 */
+    gap: 15px;
+  }
 `;
 
 const SearchOptions = styled.div`
-  display: flex;
+display: flex;
   flex-direction: row;
-  gap: 36px;
+
+  justify-content: space-between;
+  width: 100%;
+  @media (max-width: 1440px) { /* 화면 크기가 768px 이하일 때 */
+    flex-direction: column;
+    gap: 20px; /* 세로 배치일 때의 간격 */
+  }
 `;
 
 const SearchField = styled.div`
+  /* background-color: aliceblue; */
   display: flex;
   flex-direction: row;
-  gap: 12.5px;
+  justify-content: space-between;
   align-items: center;
+  max-width: 100%;
+  white-space: nowrap;
+  font-size: 13px;
+  gap: 3px;
+  @media (max-width: 1440px) { /* 화면 크기가 768px 이하일 때 */
+    flex-direction: column;
+  }
 `;
+
 const CustomSelect = styled(Select)`
   display: flex;
   flex-direction: row;
   align-items: center;
   box-sizing: border-box;
-  width: 101px;
-  height: 42px;
+  width: 150px;
+  height: 32px;
   padding: 10px 15px;
   gap: 8px;
   border-radius: 100px;
@@ -352,14 +368,15 @@ const CustomSelect = styled(Select)`
 
 const SearchInput = styled.input`
   box-sizing: border-box;
-  width: 190px;
-  height: 42px;
+  width: 150px;
+  height: 32px;
   padding: 10px 15px 10px 15px;
   gap: 10px;
   border-radius: 100px;
   border: 1px 0px 0px 0px;
   opacity: 0px;
   background: #fbfbfd;
+
   border: 1px solid #e0e0e0;
   &:focus {
     border: 1px solid #15521d;
@@ -367,7 +384,7 @@ const SearchInput = styled.input`
   &::placeholder {
     //styleName: text field 2;
     font-family: Pretendard Variable;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 400;
     line-height: 17.9px;
     text-align: left;
@@ -376,6 +393,7 @@ const SearchInput = styled.input`
 `;
 
 const ButtonArea = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -388,19 +406,22 @@ const ButtonGap = styled.div`
 `;
 
 const StyledButton = styled.button`
+  display: flex;
   box-sizing: border-box;
   background: ${({ background }) => background};
   color: ${({ color }) => color};
-  width: 88px;
-  height: 39px;
+  width: 60px;
+  padding: 5px;
+  white-space: nowrap;
   text-align: center;
   align-items: center;
+  justify-content: center;
   border-radius: 5px;
   cursor: pointer;
   &:hover {
     background-color: #479051;
   }
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 400;
 `;
 
@@ -411,7 +432,7 @@ const SearchKewordWrapper = styled.div`
 
 const SearchKeword = styled(RowDiv)`
   align-items: center;
-  width: 106px;
+  width: 100%;
   height: 40px;
   border-radius: 100px;
   background-color: ${(props) => props.theme.colors.primary_light};
@@ -433,6 +454,7 @@ const CancelIcon = styled(Cancel)`
 const OpenCloseIcon = styled.div`
   display: flex;
   justify-self: flex-end;
+  width: 15px;
 `;
 
 export default AddStudentSearch;

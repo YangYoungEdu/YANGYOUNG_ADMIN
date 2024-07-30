@@ -321,22 +321,25 @@ const ModalDesign = ({
           </MiddleDiv>
 
           <LowerDiv>
-            {mode === "add" ? (<AddStudentContainer>
-              <AddStudentSearch
-                searchKeyword={searchKeyword}
-                setSearchKeyword={setSearchKeyword}
-              /> <AddGenericTable
-              searchData={searchData}
-              setSearchData={setSearchData}
-              searchDataCount={searchDataCount}
-              setSearchDataCount={setSearchDataCount}
-              searchKeyword={searchKeyword}
-              handleCheckboxChange={handleCheckboxChange}
-              selectedStudent={selectedStudent}
-              active={active}
-              setSelectedStudent={setSelectedStudent}
-            />
-            </AddStudentContainer>) : (
+            {mode === "add" ? (
+              <AddStudentContainer>
+                <AddStudentSearch
+                  searchKeyword={searchKeyword}
+                  setSearchKeyword={setSearchKeyword}
+                />{" "}
+                <AddGenericTable
+                  searchData={searchData}
+                  setSearchData={setSearchData}
+                  searchDataCount={searchDataCount}
+                  setSearchDataCount={setSearchDataCount}
+                  searchKeyword={searchKeyword}
+                  handleCheckboxChange={handleCheckboxChange}
+                  selectedStudent={selectedStudent}
+                  active={active}
+                  setSelectedStudent={setSelectedStudent}
+                />
+              </AddStudentContainer>
+            ) : (
               <>
                 {/* 학생, 출석, 과제 버튼*/}
                 <ButtonWrapper>
@@ -384,15 +387,15 @@ const ModalDesign = ({
           </LowerDiv>
 
           {/* <div id="select-student"> */}
-            {/* 검색 영역  */}
-            {/* {mode === "add" ? (
+          {/* 검색 영역  */}
+          {/* {mode === "add" ? (
               <AddStudentSearch
                 searchKeyword={searchKeyword}
                 setSearchKeyword={setSearchKeyword}
               />
             ) : null} */}
-            {/* 테이블  */}
-            {/* {mode === "add" ? (
+          {/* 테이블  */}
+          {/* {mode === "add" ? (
               <AddGenericTable
                 searchData={searchData}
                 setSearchData={setSearchData}
@@ -642,7 +645,11 @@ const LowerDiv = styled.div`
 `;
 
 const AddStudentContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  gap: 10px;
   box-sizing: border-box;
 `;
+
 export default ModalDesign;
