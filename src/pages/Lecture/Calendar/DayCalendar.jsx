@@ -71,7 +71,7 @@ const DayCalendar = ({ currentDate, lectureOfDay }) => {
       console.log("width", widths);
       console.log("lefts", lefts);
 
-  }, [lectureOfDay, schedule]);
+  }, [lectureOfDay, schedule]); 
 
   const getFirstAndLastDate = () => {
       // 단일 날짜를 반환하도록 수정된 함수
