@@ -48,7 +48,7 @@ const ModalDesign = ({
   });
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [startDate, setStartDate] = useState(
-    mode === "add" ? newAddFormState.curDate : newAddFormState.curDate
+    mode === "add" ? newAddFormState.curDate : null
   );
 
   const handleButtonClick = (type) => {
@@ -100,7 +100,7 @@ const ModalDesign = ({
           <UpperDiv id="input-form">
             <input
               id="input-name"
-              value={mode === "add" ? newAddFormState.name : null}
+              value={mode === "add" ? newAddFormState.name : newAddFormState.name}
               onChange={onChangeNewAddFormState}
               placeholder="수업 이름을 적어주세요."
             />
@@ -181,7 +181,7 @@ const ModalDesign = ({
                 <input
                   type="number"
                   id="start-hour"
-                  value={mode === "add" ? newAddFormState.startTime.hour : ""}
+                  value={mode === "add" ? newAddFormState.startTime.hour : newAddFormState.startTime.hour }
                   onChange={(e) =>
                     onChangeNewAddFormState({
                       target: { id: "start-hour", value: e.target.value },
@@ -195,7 +195,7 @@ const ModalDesign = ({
                 <input
                   type="number"
                   id="start-minute"
-                  value={mode === "add" ? newAddFormState.startTime.minute : ""}
+                  value={mode === "add" ? newAddFormState.startTime.minute : newAddFormState.startTime.minute }
                   onChange={(e) =>
                     onChangeNewAddFormState({
                       target: { id: "start-minute", value: e.target.value },
@@ -210,7 +210,7 @@ const ModalDesign = ({
                 <input
                   type="number"
                   id="end-hour"
-                  value={mode === "add" ? newAddFormState.endTime.hour : ""}
+                  value={mode === "add" ? newAddFormState.endTime.hour : newAddFormState.endTime.hour }
                   onChange={(e) =>
                     onChangeNewAddFormState({
                       target: { id: "end-hour", value: e.target.value },
@@ -224,7 +224,7 @@ const ModalDesign = ({
                 <input
                   type="number"
                   id="end-minute"
-                  value={mode === "add" ? newAddFormState.endTime.minute : ""}
+                  value={mode === "add" ? newAddFormState.endTime.minute : newAddFormState.endTime.minute }
                   onChange={(e) =>
                     onChangeNewAddFormState({
                       target: { id: "end-minute", value: e.target.value },
@@ -295,7 +295,7 @@ const ModalDesign = ({
               <SelectWrapper>
                 <select
                   id="lectureType-select"
-                  value={mode === "add" ? newAddFormState.lectureType : null}
+                  value={mode === "add" ? newAddFormState.lectureType :  newAddFormState.lectureType }
                   onChange={onChangeNewAddFormState}
                 >
                   <option value="일반">일반</option>
@@ -307,7 +307,7 @@ const ModalDesign = ({
               <Label className="label">선생님</Label>
               <StyledMiddleInput
                 id="teacher-select"
-                value={mode === "add" ? newAddFormState.teacher : null}
+                value={mode === "add" ? newAddFormState.teacher : newAddFormState.teacher}
                 onChange={onChangeNewAddFormState}
                 placeholder="선생님 이름을 적어주세요."
               />
@@ -328,7 +328,7 @@ const ModalDesign = ({
               <Label className="label">강의실</Label>
               <StyledMiddleInput
                 id="input-room"
-                value={mode === "add" ? newAddFormState.room : null}
+                value={mode === "add" ? newAddFormState.room : newAddFormState.room}
                 onChange={onChangeNewAddFormState}
                 placeholder="강의실을 적어주세요."
               />
