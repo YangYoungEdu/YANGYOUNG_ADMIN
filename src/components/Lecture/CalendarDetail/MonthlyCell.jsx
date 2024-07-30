@@ -72,10 +72,11 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 	//일정 클릭 후 수정
 	const onClickSchedule = (e, schedule) => {
 		e.stopPropagation();
-		const { name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate, studentList } = schedule;
+		const { id, name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate, studentList } = schedule;
     if (!active) { // 리사이징 중일 때 클릭 방지
       setAddFormState({
           ...addFormState,
+          id: id,
           active: true,
           mode: 'edit',
           name: name,
