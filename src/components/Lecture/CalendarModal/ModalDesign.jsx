@@ -65,6 +65,10 @@ const ModalDesign = ({
     setIsDatePickerOpen(!isDatePickerOpen);
   };
 
+  const handleRemoveDate = (date) => {
+    setmultiDates(multidates.filter((d) => d !== date));
+  };
+
   // 컴포넌트가 마운트될 때 multidates를 리셋하고 curDate를 추가
   useEffect(() => {
     if (newAddFormState.curDate) {
@@ -137,7 +141,12 @@ const ModalDesign = ({
                 <DateItemContainer>
                   {multidates.length > 0 &&
                     multidates.map((date) => (
-                      <DateItem key={date}>{date}</DateItem>
+                      <DateItem key={date}>
+                        {date}
+                        <RemoveButton onClick={() => handleRemoveDate(date)}>
+                          x
+                        </RemoveButton>
+                      </DateItem>
                     ))}
                 </DateItemContainer>
                 {/* 날짜 추가 div를 누르면 date picker 나옴 */}
@@ -296,7 +305,13 @@ const ModalDesign = ({
             </DetailInfo>
             <DetailInfo id="teacher-picker-form">
               <Label className="label">선생님</Label>
-              <SelectWrapper>
+              <StyledMiddleInput
+                id="teacher-select"
+                value={mode === "add" ? newAddFormState.teacher : null}
+                onChange={onChangeNewAddFormState}
+                placeholder="선생님 이름을 적어주세요."
+              />
+              {/* <SelectWrapper>
                 <select
                   id="teacher-select"
                   value={mode === "add" ? newAddFormState.teacher : null}
@@ -307,7 +322,7 @@ const ModalDesign = ({
                   <option value="장영해">장영해</option>
                   <option value="전재우">전재우</option>
                 </select>
-              </SelectWrapper>
+              </SelectWrapper> */}
             </DetailInfo>
             <DetailInfo id="input-form">
               <Label className="label">강의실</Label>
@@ -442,6 +457,7 @@ const StyledAddForm = styled.div`
   width: 50%;
 
   background-color: white;
+  overflow: auto;
 `;
 
 const TopDiv = styled.div`
@@ -516,20 +532,21 @@ const Right = styled.div`
 const DateItemContainer = styled.div`
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, auto));
+  grid-template-columns: repeat(auto-fill, minmax(120px, auto));
   margin-bottom: 5px;
 `;
 
 const DateItem = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
 
-  margin-bottom: 5px;
-  padding: 5px 0;
+  margin-top: -5px;
+  margin-bottom: 10px;
+  padding: 5px 1px 5px 5px;
   box-sizing: border-box;
 
-  width: 100px;
+  width: 120px;
   background-color: #efefef;
   border-radius: 50px;
 
@@ -537,6 +554,7 @@ const DateItem = styled.div`
   font-size: 14px;
   font-weight: 400;
   text-align: center;
+  cursor: default;
 `;
 
 const DetailInfo = styled.div`
@@ -586,17 +604,24 @@ const TimePicker = styled.div`
   font-weight: 400;
   text-align: left;
 
+  input::-webkit-inner-spin-button {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+  }
   input {
-    /* Chrome, Safari, Edge, Opera */
-    input[type="number"]::-webkit-inner-spin-button,
-    input[type="number"]::-webkit-outer-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
   }
 `;
 
 const SelectWrapper = styled.div`
+  background-color: #f1f1f1;
+  padding: 5px 10px;
+  border-radius: 5px;
+  box-sizing: border-box;
   font-family: Pretendard Variable;
   font-size: 14px;
   font-weight: 400;
@@ -650,6 +675,21 @@ const AddStudentContainer = styled.div`
   width: 100%;
   gap: 10px;
   box-sizing: border-box;
+`;
+const RemoveButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  font-size: 13px;
+
+  border: none;
+  color: black;
+  cursor: pointer;
+
+  background: #d0d0d0;
 `;
 
 export default ModalDesign;
