@@ -48,7 +48,7 @@ const ModalDesign = ({
   });
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [startDate, setStartDate] = useState(
-    mode === "add" ? newAddFormState.curDate : null
+    mode === "add" ? newAddFormState.curDate : newAddFormState.curDate
   );
 
   const handleButtonClick = (type) => {

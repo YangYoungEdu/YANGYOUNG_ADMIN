@@ -73,8 +73,22 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 	const onClickSchedule = (e, schedule) => {
 		e.stopPropagation();
 		const { name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate, studentList } = schedule;
-
-	};
+    if (!active) { // 리사이징 중일 때 클릭 방지
+      setAddFormState({
+          ...addFormState,
+          active: true,
+          mode: 'edit',
+          name: name,
+          room:room,
+          lectureType:lectureType,
+          teacher:teacher,
+          curDate: curDate,
+          startTime: {...startTime},
+          endTime: {...endTime},
+          studentList: studentList
+      });
+    }
+  };
 
   // 선생님별로 일정을 그룹화
   const groupedSchedules = schedule.reduce((acc, curr) => {

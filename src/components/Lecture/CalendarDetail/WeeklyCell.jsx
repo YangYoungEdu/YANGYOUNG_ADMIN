@@ -138,7 +138,23 @@ const WeeklyCell = (props) => {
     // 일정을 클릭하여 수정하는 함수
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
-    };
+        const { name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate, studentList } = schedule;
+        if (!active) { // 리사이징 중일 때 클릭 방지
+          setAddFormState({
+              ...addFormState,
+              active: true,
+              mode: 'edit',
+              name: name,
+              room:room,
+              lectureType:lectureType,
+              teacher:teacher,
+              curDate: curDate,
+              startTime: {...startTime},
+              endTime: {...endTime},
+              studentList: studentList
+          });
+        }
+      };
 
     // 일정을 드래그 앤 드랍으로 이동시키는 함수
     const onDropSchedule = async(e) => {

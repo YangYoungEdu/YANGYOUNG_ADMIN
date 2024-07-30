@@ -19,6 +19,20 @@ const EditForm = () => {
   const [addFormState, setAddFormState] = useAddFormState();
   const { active, mode } = addFormState;
 
+  const [newAddFormState, setNewAddFormState] = useState({
+    mode: 'edit',
+    name: '',
+    room: '',
+    lectureType: '',
+    teacher: '',
+    curDate: new Date(), //서버에 안 들어가는 변수
+    startTime: { hour: 0, minute: 0, second: 0, nano: 0 },
+    endTime: { hour: 1, minute: 0, second: 0, nano: 0 },
+    lectureDateList: [],
+    studentList: []
+  });
+  const { name, room,lectureType, teacher, curDate, startTime, endTime } = newAddFormState;
+
   // 학생 선택
   const [searchData, setSearchData] = useState([]);
   const [searchDataCount, setSearchDataCount] = useState(0);
@@ -30,10 +44,34 @@ const EditForm = () => {
   const [selectedStudent, setSelectedStudent] =useState();
   const [multidates, setmultiDates] = useState([]); //날짜 선택
 
-  
+  useEffect(() => {
+
+    if (active) {
+      const { name, room,lectureType, teacher, curDate, startTime, endTime , lectureDateList, studentList} = addFormState;
+
+      setNewAddFormState({
+        mode: 'edit',
+        name:name|| '' , 
+        room: room|| '',
+        lectureType: lectureType || '일반',
+        teacher: teacher || '',
+        curDate: curDate || new Date(),
+        startTime: startTime || { hour: 0, minute: 0, second: 0, nano: 0 },
+        endTime: endTime || { hour: 1, minute: 0, second: 0, nano: 0 },
+        lectureDateList: lectureDateList || [],
+        studentList: studentList || []
+      });
+    }
+  }, [active, addFormState, mode]);
+
+  const onClickCancel = () => {
+    setAddFormState({ ...addFormState, active: false });
+  };
+
     return (
       <ModalDesign 
         mode= "edit"
+        newAddFormState ={newAddFormState}
         multidates ={multidates}
         setmultiDates ={setmultiDates}
         selectedStudent={selectedStudent}
@@ -43,6 +81,7 @@ const EditForm = () => {
         searchData ={searchData}
         setSearchData ={setSearchData}
         searchDataCount ={searchDataCount}
+        onClickCancel={onClickCancel}
         />
     )
 };
