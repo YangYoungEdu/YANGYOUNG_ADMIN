@@ -58,7 +58,7 @@ export const getAllLectureByWeekAPI = async (date) => {
 // 강의 전체 조회 API - 일 단위
 export const getAllLectureByDayAPI = async (date) => {
   const fixedDate = new Date(date).toLocaleDateString("en-CA");
-
+  console.log ("fixedDate: ", date)
   try {
     const response = await axios.get(`${server}lecture/day`, {
       headers: {

@@ -32,6 +32,13 @@ const MultiDatePicker = ({ multidates, setmultiDates, curDate }) => {
 
   return (
     <div>
+      <div>
+        <ul>
+          {multidates.length > 0 && multidates.map(date => (
+            <li key={date}>{date}</li>
+          ))}
+        </ul>
+      </div>
       <DatePicker
         selected={startDate}
         onChange={date => {
@@ -45,14 +52,7 @@ const MultiDatePicker = ({ multidates, setmultiDates, curDate }) => {
         inline
         highlightDates={multidates.map(d => new Date(d))}
       />
-      <div>
-        <h3>선택한 날짜들:</h3>
-        <ul>
-          {multidates.length > 0 && multidates.map(date => (
-            <li key={date}>{date}</li>
-          ))}
-        </ul>
-      </div>
+      
     </div>
   );
 };
