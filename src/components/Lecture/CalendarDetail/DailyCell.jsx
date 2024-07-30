@@ -341,7 +341,7 @@ const DailyCell = (props) => {
             onDragOver={(e) => e.preventDefault()} 
             onDrop={onDropSchedule}>
 
-            {schedule.length>0 && schedule.map((sch, i) => (
+            {schedule.length > 0 && schedule.map((sch, i) => (
                 <WeeklySchedule
                     key={i}
                     className={`weekly-schedule ${isResizing ? 'resizing' : ''}`}
@@ -350,8 +350,8 @@ const DailyCell = (props) => {
                     draggable
                     onDragStart={(e) => onDragCell(e, sch)}
                     teacher={sch.teacher}
-                    customstylewidth={styleWidths[sch.id]} 
-                    customstyleleft={StyleLefts[sch.id]} 
+                    customstylewidth={styleWidths[sch.id]?.width} 
+                    customstyleleft={schedule.length < 1 ? StyleLefts[sch.id] : undefined} 
                 >
                     <p>{`${formatTime(sch.startTime.hour, sch.startTime.minute)} ~ ${formatTime(sch.endTime.hour, sch.endTime.minute)}`}</p>
                     <p>{sch.name}</p>
@@ -359,9 +359,10 @@ const DailyCell = (props) => {
                         className="resize-handle"
                         onMouseDown={(e) => onResizeMouseDown(e, sch)}
                         onClick={(e) => e.stopPropagation()}
-                    ></ResizeHandle>
+                    />
                 </WeeklySchedule>
-            ) )}
+            ))}
+
         </WeeklyCell>
         </WeeklyCol>
     );
@@ -404,7 +405,7 @@ const WeeklySchedule = styled.div`
         }
         return props.customstylewidth ? `calc(${props.customstylewidth})` : '100%';
     }};
-    left: ${props => props.customstyleleft || '100%'};
+    left: ${props => props.customstyleleft || '0%'};
 
     border-radius: 5px;
     background: ${(props) => {
