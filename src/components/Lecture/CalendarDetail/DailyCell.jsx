@@ -327,9 +327,8 @@ const DailyCell = (props) => {
                     draggable
                     onDragStart={(e) => onDragCell(e)}
                     teacher={sch.teacher}
-                    customStyleWidth={styleWidths[sch.id]} 
-                    customStyleLeft={StyleLefts[sch.id]} 
-                    islengthOfSame ={schedule.length>1}
+                    customstylewidth={styleWidths[sch.id]} 
+                    customstyleleft={StyleLefts[sch.id]} 
                 >
                     <p>{`${formatTime(sch.startTime.hour, sch.startTime.minute)} ~ ${formatTime(sch.endTime.hour, sch.endTime.minute)}`}</p>
                     <p>{sch.name}</p>
@@ -377,12 +376,12 @@ const WeeklySchedule = styled.div`
     flex-direction: column;
     width: 100%;
     width: ${props => {
-        if (props.customStyleWidth === '100%') {
+        if (props.customstylewidth === '100%') {
             return 'calc(100%)'; // 100%인 경우 10px 빼기
         }
-        return props.customStyleWidth ? `calc(${props.customStyleWidth})` : '100%';
+        return props.customstylewidth ? `calc(${props.customstylewidth})` : '100%';
     }};
-    left: ${props => props.customStyleLeft || '100%'};
+    left: ${props => props.customstyleleft || '100%'};
 
     border-radius: 5px;
     background: ${(props) => {

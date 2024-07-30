@@ -19,6 +19,8 @@ const WeeklyCell = (props) => {
     const [calSchedule, setCalSchedule] = useRecoilState(getCalendarData
     );
 
+    const [subSchedule, setSubSchedule] = useState([]);
+
     // const [userData, setUserData] = useUserData();
     const [dragAndDrop, setDragAndDrop] = useDragAndDrop();
     const [isResizing, setIsResizing] = useState(false); // 리사이징 상태 추가
@@ -26,7 +28,9 @@ const WeeklyCell = (props) => {
     // HH:MM 형태의 string 타입인 startHour를 숫자로 변환
     const [propsHour, propsMin] = (typeof startHour === 'string' ? startHour.split(':') : ['0', '0']).map(Number);
 
-    const [storeID , setStoreId] =useState(0);
+    useEffect(()=>{
+        setSubSchedule(calSchedule);
+    },[schedule])
 
     // 마우스 업 이벤트를 처리하여 리사이징 종료
     useEffect(() => {
@@ -186,31 +190,35 @@ const WeeklyCell = (props) => {
             const newEndHour = Math.floor(newEndTotalMin / 60);
             const newEndMinute = newEndTotalMin % 60;
 
-            console.log("드래그앤드랍은 아이디가 없나요?", calSchedule[0].id, from.id);
-            const updatedSchedules = calSchedule.filter(item => item.id !== from.id);
-            console.log("updatedSchedules", updatedSchedules);
-
             //서버에 보낼 데이터 가공
             const newDateForm = date.toLocaleDateString("en-CA");
             const startTimeStr = serverformatTime(newStartHour, newStartMinute);
             const endTimeStr = serverformatTime(newEndHour, newEndMinute);
+
+            console.log("날짜 확인",newDateForm);
         
             const data ={
+                id: from.id,
+                name: from.name,
+                lectureType: from.lectureType,
+                teacher: from.teacher,
+                room: from.room,
                 startTime : startTimeStr,
                 endTime: endTimeStr,
                 isAllUpdate:false
             }
             const dataDate = {
+                id: from.id,
                 updatedLectureDateList: [newDateForm]
             }
 
             //patch
-            await ResizingPatchAPI(data);
-            const response = await DragNDropPatchAPI(dataDate);
-            // 일정 업데이트
-            const newSchedules = [...updatedSchedules, response];
-            setCalSchedule(newSchedules);
-            setAddFormState({ ...addFormState, active: false });
+            const response =await ResizingPatchAPI(data);
+            setCalSchedule([...calSchedule, response]);
+
+            const response2 = await DragNDropPatchAPI(dataDate);
+            // // 일정 업데이트
+            setCalSchedule([...calSchedule, response2]);
         }
         catch(err){
             console.error(err);
@@ -256,13 +264,6 @@ const WeeklyCell = (props) => {
     const onResizeMouseDown = (e, schedule) => {
         e.preventDefault();
         e.stopPropagation();
-        if(schedule){
-            setStoreId(schedule.id);
-        }
-
-        const updatedSchedules = calSchedule.filter(item => item.id !== storeID);
-
-        console.log("없애버림", updatedSchedules);
 
         const initialY = e.clientY;
         const initialEndMinute = schedule.endTime.hour * 60 + schedule.endTime.minute;
@@ -291,15 +292,18 @@ const WeeklyCell = (props) => {
 
             //patch
             const data ={
+                id: schedule.id,
+                name: schedule.name,
+                lectureType: schedule.lectureType,
+                teacher: schedule.teacher,
+                room: schedule.room,
                 startTime: StartTimeStr,
                 endTime: endTimeStr,
                 isAllUpdate: false
             }
 
             const response = await ResizingPatchAPI(data);
-            const newSchedules = [...updatedSchedules, response];
-            // 상태 업데이트
-            setCalSchedule(newSchedules);
+            // setCalSchedule([...calSchedule, response]);
         };
 
         const onResizeMouseUp = () => {
@@ -353,8 +357,8 @@ const WeeklyCell = (props) => {
                 draggable
                 onDragStart={(e) => onDragCell(e)}
                 teacher= {schedule.teacher}
-                customStyleWidth={styleWidths[schedule.id]} 
-                customStyleLeft={StyleLefts[schedule.id]} 
+                customstylewidth={styleWidths[schedule.id]} 
+                customstyleleft={StyleLefts[schedule.id]} 
             >
                 <p>{`${formatTime(schedule.startTime.hour, schedule.startTime.minute)} ~ ${formatTime(schedule.endTime.hour, schedule.endTime.minute)}`}</p>
                 <p>{schedule.name}</p>
@@ -430,12 +434,12 @@ const WeeklySchedule = styled.div`
     /* width: 100%; */
 
     width: ${props => {
-        if (props.customStyleWidth === '100%') {
+        if (props.customstylewidth === '100%') {
             return 'calc(100% - 10px)'; // 100%인 경우 10px 빼기
         }
-        return props.customStyleWidth ? `calc(${props.customStyleWidth} - 10px)` : '100%';
+        return props.customstylewidth ? `calc(${props.customstylewidth} - 10px)` : '100%';
     }};
-    left: ${props => props.customStyleLeft || '100%'};
+    left: ${props => props.customstyleleft || '100%'};
 
     border-radius: 5px;
 
