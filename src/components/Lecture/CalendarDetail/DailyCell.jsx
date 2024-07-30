@@ -8,6 +8,7 @@ import { useUserData } from '../../../stores/userData';
 import { useDragAndDrop } from '../../../stores/dragAndDrop';
 import { useRecoilState } from 'recoil';
 import { getCalendarData } from '../../../Atom';
+import { ResizingPatchAPI, serverformatTime } from './UserDataController';
 
 const oneCellHeight = 12.5;
 const DailyCell = (props) => {
@@ -15,8 +16,8 @@ const DailyCell = (props) => {
     const [addFormState, setAddFormState] = useAddFormState();
     const { active } = addFormState;
 
-    // const [calSchedule, setCalSchedule] = useRecoilState(getCalendarData);
-    const [userData, setUserData] = useUserData();
+    const [calSchedule, setCalSchedule] = useRecoilState(getCalendarData);
+    // const [userData, setUserData] = useUserData();
 
     const [dragAndDrop, setDragAndDrop] = useDragAndDrop();
     const [isResizing, setIsResizing] = useState(false); // 리사이징 상태 추가
@@ -154,63 +155,62 @@ const DailyCell = (props) => {
     };
 
     // 일정을 드래그 앤 드랍으로 이동시키는 함수
-    const onDropSchedule = (e) => {
-        e.preventDefault();
+    const onDropSchedule = async(e) => {
+        try{
+            e.preventDefault();
 
-        // 드래그 앤 드랍 데이터 확인
-        if (!dragAndDrop.from) return;
+            // 드래그 앤 드랍 데이터 확인
+            if (!dragAndDrop.from) return;
 
-        const { from, to, initialY } = dragAndDrop;
+            const { from, to, initialY } = dragAndDrop;
 
-        // Y좌표의 차이 계산
-        const yDifference = e.clientY - initialY;
-        const differenceInMinutes = Math.round(yDifference / oneCellHeight) * 15; // 50px = 15분
+            // Y좌표의 차이 계산
+            const yDifference = e.clientY - initialY;
+            const differenceInMinutes = Math.round(yDifference / oneCellHeight) * 15; // 50px = 15분
 
-        // 새로운 시작 시간과 끝 시간 계산
-        const newStartTotalMin = (to.startTime.hour * 60) + to.startTime.minute + differenceInMinutes;
+            // 새로운 시작 시간과 끝 시간 계산
+            const newStartTotalMin = (to.startTime.hour * 60) + to.startTime.minute + differenceInMinutes;
 
-        // 시간 값이 음수가 되지 않도록 조정
-        const newStartHour = Math.max(Math.floor(newStartTotalMin / 60), 0);
-        const newStartMinute = Math.max(newStartTotalMin % 60, 0);
+            // 시간 값이 음수가 되지 않도록 조정
+            const newStartHour = Math.max(Math.floor(newStartTotalMin / 60), 0);
+            const newStartMinute = Math.max(newStartTotalMin % 60, 0);
 
-        // 기존 시간차 유지 + 끝 시간이 24:를 넘지 않도록 보장
-        const durationInMinutes = (from.endTime.hour * 60 + from.endTime.minute) - (from.startTime.hour * 60 + from.startTime.minute);
-        let newEndTotalMin = newStartTotalMin + durationInMinutes;
+            // 기존 시간차 유지 + 끝 시간이 24:를 넘지 않도록 보장
+            const durationInMinutes = (from.endTime.hour * 60 + from.endTime.minute) - (from.startTime.hour * 60 + from.startTime.minute);
+            let newEndTotalMin = newStartTotalMin + durationInMinutes;
 
-        const maxEndMinute = 24 * 60;
-        newEndTotalMin = Math.min(newEndTotalMin, maxEndMinute);
+            const maxEndMinute = 24 * 60;
+            newEndTotalMin = Math.min(newEndTotalMin, maxEndMinute);
 
-        const newEndHour = Math.floor(newEndTotalMin / 60);
-        const newEndMinute = newEndTotalMin % 60;
+            const newEndHour = Math.floor(newEndTotalMin / 60);
+            const newEndMinute = newEndTotalMin % 60;
 
-        // 기존 일정 업데이트-id로 구분 필요
-        const updatedSchedule = userData.schedule.map(item =>
-            item === from ? { ...item, 
-                startTime: { 
-                    ...from.startTime, 
-                    hour: newStartHour,
-                    minute: newStartMinute
-                }, 
-                endTime: {
-                    ...from.endTime,
-                    hour: newEndHour,
-                    minute: newEndMinute
-                }, 
-                curDate: date } : item
-        );
+            //서버에 보낼 데이터 가공
+            const newDateForm = date.toLocaleDateString("en-CA");
+            const startTimeStr = serverformatTime(newStartHour, newStartMinute);
+            const endTimeStr = serverformatTime(newEndHour, newEndMinute);
 
-        console.log("from", from);
-        console.log("to", to);
-        console.log("Y difference:", yDifference);
-        console.log("New start hour:", newStartHour);
-        console.log("New start minute:", newStartMinute);
-        console.log("New end hour:", newEndHour);
-        console.log("New end minute:", newEndMinute);
+            console.log("날짜 확인",newDateForm);
 
-        // 일정 업데이트
-        setUserData({ ...userData, schedule: updatedSchedule });
-        setAddFormState({ ...addFormState, active: false });
+            const data ={
+                id: from.id,
+                name: from.name,
+                lectureType: from.lectureType,
+                teacher: from.teacher,
+                room: from.room,
+                startTime : startTimeStr,
+                endTime: endTimeStr,
+                isAllUpdate:false
+            }
 
+            // 일정 업데이트
+            const response =await ResizingPatchAPI(data);
+            setCalSchedule([...calSchedule, response]);
+
+        }
+        catch(err){
+            console.error(err);
+        }
     };
 
     // 드래그가 들어왔을 때 호출되는 함수
@@ -244,7 +244,7 @@ const DailyCell = (props) => {
     };
 
     // 드래그가 시작되었을 때 호출되는 함수
-    const onDragCell = (e) => {
+    const onDragCell = (e, schedule) => {
         if (!isResizing) {
             setDragAndDrop({ ...dragAndDrop, from: schedule });
         }
@@ -255,8 +255,7 @@ const DailyCell = (props) => {
         e.preventDefault();
         e.stopPropagation();
 
-        console.log('주간 리사이징', schedule);
-
+        let data;
         const initialY = e.clientY;
         const initialEndMinute = schedule.endTime.hour * 60 + schedule.endTime.minute;
 
@@ -278,20 +277,43 @@ const DailyCell = (props) => {
                 minute: newEndMinute % 60
             };
 
-            //-id로 구분 필요
-            setUserData({
-                ...userData,
-                schedule: userData.schedule.map((item) =>
-                    item === schedule ? { ...item, endTime: newEndTime } : item
-                ),
-            });
+            const StartTimeStr = serverformatTime(schedule.startTime.hour, schedule.startTime.minute)
+            const endTimeStr = serverformatTime(newEndTime.hour, newEndTime.minute);
+
+            //patch
+            data ={
+                id: schedule.id,
+                name: schedule.name,
+                lectureType: schedule.lectureType,
+                teacher: schedule.teacher,
+                room: schedule.room,
+                startTime: StartTimeStr,
+                endTime: endTimeStr,
+                isAllUpdate: false
+            }
         };
 
-        const onResizeMouseUp = () => {
+        const onResizeMouseUp = async () => {
             document.removeEventListener('mousemove', onResizeMouseMove);
             document.removeEventListener('mouseup', onResizeMouseUp);
             setIsResizing(false);
             document.body.classList.remove('resizing');
+            if (data) {
+                try {
+                    const response = await ResizingPatchAPI(data);
+            
+                    // 상태 업데이트를 위한 새로운 상태 배열 생성
+                    const updatedSchedule = calSchedule.map((item) =>
+                        item === response ? { ...item, endTime: response.response } : item
+                    );
+            
+                    // 상태 업데이트
+                    setCalSchedule(updatedSchedule);
+                } catch (error) {
+                    // 오류 처리
+                    console.error("Error updating schedule:", error);
+                }
+            }
         };
 
         document.addEventListener('mousemove', onResizeMouseMove);
@@ -325,7 +347,7 @@ const DailyCell = (props) => {
                     style={{ height }} // 여기에 height를 직접 적용
                     onClick={(e) => onClickSchedule(e, sch)}
                     draggable
-                    onDragStart={(e) => onDragCell(e)}
+                    onDragStart={(e) => onDragCell(e, sch)}
                     teacher={sch.teacher}
                     customstylewidth={styleWidths[sch.id]} 
                     customstyleleft={StyleLefts[sch.id]} 
@@ -334,7 +356,7 @@ const DailyCell = (props) => {
                     <p>{sch.name}</p>
                     <ResizeHandle
                         className="resize-handle"
-                        onMouseDown={(e) => onResizeMouseDown(e, schedule)}
+                        onMouseDown={(e) => onResizeMouseDown(e, sch)}
                         onClick={(e) => e.stopPropagation()}
                     ></ResizeHandle>
                 </WeeklySchedule>

@@ -16,8 +16,6 @@ const WeeklyCell = (props) => {
     const [addFormState, setAddFormState] = useAddFormState();
     const { active } = addFormState;
 
-    console.log("갯수", schedule);
-
     const [calSchedule, setCalSchedule] = useRecoilState(getCalendarData
     );
 
@@ -249,8 +247,9 @@ const WeeklyCell = (props) => {
     };
 
     // 드래그가 시작되었을 때 호출되는 함수
-    const onDragCell = (e) => {
+    const onDragCell = (e, schedule) => {
         if (!isResizing) {
+            console.log("schedule from", schedule, "dragAndDrop", dragAndDrop)
             setDragAndDrop({ ...dragAndDrop, from: schedule });
         }
     };
@@ -369,7 +368,7 @@ const WeeklyCell = (props) => {
                 style={{ height }}
                 onClick={(e) => onClickSchedule(e, sch)}
                 draggable
-                onDragStart={(e) => onDragCell(e)}
+                onDragStart={(e) => onDragCell(e, sch)}
                 teacher= {sch.teacher}
                 customstylewidth={styleWidths[sch.id]} 
                 customstyleleft={StyleLefts[sch.id]} 
