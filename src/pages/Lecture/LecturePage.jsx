@@ -40,15 +40,15 @@ const LecturePage = () => {
       switch (mode) {
         case "month":
           response = await getAllLectureByMonthAPI(currentDate);
-          console.log('월 일정', response);
+          // console.log('월 일정', response);
           break;
         case "week":
           response = await getAllLectureByWeekAPI(currentDate);
-          console.log('주 일정', response);
+          // console.log('주 일정', response);
           break;
         case "day":
           response = await getAllLectureByDayAPI(currentDate);
-          console.log('일 일정', response);
+          // console.log('일 일정', response);
           break;
         default:
           response = [];
