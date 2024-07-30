@@ -136,10 +136,11 @@ const DailyCell = (props) => {
     // 일정을 클릭하여 수정하는 함수
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
-        const { name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate, studentList } = schedule;
+        const { id , name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate, studentList } = schedule;
         if (!active) { // 리사이징 중일 때 클릭 방지
           setAddFormState({
               ...addFormState,
+              id: id,
               active: true,
               mode: 'edit',
               name: name,

@@ -136,10 +136,11 @@ const WeeklyCell = (props) => {
     // 일정을 클릭하여 수정하는 함수
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
-        const { name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate, studentList } = schedule;
+        const { id, name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate, studentList } = schedule;
         if (!active) { // 리사이징 중일 때 클릭 방지
           setAddFormState({
               ...addFormState,
+              id: id,
               active: true,
               mode: 'edit',
               name: name,
@@ -205,12 +206,22 @@ const WeeklyCell = (props) => {
                 id: from.id,
                 updatedLectureDateList: [newDateForm]
             }
-            const response2 = await DragNDropPatchAPI(dataDate);
-            // // 일정 업데이트
-            // setCalSchedule([...calSchedule, response2]);
-            //patch
-            const response =await ResizingPatchAPI(data);
-            setCalSchedule([...calSchedule, response]);
+
+            let response;
+            if(from.startTime.hour===to.startTime.hour&&from.startTime.minute===to.startTime.minute){
+                response = await DragNDropPatchAPI(dataDate);
+                setCalSchedule([...calSchedule, response]);
+            }
+            else if(from.lectureDate === to.lectureDate){
+                response =await ResizingPatchAPI(data);
+                setCalSchedule([...calSchedule, response]);
+            }
+            else{
+                response = await DragNDropPatchAPI(dataDate);
+                response =await ResizingPatchAPI(data);
+                setCalSchedule([...calSchedule, response]);
+            }
+            
 
         }
         catch(err){

@@ -51,6 +51,8 @@ const ModalDesign = ({
     mode === "add" ? newAddFormState.curDate : null
   );
 
+  console.log("id",newAddFormState.id );
+
   const handleButtonClick = (type) => {
     setOnClicked((prevState) => ({
       ...prevState,
