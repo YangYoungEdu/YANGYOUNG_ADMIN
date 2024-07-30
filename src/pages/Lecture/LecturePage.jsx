@@ -102,6 +102,7 @@ const LecturePage = () => {
             mode={mode}
             originLectures={originLectures}
             setLectures={setLectures}
+            
           />
           {/* 캘린더 */}
           {renderCalendar()}
