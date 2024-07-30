@@ -357,7 +357,7 @@ const WeeklyCell = styled.div`
 const WeeklySchedule = styled.div`
     display: flex;
     flex-direction: column;
-    /* width: 100%; */
+    width: 100%;
     width: ${props => {
         if (props.customStyleWidth === '100%') {
             return 'calc(100% - 10px)'; // 100%인 경우 10px 빼기
@@ -365,7 +365,7 @@ const WeeklySchedule = styled.div`
         return props.customStyleWidth ? `calc(${props.customStyleWidth} - 10px)` : '100%';
     }};
     left: ${props => props.customStyleLeft || '100%'};
-    
+
     border-radius: 5px;
     background: ${(props) => {
     switch (props.teacher) {
