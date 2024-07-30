@@ -4,15 +4,18 @@ import { ColumnDiv, RowDiv } from "../../../style/CommonStyle";
 import { ReactComponent as Plus } from "../../../Assets/Plus.svg";
 import { getStudentByLectureAPI } from "../../../API/StudentAPI";
 
-const LectureStudent = () => {
+const LectureStudent = ({id}) => {
 
   const [students, setStudents] = useState([]);
 
-  // useEffect(() => {
-  //   getStudentByLectureAPI(id).then((res) => {
-  //     setStudents(res);
-  //   });
-  // }, []);
+  useEffect(() => {
+    if (id) {
+      getStudentByLectureAPI(id).then((res) => {
+        setStudents(res);
+      });
+      console.log("students: ", students);
+    }
+  }, [id]);
 
   return (
     <LectureStudentWrapper>

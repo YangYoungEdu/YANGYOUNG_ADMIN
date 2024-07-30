@@ -34,6 +34,7 @@ export const uploadFilesAPI = async (fileList, lecture, date) => {
     console.error("Error uploading files:", error);
   }
 };
+
 // 강의자료 조회 API
 export const getFilesAPI = async (lecture, date) => {
   console.log("lecture:", lecture);
@@ -45,7 +46,7 @@ export const getFilesAPI = async (lecture, date) => {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
       params: {
-        lecture: lecture,
+        lectureId: lecture,
         date: date,
       },
     });

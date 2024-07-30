@@ -40,7 +40,7 @@ const ModalDesign = ({
 
   //edit
 }) => {
-  console.log ("newFormState:", newAddFormState);
+  console.log("newFormState:", newAddFormState);
   const [onClicked, setOnClicked] = useState({
     student: true,
     attendance: false,
@@ -51,8 +51,9 @@ const ModalDesign = ({
   const [startDate, setStartDate] = useState(
     mode === "add" ? newAddFormState.curDate : null
   );
+  const [formattedCurDate, setFormattedCurDate] = useState("");
 
-  console.log("id",newAddFormState.id );
+  console.log("id", newAddFormState.id);
 
   const handleButtonClick = (type) => {
     setOnClicked((prevState) => ({
@@ -77,10 +78,12 @@ const ModalDesign = ({
     if (newAddFormState.curDate) {
       const formattedDate = format(newAddFormState.curDate, "yyyy-MM-dd");
       // multidates를 새롭게 설정 (리셋)하고 curDate를 추가
+      setFormattedCurDate(formattedDate);
       setmultiDates([formattedDate]);
       setStartDate(newAddFormState.curDate); // DatePicker의 시작 날짜도 curDate로 설정
     }
   }, [newAddFormState.curDate, setmultiDates]);
+
 
   const handleChange = (date) => {
     console.log("받은 날자 확인", newAddFormState.curDate);
@@ -357,6 +360,7 @@ const ModalDesign = ({
                   <Button
                     isActive={onClicked.material}
                     onClick={() => handleButtonClick("material")}
+                    x
                   >
                     {/* {" "} */}
                     수업 자료
@@ -364,17 +368,23 @@ const ModalDesign = ({
                 </ButtonWrapper>
 
                 {/* 강의별 학생 목록*/}
-                {onClicked.student && <LectureStudent />}
+                {onClicked.student && (
+                  <LectureStudent id={newAddFormState.id} />
+                )}
 
                 {/* 강의별 출석 목록*/}
-                {onClicked.attendance && <LectureAttendance />}
+                {onClicked.attendance && (
+                  <LectureAttendance id={newAddFormState.id} date={formattedCurDate}/>
+                )}
 
                 {/* 강의별 과제 목록*/}
-                {onClicked.task && <LectureTask />}
+                {onClicked.task && <LectureTask id={newAddFormState.id} />}
 
                 {/* 강의별 자료 목록 */}
                 {/* ToDo: 강의별 자료 목록 API 연동 */}
-                {onClicked.material && <LectureMaterial />}
+                {onClicked.material && (
+                  <LectureMaterial lecture={newAddFormState.id} date={formattedCurDate} />
+                )}
               </>
             )}
           </LowerDiv>

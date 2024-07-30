@@ -8,7 +8,7 @@ import { formateDateMD } from "../../../util/Util";
 import { uploadFilesAPI } from "../../../API/MaterialAPI";
 import { getFilesAPI, deleteFileAPI } from "../../../API/MaterialAPI";
 
-const LectureMaterial = ({ id, lecture, date }) => {
+const LectureMaterial = ({lecture, date }) => {
   const [materials, setMaterials] = useState([]);
   const [addBoxes, setAddBoxes] = useState([]);
   const [selectedFile, setSelectedFile] = useState([]);
@@ -17,11 +17,12 @@ const LectureMaterial = ({ id, lecture, date }) => {
   const [isDeleted, setIsDeleted] = useState(false);
   const fileInputRef = useRef(null);
 
-  // useEffect(() => {
-  //   getFilesAPI(lecture, date).then((res) => {
-  //     setMaterials(res);
-  //   });
-  // }, [isUploaded, isDeleted]);
+  console.log ("에러 잡자: ", lecture, date);
+  useEffect(() => {
+    getFilesAPI(lecture, date).then((res) => {
+      setMaterials(res);
+    });
+  }, [lecture, isUploaded, isDeleted]);
 
   const uploadMaterials = async () => {
     setIsProgress(true);
