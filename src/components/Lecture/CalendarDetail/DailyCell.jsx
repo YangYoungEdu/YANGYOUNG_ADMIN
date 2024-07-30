@@ -97,8 +97,8 @@ const DailyCell = (props) => {
     const [height, setHeight] = useState('0px');
 
     useEffect(() => {
-        if (schedule) {
-            setHeight(calculateHeight(schedule.startTime, schedule.endTime));
+        if (schedule.length>0) {
+            setHeight(calculateHeight(schedule[0].startTime, schedule[0].endTime));
         }
     }, [schedule]);
 
@@ -134,8 +134,8 @@ const DailyCell = (props) => {
 
     // 일정을 클릭하여 수정하는 함수
     const onClickSchedule = (e, schedule) => {
-        // e.stopPropagation();
-
+        e.stopPropagation();
+        // console.log("제발",schedule );
     };
 
     // 일정을 드래그 앤 드랍으로 이동시키는 함수
@@ -294,6 +294,7 @@ const DailyCell = (props) => {
         return `${period} ${formattedHour}${minute === 0 ? '' : ':' + formattedMinute}`;
     };
 
+    // console.log("확인중", schedule)
     return (
         <WeeklyCol>
         <WeeklyCell className="weekly-cell" 
@@ -302,26 +303,28 @@ const DailyCell = (props) => {
             onDragOver={(e) => e.preventDefault()} 
             onDrop={onDropSchedule}>
 
-            {schedule ? (
+            {schedule.length>0 && schedule.map((sch, i) => (
                 <WeeklySchedule
+                    key={i}
                     className={`weekly-schedule ${isResizing ? 'resizing' : ''}`}
                     style={{ height }} // 여기에 height를 직접 적용
-                    onClick={(e) => onClickSchedule(e, schedule)}
+                    onClick={(e) => onClickSchedule(e, sch)}
                     draggable
                     onDragStart={(e) => onDragCell(e)}
-                    teacher={schedule.teacher}
-                    customStyleWidth={styleWidths[schedule.id]} 
-                    customStyleLeft={StyleLefts[schedule.id]} 
+                    teacher={sch.teacher}
+                    customStyleWidth={styleWidths[sch.id]} 
+                    customStyleLeft={StyleLefts[sch.id]} 
+                    islengthOfSame ={schedule.length>1}
                 >
-                    <p>{`${formatTime(schedule.startTime.hour, schedule.startTime.minute)} ~ ${formatTime(schedule.endTime.hour, schedule.endTime.minute)}`}</p>
-                    <p>{schedule.name}</p>
+                    <p>{`${formatTime(sch.startTime.hour, sch.startTime.minute)} ~ ${formatTime(sch.endTime.hour, sch.endTime.minute)}`}</p>
+                    <p>{sch.name}</p>
                     <ResizeHandle
                         className="resize-handle"
                         onMouseDown={(e) => onResizeMouseDown(e, schedule)}
                         onClick={(e) => e.stopPropagation()}
                     ></ResizeHandle>
                 </WeeklySchedule>
-            ) : null}
+            ) )}
         </WeeklyCell>
         </WeeklyCol>
     );
@@ -360,9 +363,9 @@ const WeeklySchedule = styled.div`
     width: 100%;
     width: ${props => {
         if (props.customStyleWidth === '100%') {
-            return 'calc(100% - 10px)'; // 100%인 경우 10px 빼기
+            return 'calc(100%)'; // 100%인 경우 10px 빼기
         }
-        return props.customStyleWidth ? `calc(${props.customStyleWidth} - 10px)` : '100%';
+        return props.customStyleWidth ? `calc(${props.customStyleWidth})` : '100%';
     }};
     left: ${props => props.customStyleLeft || '100%'};
 

@@ -60,13 +60,16 @@ const DayCalendar = ({ currentDate, lectureOfDay }) => {
       const { firstDate, lastDate } = getFirstAndLastDate();
       setCurSchedule(getSchedule(firstDate, lastDate, lectureOfDay));
 
+      const type = "day"
       // 겹치는 강의 ID와 width, left 값을 계산
-			const overlapMap = getOverlappingIds(lectureOfDay);
+			const overlapMap = getOverlappingIds(lectureOfDay,);
 
-			const lefts = determineLefts(overlapMap);
-      const widths = determineWidths(overlapMap);
+			const lefts = determineLefts(overlapMap,schedule);
+      const widths = determineWidths(overlapMap,);
 			setLefts(lefts);
       setWidths(widths);
+      console.log("width", widths);
+      console.log("lefts", lefts);
 
   }, [lectureOfDay, schedule]);
 
@@ -87,31 +90,31 @@ const DayCalendar = ({ currentDate, lectureOfDay }) => {
   };
 
   const getCurDateSchedule = (curDate, startHour) => {
-    let curDateSchedule = null;
-    
-      // HH:MM string 형식 분할 후 number 타입 변환
+    let curDateSchedule = [];
+    // HH:MM string 형식 분할 후 number 타입 변환
     const [propsHour, propsMin] = (typeof startHour === 'string' ? startHour.split(':') : ['0', '0']).map(Number);
 
-      // 분값을 15분 단위로 구간 나누어 변환하는 함수
-      const to15MinRange = (minutes) => {
-              if (minutes < 15) return 0;
-              if (minutes < 30) return 15;
-              if (minutes < 45) return 30;
-              return 45;
-      };
+    // 분값을 15분 단위로 구간 나누어 변환하는 함수
+    const to15MinRange = (minutes) => {
+        if (minutes < 15) return 0;
+        if (minutes < 30) return 15;
+        if (minutes < 45) return 30;
+        return 45;
+    };
 
-  for (let i = 0; i < curSchedule.length; i++) {
-
-    if (curDate.getFullYear() === new Date(curSchedule[i].lectureDate).getFullYear() &&
-    curDate.getMonth() === new Date(curSchedule[i].lectureDate).getMonth()&&
-    curDate.getDate() === new Date(curSchedule[i].lectureDate).getDate()&& curSchedule[i].startTime.hour === propsHour && to15MinRange(curSchedule[i].startTime.minute) === propsMin ) {
-        curDateSchedule = curSchedule[i];
-        break;
-      }
+    // 현재 날짜와 시간에 해당하는 모든 일정을 찾음
+    for (let i = 0; i < curSchedule.length; i++) {
+        if (curDate.getFullYear() === new Date(curSchedule[i].lectureDate).getFullYear() &&
+            curDate.getMonth() === new Date(curSchedule[i].lectureDate).getMonth() &&
+            curDate.getDate() === new Date(curSchedule[i].lectureDate).getDate() &&
+            curSchedule[i].startTime.hour === propsHour &&
+            to15MinRange(curSchedule[i].startTime.minute) === propsMin) {
+            curDateSchedule.push(curSchedule[i]); // 배열에 추가
+        }
     }
 
     return curDateSchedule;
-  };
+};
 
   function formatTime(time) {
     const [hours, minutes] = time.split(':').map(Number);

@@ -59,10 +59,11 @@ const WeekCalendar = ({ currentDate, lectures }) => {
       setCurSchedule(getSchedule(firstDate, lastDate, lectures));
       // console.log('주간 일정',curSchedule );
 					
+      const type ="week"
       // 겹치는 강의 ID와 width, left 값을 계산
 			const overlapMap = getOverlappingIds(lectures);
 
-			const lefts = determineLefts(overlapMap);
+			const lefts = determineLefts(overlapMap, lectures);
       const widths = determineWidths(overlapMap);
 			setLefts(lefts);
       setWidths(widths);
