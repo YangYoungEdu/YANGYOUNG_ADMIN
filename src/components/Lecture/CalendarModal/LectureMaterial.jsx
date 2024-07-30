@@ -17,11 +17,11 @@ const LectureMaterial = ({ id, lecture, date }) => {
   const [isDeleted, setIsDeleted] = useState(false);
   const fileInputRef = useRef(null);
 
-  useEffect(() => {
-    getFilesAPI(lecture, date).then((res) => {
-      setMaterials(res);
-    });
-  }, [isUploaded, isDeleted]);
+  // useEffect(() => {
+  //   getFilesAPI(lecture, date).then((res) => {
+  //     setMaterials(res);
+  //   });
+  // }, [isUploaded, isDeleted]);
 
   const uploadMaterials = async () => {
     setIsProgress(true);
@@ -90,12 +90,11 @@ const LectureMaterial = ({ id, lecture, date }) => {
         ))}
       {addBoxes.map((addBox, index) => (
         <TaskBox key={index}>
-    
-            {selectedFile.length > 0 && 
-              <FileUploadInput type = "text" value ={selectedFile[index].name} />
-            }
-           
-            {/* <FileUploadWrapper onClick={handleFileUploadClick}>
+          {selectedFile.length > 0 && (
+            <FileUploadInput type="text" value={selectedFile[index].name} />
+          )}
+
+          {/* <FileUploadWrapper onClick={handleFileUploadClick}>
               <FileUploadPlusIcon />
               <FileUploadText>파일 첨부</FileUploadText>
               <input
@@ -118,7 +117,7 @@ const LectureMaterial = ({ id, lecture, date }) => {
 };
 
 const TaskWrapper = styled.div`
-  width: 95%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -129,7 +128,7 @@ const TaskWrapper = styled.div`
 
 const TaskBox = styled(RowDiv)`
   display: flex;
-  width: 90%;
+  width: 100%;
   height: 84px;
   border-radius: 5px;
   border: 1px solid #e0e0e0;
@@ -168,7 +167,6 @@ const TaskDate = styled.div`
 
 const FileIcon = styled(File)``;
 
-
 const FileUploadInput = styled.input.attrs({ type: "text" })`
   width: auto;
   display: inline-block;
@@ -184,12 +182,8 @@ const FileUploadText = styled.div`
   align-items: center;
 `;
 
-
-
 const DeleteIcon = styled(Delete)`
   cursor: pointer;
 `;
-
-
 
 export default LectureMaterial;
