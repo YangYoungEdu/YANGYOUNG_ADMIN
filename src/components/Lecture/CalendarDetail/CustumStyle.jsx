@@ -136,7 +136,7 @@ export const determineLefts = (overlapMap) => {
     }
 
     // 원본 ID의 left 값을 할당
-    lefts[id] = offsets[Math.floor(sortedOverlaps.indexOf(parseInt(id)))] || '11%';
+    lefts[id] = offsets[Math.floor(sortedOverlaps.indexOf(parseInt(id)))] || '37%';
   }
 
   return lefts; // 각 강의 ID별로 설정된 left 값을 반환
