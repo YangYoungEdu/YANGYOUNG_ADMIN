@@ -67,7 +67,7 @@ export const insertDateAPI = async(addFormState) => {
 //리사이징 
 export const ResizingPatchAPI = async (data) =>{
 
-	console.log('전전 리사이징', data);
+	console.log('강의정보 수정', data);
 	const response =await patchLecture(data);
 	console.log('수정한 데이터 리사이징', response);
 	return response;
@@ -77,7 +77,7 @@ export const ResizingPatchAPI = async (data) =>{
 //드래그앤 드랍
 export const DragNDropPatchAPI = async (data) =>{
 
-	console.log('전전 드래그앤 드랍', data);
+	console.log('강의 수업 날짜 수정', data);
 	const response =await patchDateLecture(data);
 	console.log('수정한 데이터 드래그앤 드랍', response);
 	return response;

@@ -20,6 +20,7 @@ const EditForm = () => {
   const { active, mode } = addFormState;
 
   const [newAddFormState, setNewAddFormState] = useState({
+    id: null,
     mode: 'edit',
     name: '',
     room: '',
@@ -47,9 +48,10 @@ const EditForm = () => {
   useEffect(() => {
 
     if (active) {
-      const { name, room,lectureType, teacher, curDate, startTime, endTime , lectureDateList, studentList} = addFormState;
+      const { id, name, room,lectureType, teacher, curDate, startTime, endTime , lectureDateList, studentList} = addFormState;
 
       setNewAddFormState({
+        id: id || null,
         mode: 'edit',
         name:name|| '' , 
         room: room|| '',
