@@ -86,7 +86,8 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
           curDate: curDate,
           startTime: {...startTime},
           endTime: {...endTime},
-          studentList: studentList
+          studentList: studentList,
+          lectureDate: lectureDate
       });
     }
   };
