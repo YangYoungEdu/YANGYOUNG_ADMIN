@@ -31,7 +31,6 @@ const DailyCell = (props) => {
     useEffect(() => {
         const handleMouseUp = () => {
             if (isResizing) {
-                setIsResizing(false);
                 document.body.classList.remove('resizing');
             }
         };
@@ -137,7 +136,7 @@ const DailyCell = (props) => {
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
         const { id , name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate, studentList } = schedule;
-        if (!active) { // 리사이징 중일 때 클릭 방지
+        if (!active&&!isResizing) { // 리사이징 중일 때 클릭 방지
           setAddFormState({
               ...addFormState,
               id: id,
@@ -258,6 +257,7 @@ const DailyCell = (props) => {
         const initialEndMinute = schedule.endTime.hour * 60 + schedule.endTime.minute;
 
         const onResizeMouseMove = (e) => {
+            setIsResizing(true);
             const newY = e.clientY;
             const minDifference = Math.round((newY - initialY) / oneCellHeight) * 15; // oneCellHeight px = 15분
             let newEndMinute = initialEndMinute + minDifference;
@@ -290,7 +290,7 @@ const DailyCell = (props) => {
         const onResizeMouseUp = async () => {
             document.removeEventListener('mousemove', onResizeMouseMove);
             document.removeEventListener('mouseup', onResizeMouseUp);
-            setIsResizing(false);
+            
             document.body.classList.remove('resizing');
             if (data) {
                 try {
@@ -308,11 +308,12 @@ const DailyCell = (props) => {
                     console.error("Error updating schedule:", error);
                 }
             }
+
+            setIsResizing(false);
         };
 
         document.addEventListener('mousemove', onResizeMouseMove);
         document.addEventListener('mouseup', onResizeMouseUp);
-        setIsResizing(true);
     };
 
     const formatTime = (hour, minute) => {

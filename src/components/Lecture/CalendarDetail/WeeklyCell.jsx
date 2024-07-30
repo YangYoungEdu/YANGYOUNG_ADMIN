@@ -30,7 +30,6 @@ const WeeklyCell = (props) => {
     useEffect(() => {
         const handleMouseUp = () => {
             if (isResizing) {
-                setIsResizing(false);
                 document.body.classList.remove('resizing');
             }
         };
@@ -137,7 +136,7 @@ const WeeklyCell = (props) => {
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
         const { id, name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate, studentList } = schedule;
-        if (!active) { // 리사이징 중일 때 클릭 방지
+        if (!active&& !isResizing) { // 리사이징 중일 때 클릭 방지
           setAddFormState({
               ...addFormState,
               id: id,
@@ -256,6 +255,8 @@ const WeeklyCell = (props) => {
         const initialEndMinute = schedule.endTime.hour * 60 + schedule.endTime.minute;
 
         const onResizeMouseMove = async (e) => {
+
+            setIsResizing(true);
             
             const newY = e.clientY;
             const minDifference = Math.round((newY - initialY) / oneCellHeight) * 15; // oneCellHeight px = 15분
@@ -290,9 +291,9 @@ const WeeklyCell = (props) => {
         };
 
         const onResizeMouseUp = async() => {
+            
             document.removeEventListener('mousemove', onResizeMouseMove);
             document.removeEventListener('mouseup', onResizeMouseUp);
-            setIsResizing(false);
             document.body.classList.remove('resizing');
             if (data) {
                 try {
@@ -310,12 +311,13 @@ const WeeklyCell = (props) => {
                     console.error("Error updating schedule:", error);
                 }
             }
+
+            setIsResizing(false);
             
         };
 
         document.addEventListener('mousemove', onResizeMouseMove);
         document.addEventListener('mouseup', onResizeMouseUp);
-        setIsResizing(true);
     };
 
     const formatTime = (hour, minute) => {
@@ -359,7 +361,7 @@ const WeeklyCell = (props) => {
                 onDragStart={(e) => onDragCell(e, sch)}
                 teacher= {sch.teacher}
                 customstylewidth={styleWidths[sch.id]} 
-                customstyleleft={StyleLefts[sch.id]} 
+                customstyleleft={schedule.length < 1 ? StyleLefts[sch.id] : undefined} 
             >
                 <p>{`${formatTime(sch.startTime.hour, sch.startTime.minute)} ~ ${formatTime(sch.endTime.hour, sch.endTime.minute)}`}</p>
                 <p>{sch.name}</p>
@@ -440,7 +442,7 @@ const WeeklySchedule = styled.div`
         }
         return props.customstylewidth ? `calc(${props.customstylewidth})` : '100%';
     }};
-    left: ${props => props.customstyleleft || '100%'};
+    left: ${props => props.customstyleleft || '0%'};
 
     border-radius: 5px;
 
