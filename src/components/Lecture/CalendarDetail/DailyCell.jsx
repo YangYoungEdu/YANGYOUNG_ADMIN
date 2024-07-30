@@ -11,7 +11,7 @@ import { getCalendarData } from '../../../Atom';
 
 const oneCellHeight = 12.5;
 const DailyCell = (props) => {
-    const { index, day, date, startHour, schedule } = props;
+    const { index, day, date, startHour, schedule , styleWidths, StyleLefts} = props;
     const [addFormState, setAddFormState] = useAddFormState();
     const { active } = addFormState;
 
@@ -310,6 +310,8 @@ const DailyCell = (props) => {
                     draggable
                     onDragStart={(e) => onDragCell(e)}
                     teacher={schedule.teacher}
+                    customStyleWidth={styleWidths[schedule.id]} 
+                    customStyleLeft={StyleLefts[schedule.id]} 
                 >
                     <p>{`${formatTime(schedule.startTime.hour, schedule.startTime.minute)} ~ ${formatTime(schedule.endTime.hour, schedule.endTime.minute)}`}</p>
                     <p>{schedule.name}</p>
@@ -352,10 +354,18 @@ const WeeklyCell = styled.div`
     overflow: visible;
     `;
 
-    const WeeklySchedule = styled.div`
+const WeeklySchedule = styled.div`
     display: flex;
     flex-direction: column;
-    width: 100%;
+    /* width: 100%; */
+    width: ${props => {
+        if (props.customStyleWidth === '100%') {
+            return 'calc(100% - 10px)'; // 100%인 경우 10px 빼기
+        }
+        return props.customStyleWidth ? `calc(${props.customStyleWidth} - 10px)` : '100%';
+    }};
+    left: ${props => props.customStyleLeft || '100%'};
+    
     border-radius: 5px;
     background: ${(props) => {
     switch (props.teacher) {

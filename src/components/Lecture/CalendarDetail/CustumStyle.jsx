@@ -46,6 +46,8 @@ export const getOverlappingIds = (schedule) => {
 export const determineWidths = (overlapMap) => {
   const widths = {}; // 각 강의 ID별로 width를 저장할 객체
 
+  console.log("width determineWidths", overlapMap);
+
   for (const [id, overlaps] of Object.entries(overlapMap)) {
       const count = overlaps.length; // 겹치는 강의 개수
       switch (count) {
@@ -125,6 +127,9 @@ export const determineLefts = (overlapMap) => {
 
   console.log("left uniqueOverlapMap", uniqueOverlapMap);
 
+  // widths를 결정하기 위해 overlapMap을 사용
+  const widths = determineWidths(overlapMap);
+
   for (const [id, overlaps] of Object.entries(uniqueOverlapMap)) {
     const count = overlaps.length; // 겹치는 강의 개수
     const offsets = getLeftOffsets(count);
@@ -139,6 +144,22 @@ export const determineLefts = (overlapMap) => {
     lefts[id] = offsets[Math.floor(sortedOverlaps.indexOf(parseInt(id)))] || '37%';
   }
 
+  // width와 left를 조정하는 로직 추가
+  for (const [id, width] of Object.entries(widths)) {
+    if (width === '50%') {
+      if (lefts[id] === '-37%') {
+        lefts[id] = '-25%';
+      } else if (lefts[id] === '37%') {
+        lefts[id] = '25%';
+      }
+    } else if (width === '33%') {
+      if (lefts[id] === '-7%') {
+        lefts[id] = '0%';
+      }
+    }
+  }
+
   return lefts; // 각 강의 ID별로 설정된 left 값을 반환
 }
+
 

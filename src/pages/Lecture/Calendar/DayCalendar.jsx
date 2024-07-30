@@ -9,6 +9,7 @@ import DailyCell from "../../../components/Lecture/CalendarDetail/DailyCell.jsx"
 import styled from 'styled-components';
 import { useRecoilState } from "recoil";
 import { getCalendarData } from "../../../Atom.js";
+import { determineLefts, determineWidths, getOverlappingIds } from "../../../components/Lecture/CalendarDetail/CustumStyle.jsx";
 
 //15분 간격 배열 추가
 export const times = [
@@ -44,6 +45,8 @@ const DayCalendar = ({ currentDate, lectureOfDay }) => {
 
   const [curSchedule, setCurSchedule] = useState([]);
   const [dates, setDates] = useState([]);
+  const [widths, setWidths] = useState({}); 
+	const [lefts, setLefts] = useState({});
 
   useEffect(() => {
       // date가 변경될 때마다, 해당 날짜에 대한 일정을 생성합니다.
@@ -56,6 +59,15 @@ const DayCalendar = ({ currentDate, lectureOfDay }) => {
       // userData가 변경될 때마다, 현재 일정을 업데이트합니다.
       const { firstDate, lastDate } = getFirstAndLastDate();
       setCurSchedule(getSchedule(firstDate, lastDate, lectureOfDay));
+
+      // 겹치는 강의 ID와 width, left 값을 계산
+			const overlapMap = getOverlappingIds(lectureOfDay);
+
+			const lefts = determineLefts(overlapMap);
+      const widths = determineWidths(overlapMap);
+			setLefts(lefts);
+      setWidths(widths);
+
   }, [lectureOfDay, schedule]);
 
   const getFirstAndLastDate = () => {
@@ -127,6 +139,8 @@ const DayCalendar = ({ currentDate, lectureOfDay }) => {
                               date={a[0]}
                               startHour={b}
                               schedule={getCurDateSchedule(a[0], b)}
+                              styleWidths={widths}
+                              StyleLefts={lefts}
                           />
                       )
                   ))}
