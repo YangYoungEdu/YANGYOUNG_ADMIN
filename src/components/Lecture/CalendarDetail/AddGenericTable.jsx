@@ -18,9 +18,6 @@ const columns = [
   { key: "name", label: "이름" },
   { key: "school", label: "학교" },
   { key: "grade", label: "학년" },
-  { key: "studentPhoneNumber", label: "학생 연락처" },
-  { key: "parentPhoneNumber", label: "부모님 연락처" },
-  { key: "id", label: "학번" },
 ];
 
 const AddGenericTable = ({
@@ -144,42 +141,36 @@ const AddGenericTable = ({
   );
 };
 
-const Container = styled.div``;
+const Container = styled.div`
+width: 100%;
+font-size: 13px;
+`;
 
 const StyledTable = styled.table`
-  width: 1050px;
+  width: 100%;
   margin-bottom: 34px;
 `;
 
 const StyledThead = styled.thead`
   height: 48px;
-
   th {
     background: ${(props) => props.theme.colors.primary_light};
     border-left: 1px solid white;
     border-right: 1px solid white;
     border-bottom: 1px solid ${(props) => props.theme.colors.gray_002};
-    width: 200px; // 기본 너비 설정
+
   }
 
   th:first-child {
     border-radius: 10px 0 0 0;
     border-left: 1px solid ${(props) => props.theme.colors.primary_light};
-    width: 80px;
+
   }
 
   th:last-child {
     border-radius: 0 10px 0 0;
     border-right: 1px solid ${(props) => props.theme.colors.primary_light};
-    width: 156px;
-  }
 
-  th:nth-child(2) {
-    width: 134px;
-  }
-
-  th:nth-child(4) {
-    width: 80px;
   }
 `;
 
