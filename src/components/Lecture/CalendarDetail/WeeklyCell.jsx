@@ -18,6 +18,9 @@ const WeeklyCell = (props) => {
 
     const [calSchedule, setCalSchedule] = useRecoilState(getCalendarData
     );
+    
+    const [isnewClick, setisNewClick] =useState(false);
+    const [defaultData, setDefaultData] =useState({});
 
     // const [userData, setUserData] = useUserData();
     const [dragAndDrop, setDragAndDrop] = useDragAndDrop();
@@ -104,37 +107,52 @@ const WeeklyCell = (props) => {
 
     // 빈 셀을 클릭하여 일정을 추가하는 함수
     const onClickDate = () => {
-        if (!active && !isResizing) {
-            setAddFormState({
-                ...addFormState,
-                active: true,
-                mode: 'add',
-                name: '',
-                room: '',
-                lectureType: '',
-                teacher: '',
-                curDate: date, // Date 객체 그대로 유지
+        if(!isnewClick){
+            // setisNewClick(true);
+            setDefaultData({
                 startTime: { 
-                    hour: propsHour, 
-                    minute: propsMin, 
-                    second: 0, 
-                    nano: 0 
-                }, // 새로운 시간 형식 적용
+                hour: propsHour, 
+                minute: propsMin, 
+                }, 
                 endTime: { 
                     hour: propsHour + 1, 
                     minute: propsMin, 
-                    second: 0, 
-                    nano: 0 
-                } ,// 새로운 시간 형식 적용,
-                lectureDateList: [],
-                studentList: []
-            });
+
+                }})
+            if (!active && !isResizing) {
+                setAddFormState({
+                    ...addFormState,
+                    active: true,
+                    mode: 'add',
+                    name: '',
+                    room: '',
+                    lectureType: '',
+                    teacher: '',
+                    curDate: date, // Date 객체 그대로 유지
+                    startTime: { 
+                        hour: propsHour, 
+                        minute: propsMin, 
+                        second: 0, 
+                        nano: 0 
+                    }, // 새로운 시간 형식 적용
+                    endTime: { 
+                        hour: propsHour + 1, 
+                        minute: propsMin, 
+                        second: 0, 
+                        nano: 0 
+                    } ,// 새로운 시간 형식 적용,
+                    lectureDateList: [],
+                    studentList: []
+                });
+                
+            }
         }
     };
 
     // 일정을 클릭하여 수정하는 함수
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
+
         const { id, name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate, studentList } = schedule;
         if (!active&& !isResizing) { // 리사이징 중일 때 클릭 방지
           setAddFormState({
@@ -352,6 +370,14 @@ const WeeklyCell = (props) => {
             onDragOver={(e) => e.preventDefault()}
             onDrop={onDropSchedule}
         >
+            {isnewClick &&            
+            <WeeklySchedule
+                style={{ height:"50px" }}
+            >
+                <p>{`${formatTime(defaultData.startTime.hour, defaultData.startTime.minute)} ~ ${formatTime(defaultData.endTime.hour, defaultData.endTime.minute)}`}</p>
+                <p>(제목없음)</p>
+            </WeeklySchedule>}
+
         {schedule.length>0 &&  schedule.map((sch, i) => (
             <WeeklySchedule
                 key={i}
