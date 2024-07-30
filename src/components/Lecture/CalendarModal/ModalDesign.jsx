@@ -290,18 +290,6 @@ const ModalDesign = ({
                 onChange={onChangeNewAddFormState}
                 placeholder="선생님 이름을 적어주세요."
               />
-              {/* <SelectWrapper>
-                <select
-                  id="teacher-select"
-                  value={mode === "add" ? newAddFormState.teacher : null}
-                  onChange={onChangeNewAddFormState}
-                >
-                  <option value="">선택하세요</option>
-                  <option value="김삼유">김삼유</option>
-                  <option value="장영해">장영해</option>
-                  <option value="전재우">전재우</option>
-                </select>
-              </SelectWrapper> */}
             </DetailInfo>
             <DetailInfo id="input-form">
               <Label className="label">강의실</Label>

@@ -13,13 +13,13 @@ const LectureStudent = ({id}) => {
       getStudentByLectureAPI(id).then((res) => {
         setStudents(res);
       });
-      console.log("students: ", students);
+      if (students) console.log("students: ", students);
     }
   }, [id]);
 
   return (
     <LectureStudentWrapper>
-      {students.map((student, index) => (
+      {students && students.map((student, index) => (
         <ColumnDiv key={index}>
           <StudentWrapper key={index}>
             <StudentName>{student.name}</StudentName>
@@ -37,10 +37,13 @@ const LectureStudent = ({id}) => {
 };
 
 const LectureStudentWrapper = styled(ColumnDiv)`
+width: 100%;
   overflow: auto;
 `;
 
 const StudentWrapper = styled(RowDiv)`
+width: 100%;
+align-items: center;
   justify-content: flex-start;
   padding-left: 8%;
   margin: 9px 0;
@@ -58,7 +61,7 @@ const SchoolAndGrade = styled.div`
 `;
 
 const Line = styled.hr`
-  width: 90%;
+  width: 100%;
   border: none;
   height: 1px;
   background-color: ${(props) => props.theme.colors.gray_003};
