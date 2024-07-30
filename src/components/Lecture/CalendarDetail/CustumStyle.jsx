@@ -73,27 +73,59 @@ export const determineWidths = (overlapMap) => {
 // 겹치는 강의의 개수에 따라 left 오프셋 배열을 반환하는 함수
 export const getLeftOffsets = (count) => {
   switch (count) {
-    case 0:
-      return ['0%']; // 겹치는 강의가 없는 경우
     case 1:
-      return ['-25%', '25%']; // 겹치는 강의가 1개인 경우
+      return ['0%']; // 겹치는 강의가 없는 경우
     case 2:
-      return ['-33%', '0%', '33%']; // 겹치는 강의가 2개인 경우
+      return ['-25%', '25%']; // 겹치는 강의가 1개인 경우
     case 3:
+      return ['-33%', '0%', '33%']; // 겹치는 강의가 2개인 경우
+    case 4:
       return ['-37%', '-7%', '17%', '37%']; // 겹치는 강의가 3개인 경우
     default:
       return ['-37%', '-7%', '17%', '37%']; // 겹치는 강의가 4개 이상인 경우
   }
 };
 
+// ------
+
+export const getUniqueOverlapMap = (overlapMap) => {
+  const normalizedMap = {}; // 정규화된 강의 ID와 겹치는 강의 ID를 저장할 객체
+  const seenSets = new Set(); // 배열의 내용을 집합으로 저장하여 중복 제거
+
+  for (const [id, overlaps] of Object.entries(overlapMap)) {
+    // 강의 ID 배열을 정렬하고 문자열로 변환
+    const sortedOverlaps = [...overlaps].sort((a, b) => a - b);
+    const key = sortedOverlaps.join(',');
+
+    // 이미 본 배열이 아니면 새로운 항목으로 추가
+    if (!seenSets.has(key)) {
+      seenSets.add(key);
+      normalizedMap[id] = sortedOverlaps;
+    }
+  }
+
+  // 정렬된 ID별로 정규화된 overlapMap을 다시 생성
+  const sortedMap = Object.entries(normalizedMap)
+    .map(([id, overlaps]) => [parseInt(id), overlaps])
+    .sort(([id1], [id2]) => id1 - id2)
+    .reduce((acc, [id, overlaps]) => {
+      acc[id] = overlaps;
+      return acc;
+    }, {});
+
+  return sortedMap;
+};
 
 // ID별로 겹치는 개수에 따라 left 오프셋을 결정하는 함수
 export const determineLefts = (overlapMap) => {
   const lefts = {}; // 각 강의 ID별로 left 값을 저장할 객체
 
-  console.log("left overlapMap", overlapMap);
+  // 중복된 배열을 제거하고 정렬된 overlapMap을 생성
+  const uniqueOverlapMap = getUniqueOverlapMap(overlapMap);
 
-  for (const [id, overlaps] of Object.entries(overlapMap)) {
+  console.log("left uniqueOverlapMap", uniqueOverlapMap);
+
+  for (const [id, overlaps] of Object.entries(uniqueOverlapMap)) {
     const count = overlaps.length; // 겹치는 강의 개수
     const offsets = getLeftOffsets(count);
 
@@ -104,7 +136,7 @@ export const determineLefts = (overlapMap) => {
     }
 
     // 원본 ID의 left 값을 할당
-    lefts[id] = offsets[Math.floor(sortedOverlaps.indexOf(id))] || '0%';
+    lefts[id] = offsets[Math.floor(sortedOverlaps.indexOf(parseInt(id)))] || '11%';
   }
 
   return lefts; // 각 강의 ID별로 설정된 left 값을 반환

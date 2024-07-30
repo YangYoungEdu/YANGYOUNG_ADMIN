@@ -159,6 +159,8 @@ const WeekCalendar = ({ currentDate, lectures }) => {
               date={a[1]}
               startHour={b}
               schedule={getCurDateSchedule(a[1], b)}
+              styleWidths={widths}
+              StyleLefts={lefts}
             />
           )}
           )}

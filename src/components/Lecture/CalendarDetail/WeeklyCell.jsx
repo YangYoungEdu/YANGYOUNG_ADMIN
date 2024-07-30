@@ -12,7 +12,7 @@ import { DragNDropPatchAPI, ResizingPatchAPI, serverformatTime } from './UserDat
 const oneCellHeight = 12.5;
 
 const WeeklyCell = (props) => {
-    const { index, day, date, startHour, schedule } = props;
+    const { index, day, date, startHour, schedule, styleWidths, StyleLefts } = props;
     const [addFormState, setAddFormState] = useAddFormState();
     const { active } = addFormState;
 
@@ -337,7 +337,8 @@ const WeeklyCell = (props) => {
                 draggable
                 onDragStart={(e) => onDragCell(e)}
                 teacher= {schedule.teacher}
-                // customStyle={customStyle} // 커스텀 스타일 추가
+                customStyleWidth={styleWidths[schedule.id]} 
+                customStyleLeft={StyleLefts[schedule.id]} 
             >
                 <p>{`${formatTime(schedule.startTime.hour, schedule.startTime.minute)} ~ ${formatTime(schedule.endTime.hour, schedule.endTime.minute)}`}</p>
                 <p>{schedule.name}</p>
@@ -410,7 +411,10 @@ const WeeklyCellDiv = styled.div`
 const WeeklySchedule = styled.div`
     display: flex;
     flex-direction: column;
-    width: 100%;
+    /* width: 100%; */
+
+    width: ${props => props.customStyleWidth || '100%'};
+    left: ${props => props.customStyleLeft || '100%'};
 
     border-radius: 5px;
 
