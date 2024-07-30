@@ -16,10 +16,10 @@ const WeeklyCell = (props) => {
     const [addFormState, setAddFormState] = useAddFormState();
     const { active } = addFormState;
 
+    console.log("갯수", schedule);
+
     const [calSchedule, setCalSchedule] = useRecoilState(getCalendarData
     );
-
-    const [subSchedule, setSubSchedule] = useState([]);
 
     // const [userData, setUserData] = useUserData();
     const [dragAndDrop, setDragAndDrop] = useDragAndDrop();
@@ -27,10 +27,6 @@ const WeeklyCell = (props) => {
 
     // HH:MM 형태의 string 타입인 startHour를 숫자로 변환
     const [propsHour, propsMin] = (typeof startHour === 'string' ? startHour.split(':') : ['0', '0']).map(Number);
-
-    useEffect(()=>{
-        setSubSchedule(calSchedule);
-    },[schedule])
 
     // 마우스 업 이벤트를 처리하여 리사이징 종료
     useEffect(() => {
@@ -104,8 +100,8 @@ const WeeklyCell = (props) => {
     const [height, setHeight] = useState('0px');
 
     useEffect(() => {
-        if (schedule) {
-            setHeight(calculateHeight(schedule.startTime, schedule.endTime));
+        if (schedule.length>0) {
+            setHeight(calculateHeight(schedule[0].startTime, schedule[0].endTime));
         }
     }, [schedule]);
 
@@ -213,7 +209,7 @@ const WeeklyCell = (props) => {
             }
             const response2 = await DragNDropPatchAPI(dataDate);
             // // 일정 업데이트
-            setCalSchedule([...calSchedule, response2]);
+            // setCalSchedule([...calSchedule, response2]);
             //patch
             const response =await ResizingPatchAPI(data);
             setCalSchedule([...calSchedule, response]);
@@ -367,24 +363,25 @@ const WeeklyCell = (props) => {
             onDragOver={(e) => e.preventDefault()}
             onDrop={onDropSchedule}
         >
-        {schedule ? (
+        {schedule.length>0 &&  schedule.map((sch, i) => (
             <WeeklySchedule
+                key={i}
                 style={{ height }}
-                onClick={(e) => onClickSchedule(e, schedule)}
+                onClick={(e) => onClickSchedule(e, sch)}
                 draggable
                 onDragStart={(e) => onDragCell(e)}
-                teacher= {schedule.teacher}
-                customstylewidth={styleWidths[schedule.id]} 
-                customstyleleft={StyleLefts[schedule.id]} 
+                teacher= {sch.teacher}
+                customstylewidth={styleWidths[sch.id]} 
+                customstyleleft={StyleLefts[sch.id]} 
             >
-                <p>{`${formatTime(schedule.startTime.hour, schedule.startTime.minute)} ~ ${formatTime(schedule.endTime.hour, schedule.endTime.minute)}`}</p>
-                <p>{schedule.name}</p>
+                <p>{`${formatTime(sch.startTime.hour, sch.startTime.minute)} ~ ${formatTime(sch.endTime.hour, sch.endTime.minute)}`}</p>
+                <p>{sch.name}</p>
                 <ResizeHandle
-                onMouseDown={(e) => onResizeMouseDown(e, schedule)}
+                onMouseDown={(e) => onResizeMouseDown(e, sch)}
                 onClick={(e) => e.stopPropagation()}
                 />
             </WeeklySchedule>
-            ) : null}
+            ) )}
         </WeeklyCellDiv>
     );
 };
@@ -452,9 +449,9 @@ const WeeklySchedule = styled.div`
 
     width: ${props => {
         if (props.customstylewidth === '100%') {
-            return 'calc(100% - 10px)'; // 100%인 경우 10px 빼기
+            return 'calc(100%)'; // 100%인 경우 10px 빼기
         }
-        return props.customstylewidth ? `calc(${props.customstylewidth} - 10px)` : '100%';
+        return props.customstylewidth ? `calc(${props.customstylewidth})` : '100%';
     }};
     left: ${props => props.customstyleleft || '100%'};
 

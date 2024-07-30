@@ -44,7 +44,7 @@ const LecturePage = () => {
           break;
         case "week":
           response = await getAllLectureByWeekAPI(currentDate);
-          // console.log('주 일정', response);
+          console.log('주 일정', response);
           break;
         case "day":
           response = await getAllLectureByDayAPI(currentDate);
