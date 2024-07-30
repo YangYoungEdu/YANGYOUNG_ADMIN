@@ -8,7 +8,7 @@ import { useUserData } from '../../../stores/userData';
 import { useDragAndDrop } from '../../../stores/dragAndDrop';
 import { useRecoilState } from 'recoil';
 import { getCalendarData } from '../../../Atom';
-import { ResizingPatchAPI, serverformatTime } from './UserDataController';
+import { DragNDropPatchAPI, ResizingPatchAPI, serverformatTime } from './UserDataController';
 
 const oneCellHeight = 12.5;
 const DailyCell = (props) => {
@@ -196,17 +196,13 @@ const DailyCell = (props) => {
 
             const data ={
                 id: from.id,
-                name: from.name,
-                lectureType: from.lectureType,
-                teacher: from.teacher,
-                room: from.room,
                 startTime : startTimeStr,
                 endTime: endTimeStr,
-                isAllUpdate:false
+                updatedLectureDate:newDateForm
             }
 
             // 일정 업데이트
-            const response =await ResizingPatchAPI(data);
+            const response =await DragNDropPatchAPI(data);
             setCalSchedule([...calSchedule, response]);
 
         }
@@ -285,13 +281,9 @@ const DailyCell = (props) => {
             //patch
             data ={
                 id: schedule.id,
-                name: schedule.name,
-                lectureType: schedule.lectureType,
-                teacher: schedule.teacher,
-                room: schedule.room,
                 startTime: StartTimeStr,
                 endTime: endTimeStr,
-                isAllUpdate: false
+                updatedLectureDate: schedule.lectureDate
             }
         };
 
@@ -302,7 +294,7 @@ const DailyCell = (props) => {
             document.body.classList.remove('resizing');
             if (data) {
                 try {
-                    const response = await ResizingPatchAPI(data);
+                    const response = await DragNDropPatchAPI(data);
             
                     // 상태 업데이트를 위한 새로운 상태 배열 생성
                     const updatedSchedule = calSchedule.map((item) =>

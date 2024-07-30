@@ -195,33 +195,13 @@ const WeeklyCell = (props) => {
         
             const data ={
                 id: from.id,
-                name: from.name,
-                lectureType: from.lectureType,
-                teacher: from.teacher,
-                room: from.room,
                 startTime : startTimeStr,
                 endTime: endTimeStr,
-                isAllUpdate:false
-            }
-            const dataDate = {
-                id: from.id,
-                updatedLectureDateList: [newDateForm]
+                updatedLectureDate:to.lectureDate
             }
 
-            let response;
-            if(from.startTime.hour===to.startTime.hour&&from.startTime.minute===to.startTime.minute){
-                response = await DragNDropPatchAPI(dataDate);
-                setCalSchedule([...calSchedule, response]);
-            }
-            else if(from.lectureDate === to.lectureDate){
-                response =await ResizingPatchAPI(data);
-                setCalSchedule([...calSchedule, response]);
-            }
-            else{
-                response = await DragNDropPatchAPI(dataDate);
-                response =await ResizingPatchAPI(data);
-                setCalSchedule([...calSchedule, response]);
-            }
+            const response = await DragNDropPatchAPI(data);
+            setCalSchedule([...calSchedule, response]);
             
 
         }
@@ -300,13 +280,9 @@ const WeeklyCell = (props) => {
             //patch
             data ={
                 id: schedule.id,
-                name: schedule.name,
-                lectureType: schedule.lectureType,
-                teacher: schedule.teacher,
-                room: schedule.room,
                 startTime: StartTimeStr,
                 endTime: endTimeStr,
-                isAllUpdate: false
+                updatedLectureDate: schedule.lectureDate
             }
 
             console.log(data);
@@ -320,7 +296,7 @@ const WeeklyCell = (props) => {
             document.body.classList.remove('resizing');
             if (data) {
                 try {
-                    const response = await ResizingPatchAPI(data);
+                    const response = await DragNDropPatchAPI(data);
             
                     // 상태 업데이트를 위한 새로운 상태 배열 생성
                     const updatedSchedule = calSchedule.map((item) =>
