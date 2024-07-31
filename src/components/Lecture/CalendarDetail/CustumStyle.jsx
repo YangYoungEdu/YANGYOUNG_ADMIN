@@ -154,6 +154,12 @@ export const determineLefts = (overlapMap, type ) => {
       } else if (lefts[id] === '37%') {
         lefts[id] = '25%';
       }
+      else if (lefts[id] === '-33%') {
+        lefts[id] = '-25%';
+      } else if (lefts[id] === '33%') {
+        lefts[id] = '25%';
+      }
+      
     } else if (width === '33%') {
       if (lefts[id] === '-7%') {
         lefts[id] = '0%';
