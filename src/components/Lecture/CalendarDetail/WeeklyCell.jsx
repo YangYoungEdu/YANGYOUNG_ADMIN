@@ -29,29 +29,6 @@ const WeeklyCell = (props) => {
     // HH:MM 형태의 string 타입인 startHour를 숫자로 변환
     const [propsHour, propsMin] = (typeof startHour === 'string' ? startHour.split(':') : ['0', '0']).map(Number);
 
-    const cellRef = useRef(null); 
-
-    // 컴포넌트 마운트 시 스케줄의 오버플로우를 조정
-    useEffect(() => {
-        const adjustOverflow = () => {
-            if (cellRef.current) {
-                const cellWidth = cellRef.current.offsetWidth; // 셀의 너비
-                const schedules = document.querySelectorAll('.weekly-schedule'); // 모든 스케줄 요소
-                schedules.forEach(schedule => {
-                    const scheduleRect = schedule.getBoundingClientRect(); // 스케줄의 사각형 정보
-                    const cellRect = cellRef.current.getBoundingClientRect(); // 셀의 사각형 정보
-                    const overflowX = scheduleRect.right - cellRect.right; // 오버플로우 계산
-                    if (overflowX > 0) {
-                        schedule.style.left = `${-overflowX}px`; // 오버플로우 조정
-                    }
-                });
-            }
-        };
-
-        adjustOverflow();
-        window.addEventListener('resize', adjustOverflow); // 창 크기 조정 시 오버플로우 조정
-        return () => window.removeEventListener('resize', adjustOverflow);
-    }, [schedule]);
 
     // 마우스 업 이벤트를 처리하여 리사이징 종료
     useEffect(() => {
@@ -399,7 +376,6 @@ const WeeklyCell = (props) => {
 
     return (
         <WeeklyCellDiv 
-            ref={cellRef}
             onClick={onClickDate}
             onDragEnter={onDragEnterCell}
             onDragOver={(e) => e.preventDefault()}
