@@ -42,35 +42,45 @@ export const isConflict = (lectureDate, startTime, endTime, schedule) => {
 
 //일정 데이터 add
 export const insertDateAPI = async(addFormState) => {
-	const { name, room, lectureType, teacher, startTime, endTime, lectureDateList, studentList } = addFormState;
+	try{
+		const { name, room, lectureType, teacher, startTime, endTime, lectureDateList, studentList } = addFormState;
 
-  const startTimeStr = serverformatTime(startTime.hour, startTime.minute);
-  const endTimeStr = serverformatTime(endTime.hour, endTime.minute);
+		const startTimeStr = serverformatTime(startTime.hour, startTime.minute);
+		const endTimeStr = serverformatTime(endTime.hour, endTime.minute);
 
-	const data ={
-		name: name,
-		lectureType: lectureType,
-		teacher: teacher,
-		room: room,
-		startTime: startTimeStr,
-		endTime:endTimeStr,
-		lectureDateList: lectureDateList,
-		studentList: studentList
+		const data ={
+			name: name,
+			lectureType: lectureType,
+			teacher: teacher,
+			room: room,
+			startTime: startTimeStr,
+			endTime:endTimeStr,
+			lectureDateList: lectureDateList,
+			studentList: studentList
+		}
+
+		console.log("post 보내는 데이터 확인", data);
+		const response =await postLecture(data);
+
+		return response;
 	}
-
-	console.log("post 보내는 데이터 확인", data);
-	const response =await postLecture(data);
-
-	return response;
+	catch(err){
+		console.error(err);
+	}
 };
 
 //드래그앤 드랍
 export const DragNDropPatchAPI = async (data) =>{
 
-	console.log('강의 수업 날짜 수정', data);
-	const response =await patchDragNDrop(data);
-	console.log('수정한 데이터 드래그앤 드랍', response);
-	return response;
+	try{
+		console.log('강의 수업 날짜 수정', data);
+		const response =await patchDragNDrop(data);
+		console.log('수정한 데이터 드래그앤 드랍', response);
+		return response;
+	}
+	catch(err){
+		console.error(err);
+	}
 
 }
 
@@ -78,36 +88,41 @@ export const DragNDropPatchAPI = async (data) =>{
 
 //일정 데이터 patch -id로 구분 필요
 export const editDateAPI = async (addFormState, beforeEdit, schedule) => {
-	const { id, lectureCode, name, lectureType, teacher, room, startTime, endTime , lectureDate} = addFormState;
+	try{
+		const { id, lectureCode, name, lectureType, teacher, room, startTime, endTime , lectureDate} = addFormState;
 
-	// 이전 할일을 지우고
-	const newSchedule = deleteDate(beforeEdit.id, schedule);
+		// 이전 할일을 지우고
+		const newSchedule = deleteDate(beforeEdit.id, schedule);
 
-	// 새 할일을 추가하는데
-	const index = isConflict(lectureDate, startTime, endTime, newSchedule);
-		
-	//날짜 형식 변경
-	const newDateForm = lectureDate.toLocaleDateString("en-CA");
+		// 새 할일을 추가하는데
+		const index = isConflict(lectureDate, startTime, endTime, newSchedule);
+			
+		//날짜 형식 변경
+		const newDateForm = lectureDate.toLocaleDateString("en-CA");
 
-	const startTimeStr = serverformatTime(startTime.hour, startTime.minute);
-  const endTimeStr = serverformatTime(endTime.hour, endTime.minute);
+		const startTimeStr = serverformatTime(startTime.hour, startTime.minute);
+		const endTimeStr = serverformatTime(endTime.hour, endTime.minute);
 
-	const data ={
-		id: id,
-		name: name,
-		teacher: teacher,
-		room: room,
-		startTime: startTimeStr,
-		endTime:endTimeStr,
-		newLecturerDate: newDateForm,
-		allUpdate: false
+		const data ={
+			id: id,
+			name: name,
+			teacher: teacher,
+			room: room,
+			startTime: startTimeStr,
+			endTime:endTimeStr,
+			newLecturerDate: newDateForm,
+			allUpdate: false
+		}
+
+		// console.log('수정할 데이터', data);
+		const response =await patchLecture(data);
+		// console.log('수정한 데이터', response);
+
+		return [ ...newSchedule.slice(0, index), response, ...newSchedule.slice(index) ];
 	}
-
-	// console.log('수정할 데이터', data);
-	const response =await patchLecture(data);
-	// console.log('수정한 데이터', response);
-
-	return [ ...newSchedule.slice(0, index), response, ...newSchedule.slice(index) ];
+	catch(err){
+		console.error(err);
+	}
 };
 
 //일정 데이터 delete -id로 구분 필요

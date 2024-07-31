@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 // import '../../style/css/app.css';
 // store
 import { useAddFormState } from '../../../stores/addFormState';
@@ -29,6 +29,30 @@ const WeeklyCell = (props) => {
     // HH:MM 형태의 string 타입인 startHour를 숫자로 변환
     const [propsHour, propsMin] = (typeof startHour === 'string' ? startHour.split(':') : ['0', '0']).map(Number);
 
+    const cellRef = useRef(null); 
+
+    // 컴포넌트 마운트 시 스케줄의 오버플로우를 조정
+    useEffect(() => {
+        const adjustOverflow = () => {
+            if (cellRef.current) {
+                const cellWidth = cellRef.current.offsetWidth; // 셀의 너비
+                const schedules = document.querySelectorAll('.weekly-schedule'); // 모든 스케줄 요소
+                schedules.forEach(schedule => {
+                    const scheduleRect = schedule.getBoundingClientRect(); // 스케줄의 사각형 정보
+                    const cellRect = cellRef.current.getBoundingClientRect(); // 셀의 사각형 정보
+                    const overflowX = scheduleRect.right - cellRect.right; // 오버플로우 계산
+                    if (overflowX > 0) {
+                        schedule.style.left = `${-overflowX}px`; // 오버플로우 조정
+                    }
+                });
+            }
+        };
+
+        adjustOverflow();
+        window.addEventListener('resize', adjustOverflow); // 창 크기 조정 시 오버플로우 조정
+        return () => window.removeEventListener('resize', adjustOverflow);
+    }, [schedule]);
+
     // 마우스 업 이벤트를 처리하여 리사이징 종료
     useEffect(() => {
         const handleMouseUp = () => {
@@ -52,7 +76,6 @@ const WeeklyCell = (props) => {
             document.removeEventListener('mouseup', handleMouseUp);
         };
     }, [isResizing]);
-
 
     //시작시간과 끝시간 사이의 15분 단위 타임스탬프 갯수 확인
     const toMinutes = (hour, minute) => hour * 60 + minute;
@@ -376,18 +399,19 @@ const WeeklyCell = (props) => {
 
     return (
         <WeeklyCellDiv 
+            ref={cellRef}
             onClick={onClickDate}
             onDragEnter={onDragEnterCell}
             onDragOver={(e) => e.preventDefault()}
             onDrop={onDropSchedule}
         >
-            {isnewClick &&            
+            {/* {isnewClick &&            
             <WeeklySchedule
                 style={{ height:"50px" }}
             >
                 <p>{`${formatTime(defaultData.startTime.hour, defaultData.startTime.minute)} ~ ${formatTime(defaultData.endTime.hour, defaultData.endTime.minute)}`}</p>
                 <p>(제목없음)</p>
-            </WeeklySchedule>}
+            </WeeklySchedule>} */}
 
         {schedule.length>0 &&  schedule.map((sch, i) => (
             <WeeklySchedule
@@ -398,7 +422,7 @@ const WeeklyCell = (props) => {
                 onDragStart={(e) => onDragCell(e, sch)}
                 teacher= {sch.teacher}
                 customstylewidth={styleWidths[sch.id]} 
-                customstyleleft={schedule.length < 1 ? StyleLefts[sch.id] : undefined} 
+                customstyleleft={StyleLefts[sch.id] } 
             >
                 <p>{`${formatTime(sch.startTime.hour, sch.startTime.minute)} ~ ${formatTime(sch.endTime.hour, sch.endTime.minute)}`}</p>
                 <p>{sch.name}</p>
