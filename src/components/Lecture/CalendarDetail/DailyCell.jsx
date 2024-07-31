@@ -146,7 +146,7 @@ const DailyCell = (props) => {
     // 일정을 클릭하여 수정하는 함수
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
-        const { id , name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate, studentList } = schedule;
+        const { id , name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate,allLectureDate, studentList, repeated } = schedule;
         if (!active&&!isResizing) { // 리사이징 중일 때 클릭 방지
           setAddFormState({
               ...addFormState,
@@ -162,6 +162,8 @@ const DailyCell = (props) => {
               endTime: {...endTime},
               studentList: studentList,
               lectureDate:lectureDate,
+              allLectureDate: allLectureDate,
+              repeated: repeated
           });
         }
     };

@@ -11,9 +11,6 @@ import { format } from 'date-fns';
 const isValidDate = (date, currentDate) => {
   if (!date || !currentDate) return false;
 
-  console.log("currentDate",currentDate);
-  // console.log("date",date);
-
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
   const currentDay = currentDate.getDate();
@@ -47,8 +44,8 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick, currentDate }) => {
 
     const isInCurrentMonth = isValidDate(date, currentDate);
 
-    console.log("currentDate",currentDate);
-    console.log("isInCurrentMonth",isInCurrentMonth);
+    // console.log("currentDate",currentDate);
+    // console.log("isInCurrentMonth",isInCurrentMonth);
     setIsCurrentMonth(isInCurrentMonth);
   }, [calSchedule, schedule, date]);
 
@@ -91,7 +88,7 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick, currentDate }) => {
 	//일정 클릭 후 수정
 	const onClickSchedule = (e, schedule) => {
 		e.stopPropagation();
-		const { id, name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate, studentList } = schedule;
+		const { id, name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate,allLectureDate ,studentList, repeated } = schedule;
     if (!active) { // 리사이징 중일 때 클릭 방지
       setAddFormState({
           ...addFormState,
@@ -106,7 +103,9 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick, currentDate }) => {
           startTime: {...startTime},
           endTime: {...endTime},
           studentList: studentList,
-          lectureDate: lectureDate
+          lectureDate: lectureDate,
+          allLectureDate: allLectureDate,
+          repeated: repeated
       });
     }
   };
