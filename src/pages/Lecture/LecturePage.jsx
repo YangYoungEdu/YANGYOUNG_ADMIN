@@ -54,7 +54,7 @@ const LecturePage = () => {
           response = [];
       }
       setOriginLectures(response);
-      setLectures(response);
+      // setLectures(response);
     };
 
     fetchLectures();
