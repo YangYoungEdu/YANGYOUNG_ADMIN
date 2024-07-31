@@ -53,6 +53,7 @@ const ModalDesign = ({
   );
 
   console.log("id",newAddFormState.id );
+  console.log("repeated",newAddFormState.repeated );
 
   const handleButtonClick = (type) => {
     setOnClicked((prevState) => ({

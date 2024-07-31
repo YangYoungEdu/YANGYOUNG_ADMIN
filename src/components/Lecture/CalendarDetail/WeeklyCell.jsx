@@ -164,7 +164,9 @@ const WeeklyCell = (props) => {
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
 
-        const { id, name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate, studentList } = schedule;
+        const { id, name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate,allLectureDate, studentList, repeated } = schedule;
+
+        console.log("repeated", schedule);
         if (!active&& !isResizing) { // 리사이징 중일 때 클릭 방지
           setAddFormState({
               ...addFormState,
@@ -179,7 +181,9 @@ const WeeklyCell = (props) => {
               startTime: {...startTime},
               endTime: {...endTime},
               studentList: studentList,
-              lectureDate: lectureDate
+              lectureDate: lectureDate,
+              allLectureDate: allLectureDate,
+              repeated: repeated
           });
         }
       };
@@ -390,7 +394,7 @@ const WeeklyCell = (props) => {
             </WeeklySchedule>} */}
 
         {schedule.length>0 &&  schedule.map((sch, i) => {
-            console.log("schedule.length", schedule)
+            // console.log("schedule.length", schedule)
         return(
             <WeeklySchedule
                 key={i}
