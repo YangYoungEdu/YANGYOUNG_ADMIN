@@ -389,7 +389,9 @@ const WeeklyCell = (props) => {
                 <p>(제목없음)</p>
             </WeeklySchedule>} */}
 
-        {schedule.length>0 &&  schedule.map((sch, i) => (
+        {schedule.length>0 &&  schedule.map((sch, i) => {
+            console.log("schedule.length", schedule)
+        return(
             <WeeklySchedule
                 key={i}
                 style={{ height: height[sch.id] }}
@@ -398,7 +400,7 @@ const WeeklyCell = (props) => {
                 onDragStart={(e) => onDragCell(e, sch)}
                 teacher= {sch.teacher}
                 customstylewidth={styleWidths[sch.id]} 
-                customstyleleft={StyleLefts[sch.id] } 
+                customstyleleft={schedule.length>1? null : StyleLefts[sch.id] } 
             >
                 <p>{`${formatTime(sch.startTime.hour, sch.startTime.minute)} ~ ${formatTime(sch.endTime.hour, sch.endTime.minute)}`}</p>
                 <p>{sch.name}</p>
@@ -407,7 +409,8 @@ const WeeklyCell = (props) => {
                 onClick={(e) => e.stopPropagation()}
                 />
             </WeeklySchedule>
-            ) )}
+            ) 
+        })}
         </WeeklyCellDiv>
     );
 };

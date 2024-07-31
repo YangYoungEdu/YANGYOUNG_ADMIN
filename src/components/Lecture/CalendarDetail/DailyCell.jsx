@@ -356,7 +356,7 @@ const DailyCell = (props) => {
                     onDragStart={(e) => onDragCell(e, sch)}
                     teacher={sch.teacher}
                     customstylewidth={styleWidths[sch.id]?.width} 
-                    customstyleleft={schedule.length < 1 ? StyleLefts[sch.id] : undefined} 
+                    customstyleleft={schedule.length > 1 ? StyleLefts[sch.id] : undefined} 
                 >
                     <p>{`${formatTime(sch.startTime.hour, sch.startTime.minute)} ~ ${formatTime(sch.endTime.hour, sch.endTime.minute)}`}</p>
                     <p>{sch.name}</p>
