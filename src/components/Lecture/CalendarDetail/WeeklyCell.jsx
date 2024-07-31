@@ -97,13 +97,24 @@ const WeeklyCell = (props) => {
     };
 
     // 일정 높이 업데이트를 위한 useEffect
-    const [height, setHeight] = useState('0px');
+    const [height, setHeight] = useState({});
 
     useEffect(() => {
-        if (schedule.length>0) {
-            setHeight(calculateHeight(schedule[0].startTime, schedule[0].endTime));
+        if (schedule.length > 0) {
+          // 계산된 height 값을 저장할 새로운 객체를 생성
+          const newHeights = {};
+    
+          schedule.forEach(item => {
+            // 높이 계산
+            const height = calculateHeight(item.startTime, item.endTime);
+            // id를 키로 사용하여 새로운 heights 객체에 저장
+            newHeights[item.id] = height;
+          });
+    
+          // 새로운 heights 객체로 상태 업데이트
+          setHeight(newHeights);
         }
-    }, [schedule]);
+      }, [schedule]);
 
     // 빈 셀을 클릭하여 일정을 추가하는 함수
     const onClickDate = () => {
@@ -381,7 +392,7 @@ const WeeklyCell = (props) => {
         {schedule.length>0 &&  schedule.map((sch, i) => (
             <WeeklySchedule
                 key={i}
-                style={{ height }}
+                style={{ height: height[sch.id] }}
                 onClick={(e) => onClickSchedule(e, sch)}
                 draggable
                 onDragStart={(e) => onDragCell(e, sch)}
