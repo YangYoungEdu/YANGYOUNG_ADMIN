@@ -122,9 +122,13 @@ const MonthCalendar = ({
           // className="monthly-row"
         >
           {a.map((b, j) => (
-            <MonthlyCell key={j} date={b} schedule={getCurDateSchedule(b)} 
-			isSelected={selectedDate && b.toDateString() === selectedDate.toDateString()}
-			onClick = {() => handleDateClick(b)}/>
+            <MonthlyCell 
+              key={j} 
+              date={b} 
+              schedule={getCurDateSchedule(b)} 
+			        isSelected={selectedDate && b.toDateString() ===  selectedDate.toDateString()}
+			        onClick = {() => handleDateClick(b)}
+              currentDate={currentDate}/>
           ))}
         </MonthlyRow>
       ))}

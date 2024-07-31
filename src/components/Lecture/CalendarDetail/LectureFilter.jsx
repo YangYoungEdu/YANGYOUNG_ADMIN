@@ -9,7 +9,7 @@ const LectureFilter = ({ mode, originLectures, setLectures }) => {
   const [checkedTeachers, setCheckedTeachers] = useState({});
   useEffect(() => {
     filterLecturesByCheckedTeachers();
-  }, [checkedTeachers]);
+  }, [checkedTeachers, originLectures]);
 
   // 강의 필터 함수 - 선생님
   const filterLecturesByCheckedTeachers = () => {

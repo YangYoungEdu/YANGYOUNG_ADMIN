@@ -119,7 +119,7 @@ export const getUniqueOverlapMap = (overlapMap) => {
 };
 
 // ID별로 겹치는 개수에 따라 left 오프셋을 결정하는 함수
-export const determineLefts = (overlapMap, schedule ) => {
+export const determineLefts = (overlapMap, type ) => {
   const lefts = {}; // 각 강의 ID별로 left 값을 저장할 객체
 
   // 중복된 배열을 제거하고 정렬된 overlapMap을 생성
@@ -145,21 +145,28 @@ export const determineLefts = (overlapMap, schedule ) => {
     lefts[id] = offsets[Math.floor(sortedOverlaps.indexOf(parseInt(id)))] || '37%';
   }
 
-  // // width와 left를 조정하는 로직 추가
-  // for (const [id, width] of Object.entries(widths)) {
-  //   if (width === '50%') {
-  //     if (lefts[id] === '-37%') {
-  //       lefts[id] = '-25%';
-  //     } else if (lefts[id] === '37%') {
-  //       lefts[id] = '25%';
-  //     }
-  //   } else if (width === '33%') {
-  //     if (lefts[id] === '-7%') {
-  //       lefts[id] = '0%';
-  //     }
-  //   }
-  // }
-
+  if(type ==='week'){
+  // width와 left를 조정하는 로직 추가
+  for (const [id, width] of Object.entries(widths)) {
+    if (width === '50%') {
+      if (lefts[id] === '-37%') {
+        lefts[id] = '-25%';
+      } else if (lefts[id] === '37%') {
+        lefts[id] = '25%';
+      }
+      else if (lefts[id] === '-33%') {
+        lefts[id] = '-25%';
+      } else if (lefts[id] === '33%') {
+        lefts[id] = '25%';
+      }
+      
+    } else if (width === '33%') {
+      if (lefts[id] === '-7%') {
+        lefts[id] = '0%';
+      }
+    }
+  }
+  }
 
   return lefts; // 각 강의 ID별로 설정된 left 값을 반환
 }
