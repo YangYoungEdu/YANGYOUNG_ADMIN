@@ -71,7 +71,8 @@ const EditForm = () => {
     }
   }, [active, addFormState, mode]);
 
-  const onClickCancel = () => {
+  const onClickCancel = (e) => {
+    // e.stopPropagation();
     setAddFormState({ ...addFormState, active: false });
   };
 
