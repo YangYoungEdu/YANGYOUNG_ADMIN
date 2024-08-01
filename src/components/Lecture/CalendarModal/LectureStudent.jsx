@@ -6,7 +6,7 @@ import { getStudentByLectureAPI } from "../../../API/StudentAPI";
 import AddStudentSearch from "../CalendarDetail/AddStudentSearch.jsx";
 import AddGenericTable from "../CalendarDetail/AddGenericTable.jsx";
 
-const LectureStudent = ({ id, handleCheckboxChange, searchKeyword,setSearchKeyword }) => {
+const LectureStudent = ({ id, searchKeyword,setSearchKeyword,newAddFormState , setNewAddFormState}) => {
   const [students, setStudents] = useState([]);
   const [showAddStudent, setShowAddStudent] = useState(false);
   // const [searchKeyword, setSearchKeyword] = useState("");
@@ -19,6 +19,9 @@ const LectureStudent = ({ id, handleCheckboxChange, searchKeyword,setSearchKeywo
     if (id) {
       getStudentByLectureAPI(id).then((res) => {
         setStudents(res);
+        console.log("이미 추가된 학생", res);
+
+        setSelectedStudent(res.map(student => student.id));
       });
       if (students) console.log("students: ", students);
     }
@@ -26,6 +29,23 @@ const LectureStudent = ({ id, handleCheckboxChange, searchKeyword,setSearchKeywo
 
   const handleAddStudentClick = () => {
     setShowAddStudent(!showAddStudent);
+  };
+
+  const handleCheckboxChange = (id) => {
+    console.log('id 확인', id);
+    setSelectedStudent((prevSelectedStudent) => {
+      if (prevSelectedStudent.includes(id)) {
+        console.log('있음');
+        // 배열에서 해당 id를 제거
+        return prevSelectedStudent.filter((studentId) => studentId !== id);
+      } else {
+        console.log('없음');
+        // 배열에 해당 id를 추가
+        return [...prevSelectedStudent, id];
+      }
+    });
+
+    setNewAddFormState({ ...newAddFormState, studentList: selectedStudent });
   };
 
   return (

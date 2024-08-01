@@ -19,6 +19,7 @@ const ModalDesign = ({
   //add
   onChangeNewAddFormState,
   newAddFormState,
+  setNewAddFormState,
   multidates,
   setmultiDates,
   searchKeyword,
@@ -353,9 +354,10 @@ const ModalDesign = ({
                 {onClicked.student && (
                   <LectureStudent
                     id={newAddFormState.id}
-                    handleCheckboxChange={handleCheckboxChange}
                     searchKeyword={searchKeyword}
-                  setSearchKeyword={setSearchKeyword}
+                    setSearchKeyword={setSearchKeyword}
+                    newAddFormState ={newAddFormState}
+                    setNewAddFormState ={setNewAddFormState}
                   />
                 )}
 
