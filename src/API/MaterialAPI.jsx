@@ -5,6 +5,7 @@ const local = process.env.REACT_APP_LOCAL_URL;
 
 // 강의자료 업로드 API
 export const uploadFilesAPI = async (fileList, lecture, date) => {
+  console.log ("업로드 리퀘스트: ", fileList, lecture, date);
   if (!fileList || !lecture || !date) {
     alert("Please fill in all fields.");
     return;
@@ -18,7 +19,7 @@ export const uploadFilesAPI = async (fileList, lecture, date) => {
   formData.append("date", date);
 
   try {
-    const response = await axios.post(`${server}file/upload`, formData, {
+    const response = await axios.post(`${server}file`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

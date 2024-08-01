@@ -25,17 +25,23 @@ const PersonalLecture = () => {
   const [completedLectures, setCompletedLectures] = useState([]);
   const { id } = useParams();
 
+
   useEffect(() => {
     const getOneStudentLecture = async (id) => {
       try {
         const response = await getLectureByStudentAPI(id);
-        console.log(response); // 반환 데이터 확인
-        const inProgress = response.filter(
-          (lecture) => lecture.finished === false
-        );
-        const completed = response.filter(
-          (lecture) => lecture.finished === true
-        );
+        console.log(response); // Check the returned data
+
+        const currentDate = new Date(); // Get current date
+        const inProgress = response.filter((lecture) => {
+          const lectureDate = new Date(lecture.lectureDate);
+          return !lecture.finished && lectureDate >= currentDate;
+        });
+        const completed = response.filter((lecture) => {
+          const lectureDate = new Date(lecture.lectureDate);
+          return lecture.finished || lectureDate < currentDate;
+        });
+
         setInProgressLectures(inProgress);
         setCompletedLectures(completed);
       } catch (error) {
@@ -48,20 +54,20 @@ const PersonalLecture = () => {
   const formatTime = (timeObj) => {
     if (!timeObj || typeof timeObj.hour !== "number" || typeof timeObj.minute !== "number") {
       console.error("Invalid time object", timeObj);
-      return "00:00"; // 기본값 설정
+      return "00:00"; // Default value
     }
-    
-    // 시간과 분을 두 자릿수로 포맷
+
+    // Format hours and minutes to two digits
     const hours = timeObj.hour.toString().padStart(2, "0");
     const minutes = timeObj.minute.toString().padStart(2, "0");
-    
+
     return `${hours}:${minutes}`;
   };
 
   const formatDate = (dateStr) => {
     if (!dateStr) return "No date";
-    
-    // 예시: "YYYY-MM-DD" 형식을 "YYYY년 MM월 DD일"로 변환
+
+    // Format date from "YYYY-MM-DD" to "YYYY년 MM월 DD일"
     const [year, month, day] = dateStr.split("-");
     return `${year}년 ${month}월 ${day}일`;
   };
@@ -78,7 +84,48 @@ const PersonalLecture = () => {
         </BtnArea>
         {isIngOpen && (
           <div>
-            {inProgressLectures.map((lecture) => (
+            {inProgressLectures.length > 0 ? (
+              inProgressLectures.map((lecture) => (
+                <Box key={lecture.id}>
+                  <TopInfo>
+                    <Title>{lecture.name || "No Title"}</Title>
+                    <DetailBox background={"#E9F2EB"}>
+                      {lecture.teacher || "Unknown Teacher"}
+                    </DetailBox>
+                  </TopInfo>
+                  <BottomInfo>
+                    <div>
+                      {lecture.lectureDate
+                        ? formatDate(lecture.lectureDate)
+                        : lecture.lectureDay || "No date information"}
+                    </div>
+                    <div>|</div>
+                    <div>
+                      {formatTime(lecture.startTime)}-{formatTime(lecture.endTime)}
+                    </div>
+                    <div>|</div>
+                    <div>{lecture.room || "No Room Info"}</div>
+                  </BottomInfo>
+                </Box>
+              ))
+            ) : (
+              <Box>No ongoing lectures</Box>
+            )}
+          </div>
+        )}
+      </BigDiv>
+      <StyledHr />
+      <BtnArea>
+        <div onClick={() => setIsEndOpen(!isEndOpen)}>
+          {isEndOpen ? <BlackPolygon /> : <UnOpenBlackPolygon />}
+          <PolygonText>지난 수업</PolygonText>
+        </div>
+        {/* <PlusIcon /> */}
+      </BtnArea>
+      {isEndOpen && (
+        <div>
+          {completedLectures.length > 0 ? (
+            completedLectures.map((lecture) => (
               <Box key={lecture.id}>
                 <TopInfo>
                   <Title>{lecture.name || "No Title"}</Title>
@@ -100,43 +147,10 @@ const PersonalLecture = () => {
                   <div>{lecture.room || "No Room Info"}</div>
                 </BottomInfo>
               </Box>
-            ))}
-          </div>
-        )}
-      </BigDiv>
-      <StyledHr />
-      <BtnArea>
-        <div onClick={() => setIsEndOpen(!isEndOpen)}>
-          {isEndOpen ? <BlackPolygon /> : <UnOpenBlackPolygon />}
-          <PolygonText>지난 수업</PolygonText>
-        </div>
-        {/* <PlusIcon /> */}
-      </BtnArea>
-      {isEndOpen && (
-        <div>
-          {completedLectures.map((lecture) => (
-            <Box key={lecture.id}>
-              <TopInfo>
-                <Title>{lecture.name || "No Title"}</Title>
-                <DetailBox background={"#E9F2EB"}>
-                  {lecture.teacher || "Unknown Teacher"}
-                </DetailBox>
-              </TopInfo>
-              <BottomInfo>
-                <div>
-                  {lecture.lectureDate
-                    ? formatDate(lecture.lectureDate)
-                    : lecture.lectureDay || "No date information"}
-                </div>
-                <div>|</div>
-                <div>
-                  {formatTime(lecture.startTime)}-{formatTime(lecture.endTime)}
-                </div>
-                <div>|</div>
-                <div>{lecture.room || "No Room Info"}</div>
-              </BottomInfo>
-            </Box>
-          ))}
+            ))
+          ) : (
+            <Box>No completed lectures</Box>
+          )}
         </div>
       )}
     </TopDiv>

@@ -46,7 +46,7 @@ export const getOneStudentTaskAPI = async (studentId) => {
 
 //수업별 과제 등록
 export const addLectureTaskAPI = async (data) => {
-  console.log (data);
+  console.log(data);
   try {
     const response = await axios.post(`${server}task/lecture`, data, {
       headers: {
@@ -54,7 +54,7 @@ export const addLectureTaskAPI = async (data) => {
       },
     });
     console.log(response);
-    return (response);
+    return response;
   } catch (error) {
     if (error.response.status === 403) {
       alert("로그인 후 이용해주세요.");
@@ -84,7 +84,7 @@ export const postOneStudentTaskAPI = async (data) => {
 
 // 강의별 과제 조회
 export const getLectureTaskAPI = async (lectureId) => {
-  console.log (lectureId);
+  console.log(lectureId);
   try {
     const response = await axios.get(`${server}task/lecture/${lectureId}`, {
       headers: {
@@ -111,6 +111,29 @@ export const deleteTaskAPI = async (taskId) => {
       },
       params: {
         taskId: taskId,
+      },
+    });
+    console.log(response.data);
+    alert("과제가 삭제되었습니다.");
+  } catch (error) {
+    if (error.response.status === 403) {
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
+    console.error(error);
+  }
+};
+
+export const patchTaskProgressAPI = async (studentId, taskId, taskProgress) => {
+  try {
+    const response = await axios.patch(`${server}task/student/progress`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+      params: {
+        studentId: studentId,
+        taskId: taskId,
+        taskProgress: taskProgress,
       },
     });
     console.log(response.data);
