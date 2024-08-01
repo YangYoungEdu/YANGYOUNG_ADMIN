@@ -106,6 +106,7 @@ const EditForm = () => {
         setSearchData ={setSearchData}
         searchDataCount ={searchDataCount}
         onClickCancel={onClickCancel}
+        handleCheckboxChange={handleCheckboxChange}
         
         />
     )
