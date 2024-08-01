@@ -48,8 +48,8 @@ const ModalDesign = ({
     mode === "add" ? newAddFormState.curDate : null
   );
 
-  console.log("id",newAddFormState.id );
-  console.log("repeated",newAddFormState.repeated );
+  console.log("id", newAddFormState.id);
+  console.log("repeated", newAddFormState.repeated);
 
   const handleButtonClick = (type) => {
     setOnClicked((prevState) => ({
@@ -78,7 +78,6 @@ const ModalDesign = ({
       setStartDate(newAddFormState.lectureDate); // DatePicker의 시작 날짜도 curDate로 설정
     }
   }, [newAddFormState.lectureDate, setmultiDates]);
-
 
   const handleChange = (date) => {
     console.log("받은 날자 확인", newAddFormState.lectureDate);
@@ -352,12 +351,20 @@ const ModalDesign = ({
 
                 {/* 강의별 학생 목록*/}
                 {onClicked.student && (
-                  <LectureStudent id={newAddFormState.id} />
+                  <LectureStudent
+                    id={newAddFormState.id}
+                    handleCheckboxChange={handleCheckboxChange}
+                    searchKeyword={searchKeyword}
+                  setSearchKeyword={setSearchKeyword}
+                  />
                 )}
 
                 {/* 강의별 출석 목록*/}
                 {onClicked.attendance && (
-                  <LectureAttendance id={newAddFormState.id} date={newAddFormState.lectureDate}/>
+                  <LectureAttendance
+                    id={newAddFormState.id}
+                    date={newAddFormState.lectureDate}
+                  />
                 )}
 
                 {/* 강의별 과제 목록*/}
@@ -366,12 +373,14 @@ const ModalDesign = ({
                 {/* 강의별 자료 목록 */}
                 {/* ToDo: 강의별 자료 목록 API 연동 */}
                 {onClicked.material && (
-                  <LectureMaterial lecture={newAddFormState.id} date={newAddFormState.lectureDate} />
+                  <LectureMaterial
+                    lecture={newAddFormState.id}
+                    date={newAddFormState.lectureDate}
+                  />
                 )}
               </>
             )}
           </LowerDiv>
-
         </TopDiv>
       </StyledAddForm>
     </Panel>

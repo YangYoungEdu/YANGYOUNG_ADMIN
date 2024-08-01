@@ -6,10 +6,10 @@ import { getStudentByLectureAPI } from "../../../API/StudentAPI";
 import AddStudentSearch from "../CalendarDetail/AddStudentSearch.jsx";
 import AddGenericTable from "../CalendarDetail/AddGenericTable.jsx";
 
-const LectureStudent = ({ id }) => {
+const LectureStudent = ({ id, handleCheckboxChange, searchKeyword,setSearchKeyword }) => {
   const [students, setStudents] = useState([]);
   const [showAddStudent, setShowAddStudent] = useState(false);
-  const [searchKeyword, setSearchKeyword] = useState("");
+  // const [searchKeyword, setSearchKeyword] = useState("");
   const [searchData, setSearchData] = useState([]);
   const [searchDataCount, setSearchDataCount] = useState(0);
   const [selectedStudent, setSelectedStudent] = useState([]);
@@ -56,7 +56,7 @@ const LectureStudent = ({ id }) => {
             searchDataCount={searchDataCount}
             setSearchDataCount={setSearchDataCount}
             searchKeyword={searchKeyword}
-            handleCheckboxChange={() => {}}
+            handleCheckboxChange={handleCheckboxChange}
             selectedStudent={selectedStudent}
             active={active}
             setSelectedStudent={setSelectedStudent}
@@ -70,7 +70,7 @@ const LectureStudent = ({ id }) => {
 
 const LectureStudentWrapper = styled(ColumnDiv)`
 width: 100%;
-  overflow: auto;
+  /* overflow: auto; */
 `;
 
 const StudentWrapper = styled(RowDiv)`
