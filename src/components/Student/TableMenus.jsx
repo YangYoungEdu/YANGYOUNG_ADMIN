@@ -1,7 +1,15 @@
 import { useState } from "react";
 import styled from "styled-components";
+<<<<<<< HEAD:src/components/Student/TableMenus.jsx
 import { MainDiv } from "../../style/CommonStyle";
 import StudentAdd from "../Student/StudentModal/StudentAdd";
+=======
+import StudentAdd from "../StudentComponents/StudentModal/StudentAdd";
+import { deleteStudentAPI, hideStudentAPI } from "../../API/StudentAPI";
+import { useRecoilState } from "recoil";
+import { selectedStudentState } from "../../Atom";
+import { MainDiv } from "../../style/CommonStyle";
+>>>>>>> 2e60c9fb9a18603c131dc4b6847cac09fd493bed:src/components/StudentComponents/TableMenus.js
 import StudentHide from "./StudentModal/StudentHide";
 
 const TableMenus = ({
@@ -11,8 +19,16 @@ const TableMenus = ({
   isHidden,
   searchDataCount,
 }) => {
+<<<<<<< HEAD:src/components/Student/TableMenus.jsx
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isHideModalOpen, setIsHideModalOpen] = useState(false);
+=======
+  const [selectedStudent, setSelectedStudent] =
+    useRecoilState(selectedStudentState);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isHideModalOpen, setIsHideModalOpen] = useState(false);
+
+>>>>>>> 2e60c9fb9a18603c131dc4b6847cac09fd493bed:src/components/StudentComponents/TableMenus.js
 
   const setEdit = () => {
     setIsEditing(true);
@@ -35,6 +51,17 @@ const TableMenus = ({
     setIsHideModalOpen(!isHideModalOpen);
   };
 
+<<<<<<< HEAD:src/components/Student/TableMenus.jsx
+=======
+  // const hideStudent = async () => {
+  //   try {
+  //     const response = await hideStudentAPI(selectedStudent);
+  //     // window.location.reload();
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
+>>>>>>> 2e60c9fb9a18603c131dc4b6847cac09fd493bed:src/components/StudentComponents/TableMenus.js
   return (
     <MainDiv>
       {/* 보관함 들어온 경우 */}
@@ -56,7 +83,10 @@ const TableMenus = ({
         {isEditing ? (
           // 편집 모드의 경우
           <EditModeButtons>
+<<<<<<< HEAD:src/components/Student/TableMenus.jsx
             <div onClick={closeEdit}>취소</div>
+=======
+>>>>>>> 2e60c9fb9a18603c131dc4b6847cac09fd493bed:src/components/StudentComponents/TableMenus.js
             <EditButton
               onClick={openHideModal}
             >

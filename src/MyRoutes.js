@@ -5,7 +5,11 @@ import LectureDetail from "./pages/Lecture/Detail/LectureDetail";
 import Lecture from "./pages/Lecture/LecturePage";
 import SignIn from "./pages/SignIn/SignInPage";
 import StudentDetail from "./pages/Student/StudentDetail";
+<<<<<<< HEAD
 import Student from "./pages/Student/StudentPage";
+=======
+import Lecture from "./pages/Lecture/LecturePage";
+>>>>>>> 2e60c9fb9a18603c131dc4b6847cac09fd493bed
 
 function MyRoutes() {
   return (
@@ -17,7 +21,10 @@ function MyRoutes() {
           <Route path="student" element={<Student />} />
           <Route path="/student/:id" element={<StudentDetail />} />
           <Route path="lecture" element={<Lecture />} />
+<<<<<<< HEAD
           <Route path="lecture/:id" element={<LectureDetail />} />
+=======
+>>>>>>> 2e60c9fb9a18603c131dc4b6847cac09fd493bed
         </Route>
       </Routes>
     </>

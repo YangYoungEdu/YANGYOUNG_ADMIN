@@ -4,12 +4,18 @@ import styled from "styled-components";
 import { ReactComponent as Class } from "../../Assets/Class.svg";
 import { ReactComponent as Homework } from "../../Assets/Homework.svg";
 import { ReactComponent as Student } from "../../Assets/Student.svg";
+<<<<<<< HEAD:src/pages/Student/StudentDetail.jsx
 import PersonalInfo from "../../components/Student/Detail/PersonalInfo";
 import PersonalTask from "../../components/Student/Detail/PersonalTask";
 import PersonalLecture from "../../components/Student/Detail/PersonalLecture";
 import { getOneStudentAPI } from "../../API/StudentAPI";
 import { getOneStudentTaskAPI } from "../../API/TaskAPI";
 import { getLectureByStudentAPI } from "../../API/LectureAPI";
+=======
+import PersonalInfo from "../../components/StudentComponents/DetailComponents/PersonalInfo";
+import PersonalTask from "../../components/StudentComponents/DetailComponents/PersonalTask";
+import PersonalLecture from "../../components/StudentComponents/DetailComponents/PersonalLecture";
+>>>>>>> 2e60c9fb9a18603c131dc4b6847cac09fd493bed:src/pages/Student/StudentDetail.js
 
 const StudentDetail = () => {
   const { id } = useParams();
