@@ -3,10 +3,17 @@ import styled from "styled-components";
 import { ColumnDiv, RowDiv } from "../../../style/CommonStyle";
 import { ReactComponent as Plus } from "../../../Assets/Plus.svg";
 import { getStudentByLectureAPI } from "../../../API/StudentAPI";
+import AddStudentSearch from "../CalendarDetail/AddStudentSearch.jsx";
+import AddGenericTable from "../CalendarDetail/AddGenericTable.jsx";
 
-const LectureStudent = ({id}) => {
-
+const LectureStudent = ({ id }) => {
   const [students, setStudents] = useState([]);
+  const [showAddStudent, setShowAddStudent] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [searchData, setSearchData] = useState([]);
+  const [searchDataCount, setSearchDataCount] = useState(0);
+  const [selectedStudent, setSelectedStudent] = useState([]);
+  const [active, setActive] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -17,24 +24,49 @@ const LectureStudent = ({id}) => {
     }
   }, [id]);
 
+  const handleAddStudentClick = () => {
+    setShowAddStudent(!showAddStudent);
+  };
+
   return (
     <LectureStudentWrapper>
-      {students && students.map((student, index) => (
-        <ColumnDiv key={index}>
-          <StudentWrapper key={index}>
-            <StudentName>{student.name}</StudentName>
-            <SchoolAndGrade>
-              {student.school} l {student.grade}
-            </SchoolAndGrade>
-          </StudentWrapper>
-          <Line />
-        </ColumnDiv>
-      ))}
-      <StudentPlusIcon />
+      {students &&
+        students.map((student, index) => (
+          <ColumnDiv key={index}>
+            <StudentWrapper key={index}>
+              <StudentName>{student.name}</StudentName>
+              <SchoolAndGrade>
+                {student.school} l {student.grade}
+              </SchoolAndGrade>
+            </StudentWrapper>
+            <Line />
+          </ColumnDiv>
+        ))}
+      <StudentPlusIcon onClick={handleAddStudentClick} />
       <Line />
+      {showAddStudent && (
+        <>
+          <AddStudentSearch
+            searchKeyword={searchKeyword}
+            setSearchKeyword={setSearchKeyword}
+          />
+          <AddGenericTable
+            searchData={searchData}
+            setSearchData={setSearchData}
+            searchDataCount={searchDataCount}
+            setSearchDataCount={setSearchDataCount}
+            searchKeyword={searchKeyword}
+            handleCheckboxChange={() => {}}
+            selectedStudent={selectedStudent}
+            active={active}
+            setSelectedStudent={setSelectedStudent}
+          />
+        </>
+      )}
     </LectureStudentWrapper>
   );
 };
+
 
 const LectureStudentWrapper = styled(ColumnDiv)`
 width: 100%;

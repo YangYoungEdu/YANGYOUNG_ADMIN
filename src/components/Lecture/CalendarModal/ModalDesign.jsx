@@ -2,10 +2,6 @@ import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styled from "styled-components";
-
-import { useAddFormState } from "../../../stores/addFormState.jsx";
-import AddForm from "./AddForm.jsx";
-import MultiDatePicker from "../CalendarDetail/MultiDatePicker.jsx";
 import AddStudentSearch from "../CalendarDetail/AddStudentSearch.jsx";
 import AddGenericTable from "../CalendarDetail/AddGenericTable.jsx";
 
@@ -51,7 +47,6 @@ const ModalDesign = ({
   const [startDate, setStartDate] = useState(
     mode === "add" ? newAddFormState.curDate : null
   );
-  const [formattedCurDate, setFormattedCurDate] = useState("");
 
   console.log("id", newAddFormState.id);
 
@@ -78,7 +73,6 @@ const ModalDesign = ({
     if (newAddFormState.lectureDate) {
       const formattedDate = format(newAddFormState.lectureDate, "yyyy-MM-dd");
       // multidates를 새롭게 설정 (리셋)하고 curDate를 추가
-      setFormattedCurDate(formattedDate);
       setmultiDates([formattedDate]);
       setStartDate(newAddFormState.lectureDate); // DatePicker의 시작 날짜도 curDate로 설정
     }
@@ -362,7 +356,7 @@ const ModalDesign = ({
 
                 {/* 강의별 출석 목록*/}
                 {onClicked.attendance && (
-                  <LectureAttendance id={newAddFormState.id} date={formattedCurDate}/>
+                  <LectureAttendance id={newAddFormState.id} date={newAddFormState.lectureDate}/>
                 )}
 
                 {/* 강의별 과제 목록*/}
@@ -371,35 +365,12 @@ const ModalDesign = ({
                 {/* 강의별 자료 목록 */}
                 {/* ToDo: 강의별 자료 목록 API 연동 */}
                 {onClicked.material && (
-                  <LectureMaterial lecture={newAddFormState.id} date={formattedCurDate} />
+                  <LectureMaterial lecture={newAddFormState.id} date={newAddFormState.lectureDate} />
                 )}
               </>
             )}
           </LowerDiv>
 
-          {/* <div id="select-student"> */}
-          {/* 검색 영역  */}
-          {/* {mode === "add" ? (
-              <AddStudentSearch
-                searchKeyword={searchKeyword}
-                setSearchKeyword={setSearchKeyword}
-              />
-            ) : null} */}
-          {/* 테이블  */}
-          {/* {mode === "add" ? (
-              <AddGenericTable
-                searchData={searchData}
-                setSearchData={setSearchData}
-                searchDataCount={searchDataCount}
-                setSearchDataCount={setSearchDataCount}
-                searchKeyword={searchKeyword}
-                handleCheckboxChange={handleCheckboxChange}
-                selectedStudent={selectedStudent}
-                active={active}
-                setSelectedStudent={setSelectedStudent}
-              />
-            ) : null}
-          </div> */}
         </TopDiv>
       </StyledAddForm>
     </Panel>
