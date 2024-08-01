@@ -6,36 +6,37 @@ import {
 } from "../../../API/AttendanceAPI";
 import { RowDiv } from "../../../style/CommonStyle";
 
-const LectureAttendance = () => {
+const LectureAttendance = ({id, date}) => {
+  console.log ("출결: ", id, date);
   const [attendances, setAttendances] = useState([]);
   const [isUpdated, setIsUpdated] = useState(false);
 
-  // useEffect(() => {
-  //   getAttendanceByLectureAndDateAPI(id, date).then((res) => {
-  //     setAttendances(res);
-  //   });
-  // }, [isUpdated]);
+  useEffect(() => {
+    getAttendanceByLectureAndDateAPI(id, date).then((res) => {
+      setAttendances(res);
+    });
+  }, [isUpdated]);
 
-  // const updateAttendance = async () => {
-  //   console.log(attendances);
+  const updateAttendance = async () => {
+    console.log(attendances);
 
-  //   const updateRequest = attendances
-  //     .filter((attendance) => attendance.attendanceType !== null) // Filter out entries where attendanceType is null
-  //     .map((attendance) => ({
-  //       id: attendance.id,
-  //       studentId: attendance.studentId,
-  //       lectureId: id,
-  //       attendanceType: attendance.attendanceType,
-  //     }));
+    const updateRequest = attendances
+      .filter((attendance) => attendance.attendanceType !== null) // Filter out entries where attendanceType is null
+      .map((attendance) => ({
+        id: attendance.id,
+        studentId: attendance.studentId,
+        lectureId: id,
+        attendanceType: attendance.attendanceType,
+      }));
 
-  //   try {
-  //     await updateAttendanceAPI(updateRequest);
-  //     setIsUpdated(true);
-  //     alert("출석 정보가 변경되었습니다.");
-  //   } catch (error) {
-  //     console.error("Error updating attendance:", error);
-  //   }
-  // };
+    try {
+      await updateAttendanceAPI(updateRequest);
+      setIsUpdated(true);
+      alert("출석 정보가 변경되었습니다.");
+    } catch (error) {
+      console.error("Error updating attendance:", error);
+    }
+  };
 
   const handleOptionChange = (e, studentId) => {
     const { value } = e.target;
@@ -106,9 +107,9 @@ const LectureAttendance = () => {
           ))}
         </tbody>
       </AttendanceTable>
-      {/* <UploadButton onClick={updateAttendance}>
+      <UploadButton onClick={updateAttendance}>
         저장 사항 변경
-      </UploadButton> */}
+      </UploadButton>
     </TableWrapper>
   );
 };

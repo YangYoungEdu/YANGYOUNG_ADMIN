@@ -24,10 +24,12 @@ const PersonalLecture = () => {
   const [inProgressLectures, setInProgressLectures] = useState([]);
   const [completedLectures, setCompletedLectures] = useState([]);
   const { id } = useParams();
+
   useEffect(() => {
     const getOneStudentLecture = async (id) => {
       try {
         const response = await getLectureByStudentAPI(id);
+        console.log(response); // 반환 데이터 확인
         const inProgress = response.filter(
           (lecture) => lecture.finished === false
         );
@@ -36,7 +38,6 @@ const PersonalLecture = () => {
         );
         setInProgressLectures(inProgress);
         setCompletedLectures(completed);
-        console.log(response);
       } catch (error) {
         console.error(error);
       }
@@ -44,9 +45,25 @@ const PersonalLecture = () => {
     getOneStudentLecture(id);
   }, [id]);
 
-  const formatTime = (time) => {
-    // time이 "hh:mm:ss" 형식일 때 앞에서 두 개의 항목만 가져옴
-    return time.slice(0, 5);
+  const formatTime = (timeObj) => {
+    if (!timeObj || typeof timeObj.hour !== "number" || typeof timeObj.minute !== "number") {
+      console.error("Invalid time object", timeObj);
+      return "00:00"; // 기본값 설정
+    }
+    
+    // 시간과 분을 두 자릿수로 포맷
+    const hours = timeObj.hour.toString().padStart(2, "0");
+    const minutes = timeObj.minute.toString().padStart(2, "0");
+    
+    return `${hours}:${minutes}`;
+  };
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "No date";
+    
+    // 예시: "YYYY-MM-DD" 형식을 "YYYY년 MM월 DD일"로 변환
+    const [year, month, day] = dateStr.split("-");
+    return `${year}년 ${month}월 ${day}일`;
   };
 
   return (
@@ -64,24 +81,23 @@ const PersonalLecture = () => {
             {inProgressLectures.map((lecture) => (
               <Box key={lecture.id}>
                 <TopInfo>
-                  <Title>{lecture.name}</Title>
+                  <Title>{lecture.name || "No Title"}</Title>
                   <DetailBox background={"#E9F2EB"}>
-                    {lecture.teacher}
+                    {lecture.teacher || "Unknown Teacher"}
                   </DetailBox>
                 </TopInfo>
                 <BottomInfo>
                   <div>
-                    {lecture.dateList.length !== 0
-                      ? lecture.dateList.join(", ")
-                      : lecture.dayList.join(", ")}
+                    {lecture.lectureDate
+                      ? formatDate(lecture.lectureDate)
+                      : lecture.lectureDay || "No date information"}
                   </div>
                   <div>|</div>
                   <div>
-                    {formatTime(lecture.startTime)}-
-                    {formatTime(lecture.endTime)}
+                    {formatTime(lecture.startTime)}-{formatTime(lecture.endTime)}
                   </div>
                   <div>|</div>
-                  <div>{lecture.room}</div>
+                  <div>{lecture.room || "No Room Info"}</div>
                 </BottomInfo>
               </Box>
             ))}
@@ -101,25 +117,24 @@ const PersonalLecture = () => {
           {completedLectures.map((lecture) => (
             <Box key={lecture.id}>
               <TopInfo>
-                <Title>{lecture.name}</Title>
+                <Title>{lecture.name || "No Title"}</Title>
                 <DetailBox background={"#E9F2EB"}>
-                  {lecture.teacher}
+                  {lecture.teacher || "Unknown Teacher"}
                 </DetailBox>
               </TopInfo>
               <BottomInfo>
-                  <div>
-                    {lecture.dateList.length !== 0
-                      ? lecture.dateList.join(", ")
-                      : lecture.dayList.join(", ")}
-                  </div>
-                  <div>|</div>
-                  <div>
-                    {formatTime(lecture.startTime)}-
-                    {formatTime(lecture.endTime)}
-                  </div>
-                  <div>|</div>
-                  <div>{lecture.room}</div>
-                </BottomInfo>
+                <div>
+                  {lecture.lectureDate
+                    ? formatDate(lecture.lectureDate)
+                    : lecture.lectureDay || "No date information"}
+                </div>
+                <div>|</div>
+                <div>
+                  {formatTime(lecture.startTime)}-{formatTime(lecture.endTime)}
+                </div>
+                <div>|</div>
+                <div>{lecture.room || "No Room Info"}</div>
+              </BottomInfo>
             </Box>
           ))}
         </div>
