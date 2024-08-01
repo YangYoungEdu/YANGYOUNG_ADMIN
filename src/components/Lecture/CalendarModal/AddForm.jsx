@@ -10,7 +10,7 @@ import { useUserData } from '../../../stores/userData.jsx';
 import AddGenericTable from '../CalendarDetail/AddGenericTable.jsx';
 import AddStudentSearch from '../CalendarDetail/AddStudentSearch.jsx';
 import MultiDatePicker from '../CalendarDetail/MultiDatePicker.jsx';
-import { getCalendarData } from '../../../Atom.js';
+import { getCalendarData, NewComponent } from '../../../Atom.js';
 import { useRecoilState } from 'recoil';
 import ModalDesign from './ModalDesign.jsx';
 

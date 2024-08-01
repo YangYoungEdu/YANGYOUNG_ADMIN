@@ -8,7 +8,7 @@ import { useUserData } from '../../../stores/userData';
 import { useDragAndDrop } from '../../../stores/dragAndDrop';
 import { useRecoilState } from 'recoil';
 import { getCalendarData } from '../../../Atom';
-import { ResizingPatchAPI, serverformatTime } from './UserDataController';
+import { DragNDropPatchAPI, ResizingPatchAPI, serverformatTime } from './UserDataController';
 
 const oneCellHeight = 12.5;
 const DailyCell = (props) => {
@@ -31,7 +31,6 @@ const DailyCell = (props) => {
     useEffect(() => {
         const handleMouseUp = () => {
             if (isResizing) {
-                setIsResizing(false);
                 document.body.classList.remove('resizing');
             }
         };
@@ -95,13 +94,24 @@ const DailyCell = (props) => {
     };
 
     // 일정 높이 업데이트를 위한 useEffect
-    const [height, setHeight] = useState('0px');
+    const [height, setHeight] = useState({});
 
     useEffect(() => {
-        if (schedule.length>0) {
-            setHeight(calculateHeight(schedule[0].startTime, schedule[0].endTime));
+        if (schedule.length > 0) {
+          // 계산된 height 값을 저장할 새로운 객체를 생성
+          const newHeights = {};
+    
+          schedule.forEach(item => {
+            // 높이 계산
+            const height = calculateHeight(item.startTime, item.endTime);
+            // id를 키로 사용하여 새로운 heights 객체에 저장
+            newHeights[item.id] = height;
+          });
+    
+          // 새로운 heights 객체로 상태 업데이트
+          setHeight(newHeights);
         }
-    }, [schedule]);
+      }, [schedule]);
 
     // 빈 셀 클릭 시 새로운 일정을 즉시 생성
     const onClickDate = () => {
@@ -136,8 +146,8 @@ const DailyCell = (props) => {
     // 일정을 클릭하여 수정하는 함수
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
-        const { id , name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate, studentList } = schedule;
-        if (!active) { // 리사이징 중일 때 클릭 방지
+        const { id , name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate,allLectureDate, studentList, repeated } = schedule;
+        if (!active&&!isResizing) { // 리사이징 중일 때 클릭 방지
           setAddFormState({
               ...addFormState,
               id: id,
@@ -152,6 +162,8 @@ const DailyCell = (props) => {
               endTime: {...endTime},
               studentList: studentList,
               lectureDate:lectureDate,
+              allLectureDate: allLectureDate,
+              repeated: repeated
           });
         }
     };
@@ -196,17 +208,13 @@ const DailyCell = (props) => {
 
             const data ={
                 id: from.id,
-                name: from.name,
-                lectureType: from.lectureType,
-                teacher: from.teacher,
-                room: from.room,
                 startTime : startTimeStr,
                 endTime: endTimeStr,
-                isAllUpdate:false
+                updatedLectureDate:newDateForm
             }
 
             // 일정 업데이트
-            const response =await ResizingPatchAPI(data);
+            const response =await DragNDropPatchAPI(data);
             setCalSchedule([...calSchedule, response]);
 
         }
@@ -262,6 +270,7 @@ const DailyCell = (props) => {
         const initialEndMinute = schedule.endTime.hour * 60 + schedule.endTime.minute;
 
         const onResizeMouseMove = (e) => {
+            setIsResizing(true);
             const newY = e.clientY;
             const minDifference = Math.round((newY - initialY) / oneCellHeight) * 15; // oneCellHeight px = 15분
             let newEndMinute = initialEndMinute + minDifference;
@@ -285,24 +294,20 @@ const DailyCell = (props) => {
             //patch
             data ={
                 id: schedule.id,
-                name: schedule.name,
-                lectureType: schedule.lectureType,
-                teacher: schedule.teacher,
-                room: schedule.room,
                 startTime: StartTimeStr,
                 endTime: endTimeStr,
-                isAllUpdate: false
+                updatedLectureDate: schedule.lectureDate
             }
         };
 
         const onResizeMouseUp = async () => {
             document.removeEventListener('mousemove', onResizeMouseMove);
             document.removeEventListener('mouseup', onResizeMouseUp);
-            setIsResizing(false);
+            
             document.body.classList.remove('resizing');
             if (data) {
                 try {
-                    const response = await ResizingPatchAPI(data);
+                    const response = await DragNDropPatchAPI(data);
             
                     // 상태 업데이트를 위한 새로운 상태 배열 생성
                     const updatedSchedule = calSchedule.map((item) =>
@@ -316,11 +321,12 @@ const DailyCell = (props) => {
                     console.error("Error updating schedule:", error);
                 }
             }
+
+            setIsResizing(false);
         };
 
         document.addEventListener('mousemove', onResizeMouseMove);
         document.addEventListener('mouseup', onResizeMouseUp);
-        setIsResizing(true);
     };
 
     const formatTime = (hour, minute) => {
@@ -346,13 +352,13 @@ const DailyCell = (props) => {
                 <WeeklySchedule
                     key={i}
                     className={`weekly-schedule ${isResizing ? 'resizing' : ''}`}
-                    style={{ height }} // 여기에 height를 직접 적용
+                    style={{ height:height[sch.id] }} // 여기에 height를 직접 적용
                     onClick={(e) => onClickSchedule(e, sch)}
                     draggable
                     onDragStart={(e) => onDragCell(e, sch)}
                     teacher={sch.teacher}
                     customstylewidth={styleWidths[sch.id]?.width} 
-                    customstyleleft={schedule.length < 1 ? StyleLefts[sch.id] : undefined} 
+                    customstyleleft={schedule.length <1 ? StyleLefts[sch.id] : undefined} 
                 >
                     <p>{`${formatTime(sch.startTime.hour, sch.startTime.minute)} ~ ${formatTime(sch.endTime.hour, sch.endTime.minute)}`}</p>
                     <p>{sch.name}</p>

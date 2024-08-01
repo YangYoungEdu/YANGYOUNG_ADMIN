@@ -32,8 +32,9 @@ const EditForm = () => {
     lectureDateList: [],
     studentList: [],
     lectureDate:'',
+    allLectureDate: [],
+    repeated: false
   });
-  const { name, room,lectureType, teacher, curDate, startTime, endTime } = newAddFormState;
 
   // 학생 선택
   const [searchData, setSearchData] = useState([]);
@@ -49,7 +50,7 @@ const EditForm = () => {
   useEffect(() => {
 
     if (active) {
-      const { id, name, room,lectureType, teacher, curDate, startTime, endTime , lectureDateList, studentList, lectureDate} = addFormState;
+      const { id, name, room,lectureType, teacher, curDate, startTime, endTime , lectureDateList, studentList, lectureDate,allLectureDate, repeated} = addFormState;
 
       setNewAddFormState({
         id: id || null,
@@ -63,7 +64,9 @@ const EditForm = () => {
         endTime: endTime || { hour: 1, minute: 0, second: 0, nano: 0 },
         lectureDateList: lectureDateList || [],
         studentList: studentList || [],
-        lectureDate: lectureDate || ''
+        lectureDate: lectureDate || '',
+        allLectureDate: allLectureDate || [],
+        repeated: repeated || false
       });
     }
   }, [active, addFormState, mode]);

@@ -63,7 +63,7 @@ const WeekCalendar = ({ currentDate, lectures }) => {
       // 겹치는 강의 ID와 width, left 값을 계산
 			const overlapMap = getOverlappingIds(lectures);
 
-			const lefts = determineLefts(overlapMap, lectures);
+			const lefts = determineLefts(overlapMap, type);
       const widths = determineWidths(overlapMap);
 			setLefts(lefts);
       setWidths(widths);

@@ -54,7 +54,7 @@ const LecturePage = () => {
           response = [];
       }
       setOriginLectures(response);
-      setLectures(response);
+      // setLectures(response);
     };
 
     fetchLectures();
@@ -102,6 +102,7 @@ const LecturePage = () => {
             mode={mode}
             originLectures={originLectures}
             setLectures={setLectures}
+            
           />
           {/* 캘린더 */}
           {renderCalendar()}

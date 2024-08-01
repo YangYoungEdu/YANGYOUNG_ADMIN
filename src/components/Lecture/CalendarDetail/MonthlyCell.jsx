@@ -8,9 +8,28 @@ import { useRecoilState } from 'recoil';
 import { getCalendarData } from '../../../Atom';
 import { format } from 'date-fns';
 
-const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
-  //   const { date, schedule } = props;
-  console.log('date 형식 확인 중', date);
+const isValidDate = (date, currentDate) => {
+  if (!date || !currentDate) return false;
+
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth();
+  const currentDay = currentDate.getDate();
+
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const day = date.getDate();
+  
+  if (year !== currentYear || month !== currentMonth) {
+    return false;
+  }
+  
+  const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  
+  return day >= 1 && day <= lastDayOfMonth;
+};
+
+
+const MonthlyCell = ({ date, schedule, isSelected, onClick, currentDate }) => {
   const [addFormState, setAddFormState] = useAddFormState();
   const { active } = addFormState;
 	
@@ -21,15 +40,12 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
   const [isCurrentMonth, setIsCurrentMonth] = useState(true);
 
   useEffect(() => {
-    let newCurDateStr = date.getDate();
-    setCurDateStr(newCurDateStr);
+    setCurDateStr(date.getDate());
 
-    const now = new Date();
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
+    const isInCurrentMonth = isValidDate(date, currentDate);
 
-    // Check if the date is in the current month
-    const isInCurrentMonth = date.getMonth() === currentMonth && date.getFullYear() === currentYear;
+    // console.log("currentDate",currentDate);
+    // console.log("isInCurrentMonth",isInCurrentMonth);
     setIsCurrentMonth(isInCurrentMonth);
   }, [calSchedule, schedule, date]);
 
@@ -72,7 +88,7 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 	//일정 클릭 후 수정
 	const onClickSchedule = (e, schedule) => {
 		e.stopPropagation();
-		const { id, name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate, studentList } = schedule;
+		const { id, name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate,allLectureDate ,studentList, repeated } = schedule;
     if (!active) { // 리사이징 중일 때 클릭 방지
       setAddFormState({
           ...addFormState,
@@ -87,7 +103,9 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
           startTime: {...startTime},
           endTime: {...endTime},
           studentList: studentList,
-          lectureDate: lectureDate
+          lectureDate: lectureDate,
+          allLectureDate: allLectureDate,
+          repeated: repeated
       });
     }
   };
@@ -106,7 +124,6 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick }) => {
 
   return (
     <MonthlyCellContainer
-      // className="monthly-cell"
       onClick={isCurrentMonth ? onClickDate : undefined} 
       isCurrentMonth={isCurrentMonth}
     >

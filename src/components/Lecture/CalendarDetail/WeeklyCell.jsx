@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 // import '../../style/css/app.css';
 // store
 import { useAddFormState } from '../../../stores/addFormState';
@@ -18,6 +18,9 @@ const WeeklyCell = (props) => {
 
     const [calSchedule, setCalSchedule] = useRecoilState(getCalendarData
     );
+    
+    const [isnewClick, setisNewClick] =useState(false);
+    const [defaultData, setDefaultData] =useState({});
 
     // const [userData, setUserData] = useUserData();
     const [dragAndDrop, setDragAndDrop] = useDragAndDrop();
@@ -26,11 +29,11 @@ const WeeklyCell = (props) => {
     // HH:MM 형태의 string 타입인 startHour를 숫자로 변환
     const [propsHour, propsMin] = (typeof startHour === 'string' ? startHour.split(':') : ['0', '0']).map(Number);
 
+
     // 마우스 업 이벤트를 처리하여 리사이징 종료
     useEffect(() => {
         const handleMouseUp = () => {
             if (isResizing) {
-                setIsResizing(false);
                 document.body.classList.remove('resizing');
             }
         };
@@ -50,7 +53,6 @@ const WeeklyCell = (props) => {
             document.removeEventListener('mouseup', handleMouseUp);
         };
     }, [isResizing]);
-
 
     //시작시간과 끝시간 사이의 15분 단위 타임스탬프 갯수 확인
     const toMinutes = (hour, minute) => hour * 60 + minute;
@@ -95,49 +97,77 @@ const WeeklyCell = (props) => {
     };
 
     // 일정 높이 업데이트를 위한 useEffect
-    const [height, setHeight] = useState('0px');
+    const [height, setHeight] = useState({});
 
     useEffect(() => {
-        if (schedule.length>0) {
-            setHeight(calculateHeight(schedule[0].startTime, schedule[0].endTime));
+        if (schedule.length > 0) {
+          // 계산된 height 값을 저장할 새로운 객체를 생성
+          const newHeights = {};
+    
+          schedule.forEach(item => {
+            // 높이 계산
+            const height = calculateHeight(item.startTime, item.endTime);
+            // id를 키로 사용하여 새로운 heights 객체에 저장
+            newHeights[item.id] = height;
+          });
+    
+          // 새로운 heights 객체로 상태 업데이트
+          setHeight(newHeights);
         }
-    }, [schedule]);
+      }, [schedule]);
 
     // 빈 셀을 클릭하여 일정을 추가하는 함수
     const onClickDate = () => {
-        if (!active && !isResizing) {
-            setAddFormState({
-                ...addFormState,
-                active: true,
-                mode: 'add',
-                name: '',
-                room: '',
-                lectureType: '',
-                teacher: '',
-                curDate: date, // Date 객체 그대로 유지
+        if(!isnewClick){
+            // setisNewClick(true);
+            setDefaultData({
                 startTime: { 
-                    hour: propsHour, 
-                    minute: propsMin, 
-                    second: 0, 
-                    nano: 0 
-                }, // 새로운 시간 형식 적용
+                hour: propsHour, 
+                minute: propsMin, 
+                }, 
                 endTime: { 
                     hour: propsHour + 1, 
                     minute: propsMin, 
-                    second: 0, 
-                    nano: 0 
-                } ,// 새로운 시간 형식 적용,
-                lectureDateList: [],
-                studentList: []
-            });
+
+                }})
+            if (!active && !isResizing) {
+                setAddFormState({
+                    ...addFormState,
+                    active: true,
+                    mode: 'add',
+                    name: '',
+                    room: '',
+                    lectureType: '',
+                    teacher: '',
+                    curDate: date, // Date 객체 그대로 유지
+                    startTime: { 
+                        hour: propsHour, 
+                        minute: propsMin, 
+                        second: 0, 
+                        nano: 0 
+                    }, // 새로운 시간 형식 적용
+                    endTime: { 
+                        hour: propsHour + 1, 
+                        minute: propsMin, 
+                        second: 0, 
+                        nano: 0 
+                    } ,// 새로운 시간 형식 적용,
+                    lectureDateList: [],
+                    studentList: []
+                });
+                
+            }
         }
     };
 
     // 일정을 클릭하여 수정하는 함수
     const onClickSchedule = (e, schedule) => {
         e.stopPropagation();
-        const { id, name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate, studentList } = schedule;
-        if (!active) { // 리사이징 중일 때 클릭 방지
+
+        const { id, name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate,allLectureDate, studentList, repeated } = schedule;
+
+        console.log("repeated", schedule);
+        if (!active&& !isResizing) { // 리사이징 중일 때 클릭 방지
           setAddFormState({
               ...addFormState,
               id: id,
@@ -151,7 +181,9 @@ const WeeklyCell = (props) => {
               startTime: {...startTime},
               endTime: {...endTime},
               studentList: studentList,
-              lectureDate: lectureDate
+              lectureDate: lectureDate,
+              allLectureDate: allLectureDate,
+              repeated: repeated
           });
         }
       };
@@ -195,33 +227,13 @@ const WeeklyCell = (props) => {
         
             const data ={
                 id: from.id,
-                name: from.name,
-                lectureType: from.lectureType,
-                teacher: from.teacher,
-                room: from.room,
                 startTime : startTimeStr,
                 endTime: endTimeStr,
-                isAllUpdate:false
-            }
-            const dataDate = {
-                id: from.id,
-                updatedLectureDateList: [newDateForm]
+                updatedLectureDate:to.lectureDate
             }
 
-            let response;
-            if(from.startTime.hour===to.startTime.hour&&from.startTime.minute===to.startTime.minute){
-                response = await DragNDropPatchAPI(dataDate);
-                setCalSchedule([...calSchedule, response]);
-            }
-            else if(from.lectureDate === to.lectureDate){
-                response =await ResizingPatchAPI(data);
-                setCalSchedule([...calSchedule, response]);
-            }
-            else{
-                response = await DragNDropPatchAPI(dataDate);
-                response =await ResizingPatchAPI(data);
-                setCalSchedule([...calSchedule, response]);
-            }
+            const response = await DragNDropPatchAPI(data);
+            setCalSchedule([...calSchedule, response]);
             
 
         }
@@ -276,6 +288,8 @@ const WeeklyCell = (props) => {
         const initialEndMinute = schedule.endTime.hour * 60 + schedule.endTime.minute;
 
         const onResizeMouseMove = async (e) => {
+
+            setIsResizing(true);
             
             const newY = e.clientY;
             const minDifference = Math.round((newY - initialY) / oneCellHeight) * 15; // oneCellHeight px = 15분
@@ -300,13 +314,9 @@ const WeeklyCell = (props) => {
             //patch
             data ={
                 id: schedule.id,
-                name: schedule.name,
-                lectureType: schedule.lectureType,
-                teacher: schedule.teacher,
-                room: schedule.room,
                 startTime: StartTimeStr,
                 endTime: endTimeStr,
-                isAllUpdate: false
+                updatedLectureDate: schedule.lectureDate
             }
 
             console.log(data);
@@ -314,13 +324,13 @@ const WeeklyCell = (props) => {
         };
 
         const onResizeMouseUp = async() => {
+            
             document.removeEventListener('mousemove', onResizeMouseMove);
             document.removeEventListener('mouseup', onResizeMouseUp);
-            setIsResizing(false);
             document.body.classList.remove('resizing');
             if (data) {
                 try {
-                    const response = await ResizingPatchAPI(data);
+                    const response = await DragNDropPatchAPI(data);
             
                     // 상태 업데이트를 위한 새로운 상태 배열 생성
                     const updatedSchedule = calSchedule.map((item) =>
@@ -334,12 +344,13 @@ const WeeklyCell = (props) => {
                     console.error("Error updating schedule:", error);
                 }
             }
+
+            setIsResizing(false);
             
         };
 
         document.addEventListener('mousemove', onResizeMouseMove);
         document.addEventListener('mouseup', onResizeMouseUp);
-        setIsResizing(true);
     };
 
     const formatTime = (hour, minute) => {
@@ -374,16 +385,26 @@ const WeeklyCell = (props) => {
             onDragOver={(e) => e.preventDefault()}
             onDrop={onDropSchedule}
         >
-        {schedule.length>0 &&  schedule.map((sch, i) => (
+            {/* {isnewClick &&            
+            <WeeklySchedule
+                style={{ height:"50px" }}
+            >
+                <p>{`${formatTime(defaultData.startTime.hour, defaultData.startTime.minute)} ~ ${formatTime(defaultData.endTime.hour, defaultData.endTime.minute)}`}</p>
+                <p>(제목없음)</p>
+            </WeeklySchedule>} */}
+
+        {schedule.length>0 &&  schedule.map((sch, i) => {
+            // console.log("schedule.length", schedule)
+        return(
             <WeeklySchedule
                 key={i}
-                style={{ height }}
+                style={{ height: height[sch.id] }}
                 onClick={(e) => onClickSchedule(e, sch)}
                 draggable
                 onDragStart={(e) => onDragCell(e, sch)}
                 teacher= {sch.teacher}
                 customstylewidth={styleWidths[sch.id]} 
-                customstyleleft={StyleLefts[sch.id]} 
+                customstyleleft={schedule.length>1? null : StyleLefts[sch.id] } 
             >
                 <p>{`${formatTime(sch.startTime.hour, sch.startTime.minute)} ~ ${formatTime(sch.endTime.hour, sch.endTime.minute)}`}</p>
                 <p>{sch.name}</p>
@@ -392,7 +413,8 @@ const WeeklyCell = (props) => {
                 onClick={(e) => e.stopPropagation()}
                 />
             </WeeklySchedule>
-            ) )}
+            ) 
+        })}
         </WeeklyCellDiv>
     );
 };
@@ -464,7 +486,7 @@ const WeeklySchedule = styled.div`
         }
         return props.customstylewidth ? `calc(${props.customstylewidth})` : '100%';
     }};
-    left: ${props => props.customstyleleft || '100%'};
+    left: ${props => props.customstyleleft || '0%'};
 
     border-radius: 5px;
 
