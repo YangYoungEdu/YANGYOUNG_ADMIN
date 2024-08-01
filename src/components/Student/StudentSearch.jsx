@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Select from "react-select";
+import Select, { components } from "react-select";
 import { useRecoilState } from "recoil";
 import styled, { keyframes } from "styled-components";
 import { ReactComponent as Cancel } from "../../Assets/Cancel.svg";
@@ -11,6 +11,7 @@ import {
   totalPageState,
 } from "../../Atom";
 import { MainDiv, RowDiv } from "../../style/CommonStyle";
+import { ReactComponent as CustomArrowDown } from "../../Assets/dropdownicon.svg";
 
 const options = [
   { value: "M3", label: "중3" },
@@ -22,12 +23,13 @@ const options = [
 const customStyle = {
   control: (provided, state) => ({
     ...provided,
-    // width: 101, // 너비를 300으로 설정
+    width: 102,// 너비를 300으로 설정
     margin: 0,
+    padding: "0px 4px 0px 4px",
     border: state.isFocused ? '1px solid #15521D' : '1px solid #e0e0e0',  // 기본 테두리 설정
     borderRadius: 100, // 둥근 모서리 설정
     fontSize: 15,
-    padding: "0px 0px 0px 5px",
+    // padding: "0px 0px 0px 5px",
     color:"#bababa",
     backgroundColor: 'transparent',
     fontFamily: "Pretendard Variable",
@@ -42,7 +44,7 @@ const customStyle = {
     marginTop: 15,
     // boxShadow: '0 3px 10px 0 rgba(0, 0, 0, 0.16)',
     borderTop: '0',
-    width: 101, // 메뉴의 너비 설정
+    width: 94, // 메뉴의 너비 설정
   }),
   option: (provided, state) => ({
     ...provided,
@@ -68,6 +70,21 @@ const customStyle = {
     fontSize: '15px',  // 선택된 값의 폰트 크기
     fontWeight: 400,
   }),
+  indicatorSeparator: () => ({
+    display: 'none',  // 드롭다운 화살표와 구분선 제거
+  }),
+  dropdownIndicator: (provided) => ({
+    ...provided,
+    padding: "4px 8px 4px 0px", // 패딩 조정
+  }),
+};
+
+const CustomDropdownIndicator = (props) => {
+  return (
+    <components.DropdownIndicator {...props}>
+      <CustomArrowDown /> {/* 아이콘 크기 조정 */}
+    </components.DropdownIndicator>
+  );
 };
 
 const StudentSearch = ({ searchKeyword, setSearchKeyword }) => {
@@ -225,7 +242,8 @@ const StudentSearch = ({ searchKeyword, setSearchKeyword }) => {
                   options={options} 
                   onChange={setGradeKeyword}
                   styles={customStyle}
-                  placeholder="학년 선택" />
+                  placeholder="학년 선택"
+                  components={{ DropdownIndicator: CustomDropdownIndicator }} />
                 </SearchField>
               </SearchOptions>
 
