@@ -72,13 +72,19 @@ const ModalDesign = ({
 
   // 컴포넌트가 마운트될 때 multidates를 리셋하고 curDate를 추가
   useEffect(() => {
-    if (newAddFormState.lectureDate) {
+    if (newAddFormState.lectureDate && mode==='edit') {
       const formattedDate = format(newAddFormState.lectureDate, "yyyy-MM-dd");
       // multidates를 새롭게 설정 (리셋)하고 curDate를 추가
       setmultiDates([formattedDate]);
       setStartDate(newAddFormState.lectureDate); // DatePicker의 시작 날짜도 curDate로 설정
     }
-  }, [newAddFormState.lectureDate, setmultiDates]);
+    if (newAddFormState.curDate && mode ==='add'){
+      const formattedDate = format(newAddFormState.curDate, "yyyy-MM-dd");
+      // multidates를 새롭게 설정 (리셋)하고 curDate를 추가
+      setmultiDates([formattedDate]);
+      setStartDate(newAddFormState.lectureDate); // DatePicker의 시작 날짜도 curDate로 설정
+    }
+  }, [newAddFormState.lectureDate, newAddFormState.curDate]);
 
   const handleChange = (date) => {
     console.log("받은 날자 확인", newAddFormState.lectureDate);
