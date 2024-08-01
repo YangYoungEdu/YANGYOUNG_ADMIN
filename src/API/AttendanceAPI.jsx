@@ -2,12 +2,13 @@ import axios from "axios";
 
 const server = process.env.REACT_APP_DEV_URL;
 const local = process.env.REACT_APP_LOCAL_URL;
+const prod = REACT_APP_PROD_URL;
 
 // 강의별 출석 조회 API
 export const getAttendanceByLectureAndDateAPI = async (lectureId, date) => {
   console.log("requests: ", lectureId, date);
   try {
-    const response = await axios.get(`${server}attendance/lecture`, {
+    const response = await axios.get(`${prod}attendance/lecture`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
@@ -33,7 +34,7 @@ export const updateAttendanceAPI = async (attendanceList) => {
   console.log(attendanceList.length);
   console.log (attendanceList);
   try {
-    const response = await axios.patch(`${server}attendance`, attendanceList, {
+    const response = await axios.patch(`${prod}attendance`, attendanceList, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
