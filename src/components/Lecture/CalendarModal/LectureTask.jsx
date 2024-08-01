@@ -56,7 +56,7 @@ const LectureTask = ({id}) => {
         <LectureTaskAddModal
           setIsUploaded={setIsUploaded}
           setIsModalOpen={setIsModalOpen}
-          // id={id}
+          id={id}
         />
       )}
     </TaskWrapper>

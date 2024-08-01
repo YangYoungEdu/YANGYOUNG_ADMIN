@@ -8,7 +8,7 @@ import { formateDateMD } from "../../../util/Util";
 import { uploadFilesAPI } from "../../../API/MaterialAPI";
 import { getFilesAPI, deleteFileAPI } from "../../../API/MaterialAPI";
 
-const LectureMaterial = ({lecture, date }) => {
+const LectureMaterial = ({ lecture, date }) => {
   const [materials, setMaterials] = useState([]);
   const [addBoxes, setAddBoxes] = useState([]);
   const [selectedFile, setSelectedFile] = useState([]);
@@ -17,7 +17,7 @@ const LectureMaterial = ({lecture, date }) => {
   const [isDeleted, setIsDeleted] = useState(false);
   const fileInputRef = useRef(null);
 
-  console.log ("에러 잡자: ", lecture, date);
+  console.log("에러 잡자: ", lecture, date);
   useEffect(() => {
     getFilesAPI(lecture, date).then((res) => {
       setMaterials(res);
@@ -95,17 +95,17 @@ const LectureMaterial = ({lecture, date }) => {
             <FileUploadInput type="text" value={selectedFile[index].name} />
           )}
 
-          {/* <FileUploadWrapper onClick={handleFileUploadClick}>
-              <FileUploadPlusIcon />
-              <FileUploadText>파일 첨부</FileUploadText>
-              <input
-                type="file"
-                ref={fileInputRef}
-                style={{ display: "none" }}
-                onChange={handleFileChange}
-                multiple
-              />
-            </FileUploadWrapper> */}
+          <div onClick={handleFileUploadClick}>
+            {/* <FileUploadPlusIcon /> */}
+            <FileUploadText>파일 첨부</FileUploadText>
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+              multiple
+            />
+          </div>
 
           {/* <UploadingFileDeleteIcon /> */}
         </TaskBox>
