@@ -444,11 +444,13 @@ const SearchKewordWrapper = styled.div`
 
 const SearchKeword = styled(RowDiv)`
   align-items: center;
-  width: 106px;
+  width: 100%;
   height: 40px;
   border-radius: 100px;
   background-color: ${(props) => props.theme.colors.primary_light};
   margin-right: 8px;
+  white-space: nowrap;
+  padding: 0 10px;
 
   font-size: 14px;
   font-weight: 400;
