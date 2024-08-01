@@ -186,6 +186,8 @@ const TaskContentWrapper = styled(ColumnDiv)`
 
 const TaskTitleWrapper = styled.div`
   display: flex;
+  flex-direction: row;
+  align-items: center;
   gap: 9px;
 `;
 
@@ -213,7 +215,6 @@ const FileUploadInput = styled.input`
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-  background-color: aliceblue;
   width: 100%;
   height: 100%;
 `;
