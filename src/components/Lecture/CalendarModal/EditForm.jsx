@@ -44,7 +44,6 @@ const EditForm = () => {
     schoolList: [],
     gradeList: [],
   });
-  const [selectedStudent, setSelectedStudent] =useState();
   const [multidates, setmultiDates] = useState([]); //날짜 선택
 
   useEffect(() => {
@@ -68,6 +67,7 @@ const EditForm = () => {
         allLectureDate: allLectureDate || [],
         repeated: repeated || false
       });
+      
     }
   }, [active, addFormState, mode]);
 
@@ -79,16 +79,16 @@ const EditForm = () => {
       <ModalDesign 
         mode= "edit"
         newAddFormState ={newAddFormState}
+        setNewAddFormState ={setNewAddFormState}
         multidates ={multidates}
         setmultiDates ={setmultiDates}
-        selectedStudent={selectedStudent}
-        setSelectedStudent={setSelectedStudent}
         searchKeyword ={searchKeyword}
-        setSearchKeyword ={searchKeyword}
+        setSearchKeyword ={setSearchKeyword}
         searchData ={searchData}
         setSearchData ={setSearchData}
         searchDataCount ={searchDataCount}
         onClickCancel={onClickCancel}
+        
         />
     )
 };

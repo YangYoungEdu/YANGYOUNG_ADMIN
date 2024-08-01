@@ -93,10 +93,15 @@ const GenericTable = ({
   };
 
   const handleCheckboxChange = (id) => {
+    console.log('id 확인', id);
     setSelectedStudent((prevSelectedStudent) => {
       if (prevSelectedStudent.includes(id)) {
-        return prevSelectedStudent.filter((id) => id !== id);
+        console.log('있음');
+        // 배열에서 해당 id를 제거
+        return prevSelectedStudent.filter((studentId) => studentId !== id);
       } else {
+        console.log('없음');
+        // 배열에 해당 id를 추가
         return [...prevSelectedStudent, id];
       }
     });
