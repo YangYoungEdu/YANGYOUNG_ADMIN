@@ -46,13 +46,15 @@ export const getOneStudentTaskAPI = async (studentId) => {
 
 //수업별 과제 등록
 export const addLectureTaskAPI = async (data) => {
+  console.log (data);
   try {
     const response = await axios.post(`${server}task/lecture`, data, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     });
-    console.log(response.data);
+    console.log(response);
+    return (response);
   } catch (error) {
     if (error.response.status === 403) {
       alert("로그인 후 이용해주세요.");
@@ -82,14 +84,15 @@ export const postOneStudentTaskAPI = async (data) => {
 
 // 강의별 과제 조회
 export const getLectureTaskAPI = async (lectureId) => {
+  console.log (lectureId);
   try {
     const response = await axios.get(`${server}task/lecture/${lectureId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     });
-    console.log(response.data);
-    return response.data;
+    console.log(response);
+    return response;
   } catch (error) {
     if (error.response.status === 403) {
       alert("로그인 후 이용해주세요.");

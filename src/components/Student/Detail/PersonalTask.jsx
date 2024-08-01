@@ -88,16 +88,16 @@ const PersonalTask = ({ studentTask, studentLecture }) => {
             {completedTasks.map((task) => (
               <Box key={task.id}>
                 <TopInfo>
-                  <Title>{task.content}</Title>
+                  <Title>{task.content || ""}</Title>
                   <DetailBox background={"#E9F2EB"}>
-                    {task.lectureName}
+                    {task.lectureName || ""}
                   </DetailBox>
-                  <DetailBox background={"#FFF4DE"}>{task.taskType}</DetailBox>
+                  <DetailBox background={"#FFF4DE"}>{task.taskType||""}</DetailBox>
                 </TopInfo>
                 <BottomInfo>
-                  <div>{task.taskDate}</div>
+                  <div>{task.taskDate || ""}</div>
                   <div>|</div>
-                  <div>{task.taskProgress}</div>
+                  <div>{task.taskProgress || ""}</div>
                 </BottomInfo>
               </Box>
             ))}

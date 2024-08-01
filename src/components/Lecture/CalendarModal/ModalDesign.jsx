@@ -2,10 +2,6 @@ import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styled from "styled-components";
-
-import { useAddFormState } from "../../../stores/addFormState.jsx";
-import AddForm from "./AddForm.jsx";
-import MultiDatePicker from "../CalendarDetail/MultiDatePicker.jsx";
 import AddStudentSearch from "../CalendarDetail/AddStudentSearch.jsx";
 import AddGenericTable from "../CalendarDetail/AddGenericTable.jsx";
 
@@ -40,7 +36,7 @@ const ModalDesign = ({
 
   //edit
 }) => {
-  console.log ("newFormState:", newAddFormState);
+  console.log("newFormState:", newAddFormState);
   const [onClicked, setOnClicked] = useState({
     student: true,
     attendance: false,
@@ -52,8 +48,8 @@ const ModalDesign = ({
     mode === "add" ? newAddFormState.curDate : null
   );
 
-  console.log("id",newAddFormState.id );
-  console.log("repeated",newAddFormState.repeated );
+  console.log("id", newAddFormState.id);
+  console.log("repeated", newAddFormState.repeated);
 
   const handleButtonClick = (type) => {
     setOnClicked((prevState) => ({
@@ -288,18 +284,6 @@ const ModalDesign = ({
                 onChange={onChangeNewAddFormState}
                 placeholder="선생님 이름을 적어주세요."
               />
-              {/* <SelectWrapper>
-                <select
-                  id="teacher-select"
-                  value={mode === "add" ? newAddFormState.teacher : null}
-                  onChange={onChangeNewAddFormState}
-                >
-                  <option value="">선택하세요</option>
-                  <option value="김삼유">김삼유</option>
-                  <option value="장영해">장영해</option>
-                  <option value="전재우">전재우</option>
-                </select>
-              </SelectWrapper> */}
             </DetailInfo>
             <DetailInfo id="input-form">
               <Label className="label">강의실</Label>
@@ -358,6 +342,7 @@ const ModalDesign = ({
                   <Button
                     isActive={onClicked.material}
                     onClick={() => handleButtonClick("material")}
+                    x
                   >
                     {/* {" "} */}
                     수업 자료
@@ -365,44 +350,37 @@ const ModalDesign = ({
                 </ButtonWrapper>
 
                 {/* 강의별 학생 목록*/}
-                {onClicked.student && <LectureStudent />}
+                {onClicked.student && (
+                  <LectureStudent
+                    id={newAddFormState.id}
+                    handleCheckboxChange={handleCheckboxChange}
+                    searchKeyword={searchKeyword}
+                  setSearchKeyword={setSearchKeyword}
+                  />
+                )}
 
                 {/* 강의별 출석 목록*/}
-                {onClicked.attendance && <LectureAttendance />}
+                {onClicked.attendance && (
+                  <LectureAttendance
+                    id={newAddFormState.id}
+                    date={newAddFormState.lectureDate}
+                  />
+                )}
 
                 {/* 강의별 과제 목록*/}
-                {onClicked.task && <LectureTask />}
+                {onClicked.task && <LectureTask id={newAddFormState.id} />}
 
                 {/* 강의별 자료 목록 */}
                 {/* ToDo: 강의별 자료 목록 API 연동 */}
-                {onClicked.material && <LectureMaterial />}
+                {onClicked.material && (
+                  <LectureMaterial
+                    lecture={newAddFormState.id}
+                    date={newAddFormState.lectureDate}
+                  />
+                )}
               </>
             )}
           </LowerDiv>
-
-          {/* <div id="select-student"> */}
-          {/* 검색 영역  */}
-          {/* {mode === "add" ? (
-              <AddStudentSearch
-                searchKeyword={searchKeyword}
-                setSearchKeyword={setSearchKeyword}
-              />
-            ) : null} */}
-          {/* 테이블  */}
-          {/* {mode === "add" ? (
-              <AddGenericTable
-                searchData={searchData}
-                setSearchData={setSearchData}
-                searchDataCount={searchDataCount}
-                setSearchDataCount={setSearchDataCount}
-                searchKeyword={searchKeyword}
-                handleCheckboxChange={handleCheckboxChange}
-                selectedStudent={selectedStudent}
-                active={active}
-                setSelectedStudent={setSelectedStudent}
-              />
-            ) : null}
-          </div> */}
         </TopDiv>
       </StyledAddForm>
     </Panel>

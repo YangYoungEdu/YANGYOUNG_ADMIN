@@ -3,41 +3,79 @@ import styled from "styled-components";
 import { ColumnDiv, RowDiv } from "../../../style/CommonStyle";
 import { ReactComponent as Plus } from "../../../Assets/Plus.svg";
 import { getStudentByLectureAPI } from "../../../API/StudentAPI";
+import AddStudentSearch from "../CalendarDetail/AddStudentSearch.jsx";
+import AddGenericTable from "../CalendarDetail/AddGenericTable.jsx";
 
-const LectureStudent = () => {
-
+const LectureStudent = ({ id, handleCheckboxChange, searchKeyword,setSearchKeyword }) => {
   const [students, setStudents] = useState([]);
+  const [showAddStudent, setShowAddStudent] = useState(false);
+  // const [searchKeyword, setSearchKeyword] = useState("");
+  const [searchData, setSearchData] = useState([]);
+  const [searchDataCount, setSearchDataCount] = useState(0);
+  const [selectedStudent, setSelectedStudent] = useState([]);
+  const [active, setActive] = useState(false);
 
-  // useEffect(() => {
-  //   getStudentByLectureAPI(id).then((res) => {
-  //     setStudents(res);
-  //   });
-  // }, []);
+  useEffect(() => {
+    if (id) {
+      getStudentByLectureAPI(id).then((res) => {
+        setStudents(res);
+      });
+      if (students) console.log("students: ", students);
+    }
+  }, [id]);
+
+  const handleAddStudentClick = () => {
+    setShowAddStudent(!showAddStudent);
+  };
 
   return (
     <LectureStudentWrapper>
-      {students.map((student, index) => (
-        <ColumnDiv key={index}>
-          <StudentWrapper key={index}>
-            <StudentName>{student.name}</StudentName>
-            <SchoolAndGrade>
-              {student.school} l {student.grade}
-            </SchoolAndGrade>
-          </StudentWrapper>
-          <Line />
-        </ColumnDiv>
-      ))}
-      <StudentPlusIcon />
+      {students &&
+        students.map((student, index) => (
+          <ColumnDiv key={index}>
+            <StudentWrapper key={index}>
+              <StudentName>{student.name}</StudentName>
+              <SchoolAndGrade>
+                {student.school} l {student.grade}
+              </SchoolAndGrade>
+            </StudentWrapper>
+            <Line />
+          </ColumnDiv>
+        ))}
+      <StudentPlusIcon onClick={handleAddStudentClick} />
       <Line />
+      {showAddStudent && (
+        <>
+          <AddStudentSearch
+            searchKeyword={searchKeyword}
+            setSearchKeyword={setSearchKeyword}
+          />
+          <AddGenericTable
+            searchData={searchData}
+            setSearchData={setSearchData}
+            searchDataCount={searchDataCount}
+            setSearchDataCount={setSearchDataCount}
+            searchKeyword={searchKeyword}
+            handleCheckboxChange={handleCheckboxChange}
+            selectedStudent={selectedStudent}
+            active={active}
+            setSelectedStudent={setSelectedStudent}
+          />
+        </>
+      )}
     </LectureStudentWrapper>
   );
 };
 
+
 const LectureStudentWrapper = styled(ColumnDiv)`
-  overflow: auto;
+width: 100%;
+  /* overflow: auto; */
 `;
 
 const StudentWrapper = styled(RowDiv)`
+width: 100%;
+align-items: center;
   justify-content: flex-start;
   padding-left: 8%;
   margin: 9px 0;
@@ -55,7 +93,7 @@ const SchoolAndGrade = styled.div`
 `;
 
 const Line = styled.hr`
-  width: 90%;
+  width: 100%;
   border: none;
   height: 1px;
   background-color: ${(props) => props.theme.colors.gray_003};

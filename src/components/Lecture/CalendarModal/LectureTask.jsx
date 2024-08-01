@@ -6,17 +6,17 @@ import { ReactComponent as Delete } from "../../../Assets/Delete.svg";
 import { getLectureTaskAPI, deleteTaskAPI } from "../../../API/TaskAPI";
 import LectureTaskAddModal from "./LectureTaskAddModal";
 
-const LectureTask = () => {
+const LectureTask = ({id}) => {
   const [tasks, setTasks] = useState([]);
   const [isUploaded, setIsUploaded] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // useEffect(() => {
-  //   getLectureTaskAPI(id).then((res) => {
-  //     setTasks(res);
-  //   });
-  // }, [isUploaded, isDeleted]);
+  useEffect(() => {
+    getLectureTaskAPI(id).then((res) => {
+      setTasks(res);
+    });
+  }, [id, isUploaded, isDeleted]);
 
   const deleteTask = async (taskId) => {
     try {
@@ -56,7 +56,7 @@ const LectureTask = () => {
         <LectureTaskAddModal
           setIsUploaded={setIsUploaded}
           setIsModalOpen={setIsModalOpen}
-          // id={id}
+          id={id}
         />
       )}
     </TaskWrapper>
