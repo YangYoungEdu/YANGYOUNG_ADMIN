@@ -3,8 +3,13 @@ import styled from "styled-components";
 import { ReactComponent as Plus } from "../../../Assets/Plus.svg";
 import { ReactComponent as File } from "../../../Assets/File.svg";
 import { ReactComponent as Delete } from "../../../Assets/Delete.svg";
+import { ReactComponent as Remove } from "../../../Assets/Remove.svg"; // Add a remove icon
 import { formateDateMD } from "../../../util/Util";
-import { uploadFilesAPI, getFilesAPI, deleteFileAPI } from "../../../API/MaterialAPI";
+import {
+  uploadFilesAPI,
+  getFilesAPI,
+  deleteFileAPI,
+} from "../../../API/MaterialAPI";
 import { ColumnDiv } from "../../../style/CommonStyle";
 
 const LectureMaterial = ({ lecture, date }) => {
@@ -56,34 +61,53 @@ const LectureMaterial = ({ lecture, date }) => {
     const files = Array.from(event.target.files);
     if (files.length > 0) {
       setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
-      setAddBoxes((prevBoxes) => [...prevBoxes, ...Array(files.length).fill({})]);
+      setAddBoxes((prevBoxes) => [
+        ...prevBoxes,
+        ...Array(files.length).fill({}),
+      ]);
     }
   };
 
+  const handleSave = async () => {
+    await uploadMaterials();
+  };
+
+  const handleRemoveFile = (index) => {
+    setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+    setAddBoxes((prevBoxes) => prevBoxes.filter((_, i) => i !== index));
+  };
+
   const handleAddTaskBox = () => {
-    // Handles the click on the "Add" button to show file input
     fileInputRef.current.click();
   };
 
   return (
     <TaskWrapper>
-      {materials.length > 0 && materials.map((material, index) => (
-        <TaskBox key={index}>
-          <TaskContentWrapper>
-            <TaskTitleWrapper>
-              <TaskTitle>{material.name}</TaskTitle>
-              <FileIcon />
-            </TaskTitleWrapper>
-            <TaskDate>{formateDateMD(material.date)}</TaskDate>
-          </TaskContentWrapper>
-          <DeleteIcon onClick={() => deleteMaterial(material.name)} />
-        </TaskBox>
-      ))}
+      {materials.length > 0 &&
+        materials.map((material, index) => (
+          <TaskBox key={index}>
+            <TaskContentWrapper>
+              <TaskTitleWrapper>
+                <TaskTitle>{material.name}</TaskTitle>
+                <File />
+              </TaskTitleWrapper>
+              <TaskDate>{formateDateMD(material.date)}</TaskDate>
+            </TaskContentWrapper>
+            <DeleteIcon onClick={() => deleteMaterial(material.name)} />
+          </TaskBox>
+        ))}
 
       {addBoxes.map((_, index) => (
         <TaskBox key={index}>
           {selectedFiles[index] && (
-            <FileUploadInput type="text" value={selectedFiles[index].name} readOnly />
+            <Wrapper>
+              <FileUploadInput
+                type="text"
+                value={selectedFiles[index].name}
+                readOnly
+              />
+              <RemoveIcon onClick={() => handleRemoveFile(index)} />
+            </Wrapper>
           )}
         </TaskBox>
       ))}
@@ -91,6 +115,13 @@ const LectureMaterial = ({ lecture, date }) => {
       <TaskBox>
         <TaskPlusIcon onClick={handleAddTaskBox} />
       </TaskBox>
+
+
+      <SaveButton
+      on onClick={handleSave}>
+        저장
+      </SaveButton>
+
 
       <input
         type="file"
@@ -102,7 +133,6 @@ const LectureMaterial = ({ lecture, date }) => {
     </TaskWrapper>
   );
 };
-
 // Styled Components
 const TaskWrapper = styled.div`
   display: flex;
@@ -126,12 +156,18 @@ const TaskBox = styled.div`
   justify-content: center;
 `;
 
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+`;
 const TaskContentWrapper = styled(ColumnDiv)`
   display: flex;
   flex-direction: column;
   gap: 12px;
 `;
-
 
 const TaskTitleWrapper = styled.div`
   display: flex;
@@ -157,13 +193,35 @@ const DeleteIcon = styled(Delete)`
 `;
 
 const FileUploadInput = styled.input`
-  border: 1px solid #ccc;
-  padding: 5px;
-  margin-right: 10px;
+  font-family: "Pretendard Variable";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  background-color: aliceblue;
+  width: 100%;
+  height: 100%;
 `;
 
+const RemoveIcon = styled(Remove)`
+  cursor: pointer;
+`;
 const TaskPlusIcon = styled(Plus)`
   cursor: pointer;
+`;
+
+const SaveButton = styled.button`
+  background-color: #95C25C;
+  color: white;
+  border: none;
+  box-sizing: border-box;
+  padding: 5px 20px;
+  margin-top: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border-radius: 5px;
+  font-size: 13px;
 `;
 
 export default LectureMaterial;
