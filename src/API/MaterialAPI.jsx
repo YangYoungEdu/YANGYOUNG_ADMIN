@@ -2,7 +2,7 @@ import axios from "axios";
 
 const server = process.env.REACT_APP_DEV_URL;
 const local = process.env.REACT_APP_LOCAL_URL;
-const prod = REACT_APP_PROD_URL;
+const prod = process.env.REACT_APP_PROD_URL;
 
 // 강의자료 업로드 API
 export const uploadFilesAPI = async (fileList, lecture, date) => {
