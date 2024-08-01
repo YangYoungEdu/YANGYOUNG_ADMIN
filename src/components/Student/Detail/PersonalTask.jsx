@@ -4,7 +4,10 @@ import styled from "styled-components";
 import { ReactComponent as UnOpenBlackPolygon } from "../../../Assets/UnOpenBlackPolygon.svg";
 import { ReactComponent as BlackPolygon } from "../../../Assets/BlackPolygon.svg";
 import { ReactComponent as Plus } from "../../../Assets/PlusIcon.svg";
-import { getOneStudentTaskAPI } from "../../../API/TaskAPI";
+import {
+  getOneStudentTaskAPI,
+  patchTaskProgressAPI,
+} from "../../../API/TaskAPI";
 import TaskAddModal from "../StudentModal/TaskAddModal";
 
 const PersonalTask = ({ studentTask, studentLecture }) => {
@@ -20,12 +23,14 @@ const PersonalTask = ({ studentTask, studentLecture }) => {
     const getOneStudentTask = async () => {
       try {
         const response = await getOneStudentTaskAPI(id);
+
         const inProgress = response.filter(
           (task) => task.taskProgress === "제출 전"
         );
         const completed = response.filter(
           (task) => task.taskProgress === "제출 완료"
         );
+
         setInProgressTasks(inProgress);
         setCompletedTasks(completed);
         console.log(response);
@@ -36,72 +41,112 @@ const PersonalTask = ({ studentTask, studentLecture }) => {
     getOneStudentTask();
   }, [id]);
 
+  const updateTaskProgress = async (taskId, newProgress) => {
+    try {
+      await patchTaskProgressAPI(id, taskId, newProgress);
+      // 상태 업데이트 후 다시 데이터를 가져옵니다
+      const response = await getOneStudentTaskAPI(id);
+      const inProgress = response.filter(
+        (task) => task.taskProgress === "제출 전"
+      );
+      const completed = response.filter(
+        (task) => task.taskProgress === "제출 완료"
+      );
+      setInProgressTasks(inProgress);
+      setCompletedTasks(completed);
+    } catch (error) {
+      console.error("Error updating task progress:", error);
+    }
+  };
+
   return (
     <TopDiv>
-      {/* 과제 현황 */}
+      {/* 진행 중 과제 */}
       <BigDiv>
         <BtnArea>
           <div onClick={() => setIsIngOpen(!isIngOpen)}>
             {isIngOpen ? <BlackPolygon /> : <UnOpenBlackPolygon />}
-            <PolygonText>진행 중</PolygonText>
+            <PolygonText>진행 중인 과제</PolygonText>
           </div>
           <PlusIcon onClick={() => setIsModalOpen(true)} />
         </BtnArea>
-        {/* task 목록 */}
+        {/* 진행 중 과제 목록 */}
         {isIngOpen && (
           <TaskDiv>
-            {inProgressTasks.map((task) => (
-              <Box key={task.id}>
-                <TopInfo>
-                  <Title>{task.content}</Title>
-                  {task.taskType !== "개인 과제" && (
-                    <DetailBox background={"#E9F2EB"}>
-                      {task.lectureName}
+            {inProgressTasks.length > 0 ? (
+              inProgressTasks.map((task) => (
+                <Box key={task.id}>
+                  <TopInfo>
+                    <Title>{task.content}</Title>
+                    {task.taskType !== "개인 과제" && (
+                      <DetailBox background={"#E9F2EB"}>
+                        {task.lectureName}
+                      </DetailBox>
+                    )}
+                    <DetailBox background={"#FFF4DE"}>
+                      {task.taskType}
                     </DetailBox>
-                  )}
-                  <DetailBox background={"#FFF4DE"}>{task.taskType}</DetailBox>
-                </TopInfo>
-                <BottomInfo>
-                  <div>{task.taskDate}</div>
-                  <div>|</div>
-                  <div>{task.taskProgress}</div>
-                </BottomInfo>
-              </Box>
-            ))}
+                  </TopInfo>
+                  <BottomInfo>
+                    <div>{task.taskDate}</div>
+                    <div>|</div>
+                    <div>{task.taskProgress}</div>
+                    <Button
+                      onClick={() => updateTaskProgress(task.id, "제출 완료")}
+                    >
+                      마감으로 변경
+                    </Button>
+                  </BottomInfo>
+                </Box>
+              ))
+            ) : (
+              <></>
+            )}
           </TaskDiv>
         )}
       </BigDiv>
 
       <StyledHr />
 
-      {/* 마감된 과제 */}
+      {/* 완료된 과제 */}
       <BigDiv>
         <BtnArea>
           <div onClick={() => setIsEndOpen(!isEndOpen)}>
             {isEndOpen ? <BlackPolygon /> : <UnOpenBlackPolygon />}
-            <PolygonText>마감</PolygonText>
+            <PolygonText>제출된 과제</PolygonText>
           </div>
         </BtnArea>
-        {/* task 목록 */}
+        {/* 완료된 과제 목록 */}
         {isEndOpen && (
-          <div>
-            {completedTasks.map((task) => (
-              <Box key={task.id}>
-                <TopInfo>
-                  <Title>{task.content || ""}</Title>
-                  <DetailBox background={"#E9F2EB"}>
-                    {task.lectureName || ""}
-                  </DetailBox>
-                  <DetailBox background={"#FFF4DE"}>{task.taskType||""}</DetailBox>
-                </TopInfo>
-                <BottomInfo>
-                  <div>{task.taskDate || ""}</div>
-                  <div>|</div>
-                  <div>{task.taskProgress || ""}</div>
-                </BottomInfo>
-              </Box>
-            ))}
-          </div>
+          <TaskDiv>
+            {completedTasks.length > 0 ? (
+              completedTasks.map((task) => (
+                <Box key={task.id}>
+                  <TopInfo>
+                    <Title>{task.content || ""}</Title>
+                    <DetailBox background={"#E9F2EB"}>
+                      {task.lectureName || ""}
+                    </DetailBox>
+                    <DetailBox background={"#FFF4DE"}>
+                      {task.taskType || ""}
+                    </DetailBox>
+                  </TopInfo>
+                  <BottomInfo>
+                    <div>{task.taskDate || ""}</div>
+                    <div>|</div>
+                    <div>{task.taskProgress || ""}</div>
+                    <Button
+                      onClick={() => updateTaskProgress(task.id, "제출 전")}
+                    >
+                      진행 중으로 변경
+                    </Button>
+                  </BottomInfo>
+                </Box>
+              ))
+            ) : (
+              <></>
+            )}
+          </TaskDiv>
         )}
       </BigDiv>
 
@@ -119,6 +164,7 @@ const TopDiv = styled.div`
   box-sizing: border-box;
   margin-left: 50px;
   margin-top: 50px;
+  margin-bottom: 100px;
   display: flex;
   flex-direction: column;
   gap: 17px;
@@ -177,6 +223,7 @@ const TopInfo = styled.div`
 const BottomInfo = styled.div`
   display: flex;
   flex-direction: row;
+  align-items: center;
   font-family: Pretendard Variable;
   font-size: 12px;
   font-weight: 400;
@@ -214,6 +261,12 @@ const PlusIcon = styled(Plus)`
   cursor: pointer;
 `;
 
+const Button = styled.button`
+  background-color: aliceblue;
+  padding: 2px 5px;
+  box-sizing: border-box;
+  cursor: pointer;
+`;
 export default PersonalTask;
 export {
   TopDiv,
