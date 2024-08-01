@@ -31,11 +31,26 @@ const LectureMaterial = ({ lecture, date }) => {
     };
     fetchMaterials();
   }, [lecture, date, isUploaded, isDeleted]);
+  useEffect(() => {
+    const fetchMaterials = async () => {
+      try {
+        const res = await getFilesAPI(lecture, date);
+        setMaterials(res);
+      } catch (error) {
+        console.error("Error fetching files:", error);
+      }
+    };
+    fetchMaterials();
+  }, [lecture, date, isUploaded, isDeleted]);
 
   const uploadMaterials = async () => {
     try {
       await uploadFilesAPI(selectedFiles, lecture, date);
+      await uploadFilesAPI(selectedFiles, lecture, date);
       setIsUploaded(true);
+      setSelectedFiles([]);
+      setAddBoxes([]); // Clear add boxes after upload
+      fileInputRef.current.value = null; // Reset file input
       setSelectedFiles([]);
       setAddBoxes([]); // Clear add boxes after upload
       fileInputRef.current.value = null; // Reset file input
@@ -116,12 +131,9 @@ const LectureMaterial = ({ lecture, date }) => {
         <TaskPlusIcon onClick={handleAddTaskBox} />
       </TaskBox>
 
-
-      <SaveButton
-      on onClick={handleSave}>
+      <SaveButton on onClick={handleSave}>
         저장
       </SaveButton>
-
 
       <input
         type="file"
@@ -133,10 +145,13 @@ const LectureMaterial = ({ lecture, date }) => {
     </TaskWrapper>
   );
 };
+
 // Styled Components
 const TaskWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
+  justify-content: center;
   width: 100%;
   justify-content: center;
   align-items: center;
@@ -211,7 +226,7 @@ const TaskPlusIcon = styled(Plus)`
 `;
 
 const SaveButton = styled.button`
-  background-color: #95C25C;
+  background-color: #95c25c;
   color: white;
   border: none;
   box-sizing: border-box;

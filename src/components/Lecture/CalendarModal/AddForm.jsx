@@ -172,7 +172,7 @@ const AddForm = () => {
         multidates ={multidates}
         setmultiDates ={setmultiDates}
         searchKeyword ={searchKeyword}
-        setSearchKeyword ={searchKeyword}
+        setSearchKeyword ={setSearchKeyword}
         searchData ={searchData}
         setSearchData ={setSearchData}
         searchDataCount ={searchDataCount}

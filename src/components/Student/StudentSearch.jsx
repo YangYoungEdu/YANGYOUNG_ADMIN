@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Select from "react-select";
+import Select, { components } from "react-select";
 import { useRecoilState } from "recoil";
 import styled, { keyframes } from "styled-components";
 import { ReactComponent as Cancel } from "../../Assets/Cancel.svg";
@@ -11,6 +11,7 @@ import {
   totalPageState,
 } from "../../Atom";
 import { MainDiv, RowDiv } from "../../style/CommonStyle";
+import { ReactComponent as CustomArrowDown } from "../../Assets/dropdownicon.svg";
 
 const options = [
   { value: "M3", label: "중3" },
@@ -18,6 +19,73 @@ const options = [
   { value: "H2", label: "고2" },
   { value: "H3", label: "고3" },
 ];
+
+const customStyle = {
+  control: (provided, state) => ({
+    ...provided,
+    width: 102,// 너비를 300으로 설정
+    margin: 0,
+    padding: "0px 4px 0px 4px",
+    border: state.isFocused ? '1px solid #15521D' : '1px solid #e0e0e0',  // 기본 테두리 설정
+    borderRadius: 100, // 둥근 모서리 설정
+    fontSize: 15,
+    // padding: "0px 0px 0px 5px",
+    color:"#bababa",
+    backgroundColor: 'transparent',
+    fontFamily: "Pretendard Variable",
+    fontWeight: 400,
+    boxShadow: 'none', // 기본 그림자 제거
+    '&:hover': {
+      border: state.isFocused ? '1px solid #15521D' : '1px solid #e0e0e0',  // 호버 시 border 없음
+    },
+  }),
+  menu: (provided) => ({
+    ...provided,
+    marginTop: 15,
+    // boxShadow: '0 3px 10px 0 rgba(0, 0, 0, 0.16)',
+    borderTop: '0',
+    width: 94, // 메뉴의 너비 설정
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    height: 40,
+    display: 'flex',
+    alignItems: 'center',
+    color: state.isSelected ? 'white' : 'black',
+    backgroundColor: state.isSelected ? '#479051' : state.isFocused ? '#E9F2EB' : 'white',
+    cursor: 'pointer',
+    '&:active': {
+      backgroundColor: '#479051', // 클릭 시 배경 색상
+      color: 'white',
+    }
+  }),
+  placeholder: (provided) => ({
+    ...provided,
+    color: '#bababa',  // Placeholder 색상
+    fontSize: '14px',  // Placeholder 폰트 크기
+  }),
+  singleValue: (provided) => ({
+    ...provided,
+    color: '#000000',  // 선택된 값의 텍스트 색상
+    fontSize: '15px',  // 선택된 값의 폰트 크기
+    fontWeight: 400,
+  }),
+  indicatorSeparator: () => ({
+    display: 'none',  // 드롭다운 화살표와 구분선 제거
+  }),
+  dropdownIndicator: (provided) => ({
+    ...provided,
+    padding: "4px 8px 4px 0px", // 패딩 조정
+  }),
+};
+
+const CustomDropdownIndicator = (props) => {
+  return (
+    <components.DropdownIndicator {...props}>
+      <CustomArrowDown /> {/* 아이콘 크기 조정 */}
+    </components.DropdownIndicator>
+  );
+};
 
 const StudentSearch = ({ searchKeyword, setSearchKeyword }) => {
   const { nameList, schoolList, gradeList } = searchKeyword;
@@ -170,7 +238,12 @@ const StudentSearch = ({ searchKeyword, setSearchKeyword }) => {
                 </SearchField>
                 <SearchField>
                   <div>학년</div>
-                  <CustomSelect options={options} onChange={setGradeKeyword} />
+                  <CustomSelect 
+                  options={options} 
+                  onChange={setGradeKeyword}
+                  styles={customStyle}
+                  placeholder="학년 선택"
+                  components={{ DropdownIndicator: CustomDropdownIndicator }} />
                 </SearchField>
               </SearchOptions>
 
@@ -296,13 +369,10 @@ const CustomSelect = styled(Select)`
   flex-direction: row;
   align-items: center;
   box-sizing: border-box;
-  width: 101px;
-  height: 42px;
-  padding: 10px 15px;
-  gap: 8px;
+  /* gap: 8px; */
   border-radius: 100px;
   background: #fbfbfd;
-  border: 1px solid #e0e0e0;
+  /* border: 1px solid #e0e0e0; */
   font-family: Pretendard Variable;
   font-size: 14px;
   font-weight: 400;
@@ -310,51 +380,6 @@ const CustomSelect = styled(Select)`
 
   &:focus {
     border: 1px solid #15521d;
-  }
-
-  /* &--menu-is-open {
-        border-color: transparent;
-        box-shadow: none; */
-
-  /* &:hover {
-          border-color: transparent;
-        } */
-
-  /* svg {
-          color: white;
-        } */
-  /* } */
-
-  &__menu {
-    margin-top: 15px;
-    top: calc(100% - 2px);
-    box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.16);
-    border-top: 0;
-
-    &-list {
-      padding: 0;
-      justify-content: center;
-      align-items: center;
-    }
-  }
-
-  &__option {
-    height: 40px;
-    display: flex;
-    align-items: center;
-    padding: 9px 0px 9px 15px;
-    border-top: 1px solid gray;
-    color: black;
-    background-color: white;
-
-    &--is-selected {
-      font-weight: bold;
-    }
-
-    &--is-focused {
-      box-shadow: none;
-      background-color: gray;
-    }
   }
 `;
 
@@ -419,11 +444,13 @@ const SearchKewordWrapper = styled.div`
 
 const SearchKeword = styled(RowDiv)`
   align-items: center;
-  width: 106px;
+  width: 100%;
   height: 40px;
   border-radius: 100px;
   background-color: ${(props) => props.theme.colors.primary_light};
   margin-right: 8px;
+  white-space: nowrap;
+  padding: 0 15px;
 
   font-size: 14px;
   font-weight: 400;

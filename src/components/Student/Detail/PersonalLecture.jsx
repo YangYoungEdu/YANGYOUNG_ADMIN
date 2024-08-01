@@ -25,6 +25,7 @@ const PersonalLecture = () => {
   const [completedLectures, setCompletedLectures] = useState([]);
   const { id } = useParams();
 
+
   useEffect(() => {
     const getOneStudentLecture = async (id) => {
       try {
