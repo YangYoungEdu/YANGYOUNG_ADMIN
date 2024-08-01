@@ -84,7 +84,7 @@ const EditForm = () => {
         selectedStudent={selectedStudent}
         setSelectedStudent={setSelectedStudent}
         searchKeyword ={searchKeyword}
-        setSearchKeyword ={searchKeyword}
+        setSearchKeyword ={setSearchKeyword}
         searchData ={searchData}
         setSearchData ={setSearchData}
         searchDataCount ={searchDataCount}
