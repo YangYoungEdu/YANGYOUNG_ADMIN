@@ -2,13 +2,14 @@ import axios from "axios";
 
 const server = process.env.REACT_APP_DEV_URL;
 const local = process.env.REACT_APP_LOCAL_URL;
+const prod = REACT_APP_PROD_URL;
 
 const accessToken = localStorage.getItem("accessToken");
 
 // 학생 전체 조회 API
 export const getAllStudentAPI = async (page = 1, size = 10) => {
   try {
-    const response = await axios.get(`${server}student`, {
+    const response = await axios.get(`${prod}student`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -31,7 +32,7 @@ export const getAllStudentAPI = async (page = 1, size = 10) => {
 // 숨김 학생 전체 조회 API
 export const getHiddenStudentAPI = async (page = 1, size = 10) => {
   try {
-    const response = await axios.get(`${server}student/hidden`, {
+    const response = await axios.get(`${prod}student/hidden`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -54,7 +55,7 @@ export const getHiddenStudentAPI = async (page = 1, size = 10) => {
 // 학생 검색 API
 export const searchStudentAPI = async (nameList, schoolList, gradeList, currentPage) => {
   try {
-    const response = await axios.get(`${server}student/search`, {
+    const response = await axios.get(`${prod}student/search`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -80,7 +81,7 @@ export const searchStudentAPI = async (nameList, schoolList, gradeList, currentP
 //학생 상세 조회 API
 export const getOneStudentAPI = async (id) => {
   try {
-    const response = await axios.get(`${server}student/${id}`, {
+    const response = await axios.get(`${prod}student/${id}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -98,7 +99,7 @@ export const getOneStudentAPI = async (id) => {
 //학생 정보 수정 API
 export const patchStudentAPI = async (data) => {
   try {
-    const response = await axios.patch(`${server}student`, data, {
+    const response = await axios.patch(`${prod}student`, data, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -120,7 +121,7 @@ export const deleteStudentAPI = async (idList) => {
   try {
     const queryString = idList.map((id) => `idList=${id}`).join("&");
 
-    const response = await axios.delete(`${server}student?${queryString}`, {
+    const response = await axios.delete(`${prod}student?${queryString}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -143,7 +144,7 @@ export const hideStudentAPI = async (idList) => {
   console.log(studentIdList);
   try {
     const response = await axios.patch(
-      `${server}student/hidden`,
+      `${prod}student/hidden`,
       studentIdList,
       {
         headers: {
@@ -165,7 +166,7 @@ export const hideStudentAPI = async (idList) => {
 // 강의별 학생 조회 API
 export const getStudentByLectureAPI = async (lectureId) => {
   try {
-    const response = await axios.get(`${server}student/lecture/${lectureId}`, {
+    const response = await axios.get(`${prod}student/lecture/${lectureId}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
