@@ -468,7 +468,7 @@ const SearchKeword = styled(RowDiv)`
   display: flex;
   background-color: ${(props) => props.theme.colors.primary_light};
   margin-right: 8px;
-  padding: 0 10px;
+  padding: 0 15px;
   white-space: nowrap;
 
   font-size: 14px;
