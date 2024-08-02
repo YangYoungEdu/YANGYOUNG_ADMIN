@@ -13,6 +13,7 @@ import MultiDatePicker from '../CalendarDetail/MultiDatePicker.jsx';
 import { getCalendarData, NewComponent } from '../../../Atom.js';
 import { useRecoilState } from 'recoil';
 import ModalDesign from './ModalDesign.jsx';
+import { format } from 'date-fns';
 
 //add 관련 상태관리
 const AddForm = () => {
@@ -171,17 +172,27 @@ const AddForm = () => {
 
   const onClickAdd = async() => {
     try{
-      // 학생 리스트를 newAddFormState에 추가
-      const updatedFormState = {
-        ...newAddFormState,
-        studentList: selectedStudent,
-        lectureDateList: multidates,
-      };
 
-      console.log("updatedFormState", updatedFormState);
+      let updatedFormState;
+      if(multidates.length===0){
+        const formattedDate = format(newAddFormState.curDate, "yyyy-MM-dd");
+        updatedFormState = {
+          ...newAddFormState,
+          studentList: selectedStudent,
+          lectureDateList: [formattedDate],
+        };
+      }
+      else{
+        // 학생 리스트를 newAddFormState에 추가
+        updatedFormState = {
+          ...newAddFormState,
+          studentList: selectedStudent,
+          lectureDateList: multidates,
+        };
+      }
 
       const newSchedule = await insertDateAPI(updatedFormState);
-
+ 
       setCalSchedule((schedule)=>[ ...schedule, newSchedule ]); 
       setAddFormState({ ...addFormState, active: false });
     }

@@ -61,6 +61,7 @@ export const insertDateAPI = async(addFormState) => {
 
 		console.log("post 보내는 데이터 확인", data);
 		const response =await postLecture(data);
+		console.log("post 서버로부터 받는 데이터 확인", response);
 
 		return response;
 	}

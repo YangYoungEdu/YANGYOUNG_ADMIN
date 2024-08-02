@@ -166,7 +166,7 @@ const WeeklyCell = (props) => {
 
         const { id, name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate,allLectureDate, studentList, repeated } = schedule;
 
-        console.log("repeated", schedule);
+        console.log("주간 schedule", schedule);
         if (!active&& !isResizing) { // 리사이징 중일 때 클릭 방지
           setAddFormState({
               ...addFormState,
