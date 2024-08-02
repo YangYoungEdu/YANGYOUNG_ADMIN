@@ -36,6 +36,8 @@ const ModalDesign = ({
   onClickAdd,
 
   //edit
+  onClcikEditMode,
+  editDisable
 }) => {
   console.log("newFormState:", newAddFormState);
   const [onClicked, setOnClicked] = useState({
@@ -123,16 +125,32 @@ const ModalDesign = ({
               ) : null}
               {mode === "edit" ? (
                 <>
-                  <SubmitButton id="edit-btn" className="btn">
+                {editDisable?
+                  (
+                  <>
+                  <SubmitButton id="edit-btn" className="btn" onClick={onClcikEditMode}>
                     수정
                   </SubmitButton>
                   <SubmitButton id="delete-btn" className="btn">
                     삭제
                   </SubmitButton>
+                  </>
+                  )
+                  :
+                  (
+                  <>
+                  <SubmitButton id="edit-btn" className="btn" >
+                  저장
+                  </SubmitButton>
+                  <SubmitButton id="delete-btn" className="btn" onClick={onClcikEditMode}>
+                    취소
+                  </SubmitButton>
+                  </>
+                  )}
                 </>
               ) : null}
 
-              <LightX id="cancel-btn" className="btn" onClick={onClickCancel} />
+              <LightX id="cancel-btn" className="btn" style={{cursor:"pointer"}} onClick={onClickCancel} />
             </ButtonContainer>
           </UpperDiv>
 

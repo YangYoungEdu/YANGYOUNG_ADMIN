@@ -18,6 +18,8 @@ import ModalDesign from './ModalDesign.jsx';
 const EditForm = () => {
   const [addFormState, setAddFormState] = useAddFormState();
   const { active, mode } = addFormState;
+  //수정 편집 모드 관리
+  const [editDisable, setEditDisable] =useState(true);
 
   const [newAddFormState, setNewAddFormState] = useState({
     id: null,
@@ -76,6 +78,13 @@ const EditForm = () => {
     setAddFormState({ ...addFormState, active: false });
   };
 
+  //수정 편집 모드
+  const onClcikEditMode = (e) =>{
+    setEditDisable(!editDisable);
+  } 
+
+
+
     return (
       <ModalDesign 
         mode= "edit"
@@ -89,6 +98,8 @@ const EditForm = () => {
         setSearchData ={setSearchData}
         searchDataCount ={searchDataCount}
         onClickCancel={onClickCancel}
+        onClcikEditMode={onClcikEditMode}
+        editDisable={editDisable}
         
         />
     )
