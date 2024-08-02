@@ -27,12 +27,16 @@ function SignIn() {
 
   // 로그인 버튼 클릭 시 페이지 이동 및 로그인 상태 변수 관리
   const handleLoginClick = async () => {
-    signIn(username, password).then((res) => {
-      setLoginState(true);
-      localStorage.setItem("accessToken", res.jwtToken.accessToken);
-      localStorage.setItem("refreshToken", res.jwtToken.refreshToken);
-      navigate("/lecture");
-    });
+    try{
+      const response = await signIn(username, password);
+        setLoginState(true);
+        localStorage.setItem("accessToken", response.jwtToken.accessToken);
+        localStorage.setItem("refreshToken", response.jwtToken.refreshToken);
+        navigate("/lecture");
+    }
+    catch(err){
+      console.error(err);
+    }
   };
 
   const handleKeyDown = (e) => {
