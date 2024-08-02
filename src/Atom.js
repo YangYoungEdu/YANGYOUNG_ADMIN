@@ -33,6 +33,12 @@ export const isHiddenState = atom({
   effects_UNSTABLE: [persistAtom],
 });
 
+export const isUnregisteredState = atom({
+  key: "isUnregisteredState",
+  default: false,
+  effects_UNSTABLE: [persistAtom],
+});
+
 export const dataState = atom({
   key: "dataState",
   default: [],
