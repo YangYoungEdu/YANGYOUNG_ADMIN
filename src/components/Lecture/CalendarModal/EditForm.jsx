@@ -22,6 +22,8 @@ const EditForm = () => {
   //반복 일정시 모달창 모드
   const [repeatMode, setRepeatMode] =useState("repeatEdit");
   const [calSchedule, setCalSchedule] = useRecoilState(getCalendarData);
+  //반복 수정 여부 확인
+  const [isAllEdit, setIsAllEdit] =useState(false);
 
   const [newAddFormState, setNewAddFormState] = useState({
     id: null,
@@ -147,15 +149,26 @@ const EditForm = () => {
 
   //수정 편집 모드
   const onClcikEditMode = (e) =>{
+    //반복이고 조회
     if(addFormState.repeated&&editDisable){
       setRepeatMode("repeatEdit")
       setIsRepeatModalOpen(!isRepeatModalOpen);
       document.body.style.overflow = "hidden";
+    } 
+    //반복이고 수정 -취소누를 때
+    else if(addFormState.repeated&&!editDisable){
+      setEditDisable(!editDisable);
     }
+    //단일이고 조회
+    else if(!addFormState.repeated&&editDisable){
+      //단일 수정
+      setEditDisable(!editDisable);
+    }
+    //단일이고 수정 - 취소누를 때
     else{
-      //단일 수정 함수
+      setEditDisable(!editDisable);
     }
-    setEditDisable(!editDisable);
+    
   } 
 
   //수정
@@ -211,6 +224,8 @@ const EditForm = () => {
         method={repeatMode}
         onClickCancel={onClickCancel}
         lectureId ={newAddFormState.id}
+        setIsAllEdit={setIsAllEdit}
+        setEditDisable={setEditDisable}
       ></RepeatModal>
       </>
     )

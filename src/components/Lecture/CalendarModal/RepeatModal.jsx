@@ -4,7 +4,14 @@ import styled from "styled-components";
 import { getCalendarData } from "../../../Atom";
 import { deleteLectureAPI } from "../CalendarDetail/UserDataController";
 
-function RepeatModal({ isOpen, closeModal, method , onClickCancel, lectureId}) {
+function RepeatModal({ 
+  isOpen, 
+  closeModal, 
+  method , 
+  onClickCancel, 
+  lectureId, 
+  setIsAllEdit, 
+  setEditDisable}) {
   const [calSchedule, setCalSchedule] = useRecoilState(getCalendarData);
   const title = method === "repeatEdit" ? "반복 일정 수정" : "반복 일정 삭제";
 
@@ -15,6 +22,18 @@ function RepeatModal({ isOpen, closeModal, method , onClickCancel, lectureId}) {
   const handleRadioChange = (e) => {
     setOption(e.target.value);
   };
+
+  //수정 여부
+  const onClickEditBtn = () =>{
+    if(Option==='single'){
+      setIsAllEdit(false);
+    }
+    else{
+      setIsAllEdit(true);
+    }
+    setEditDisable(false);
+    closeModal();
+  }
 
   //삭제
   const onClickDeleteBtn = async (e) =>{
@@ -61,7 +80,7 @@ function RepeatModal({ isOpen, closeModal, method , onClickCancel, lectureId}) {
         <BtnContainer>
           <CloseBtn onClick={closeModal}>취소</CloseBtn>
           {method ==='repeatEdit'? 
-            <AddButton>확인</AddButton> :
+            <AddButton onClick={onClickEditBtn}>확인</AddButton> :
             <AddButton onClick={onClickDeleteBtn}>삭제</AddButton> } 
         </BtnContainer>
       </Container>
