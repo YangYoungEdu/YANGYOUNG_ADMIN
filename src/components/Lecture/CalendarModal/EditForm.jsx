@@ -13,6 +13,7 @@ import MultiDatePicker from '../CalendarDetail/MultiDatePicker.jsx';
 import { getCalendarData } from '../../../Atom.js';
 import { useRecoilState } from 'recoil';
 import ModalDesign from './ModalDesign.jsx';
+import RepeatModal from './RepeatModal.jsx';
 
 //edit 관련 상태관리
 const EditForm = () => {
@@ -20,6 +21,10 @@ const EditForm = () => {
   const { active, mode } = addFormState;
   //수정 편집 모드 관리
   const [editDisable, setEditDisable] =useState(true);
+  //반복 일정시 모달창
+  const [isRepeatModalOpen, setIsRepeatModalOpen] = useState(false);
+  //반복 일정시 모달창 모드
+  const [repeatMode, setRepeatMode] =useState("repeatEdit");
 
   const [newAddFormState, setNewAddFormState] = useState({
     id: null,
@@ -145,12 +150,45 @@ const EditForm = () => {
 
   //수정 편집 모드
   const onClcikEditMode = (e) =>{
+    if(addFormState.repeated){
+      setRepeatMode("repeatEdit")
+      setIsRepeatModalOpen(!isRepeatModalOpen);
+      document.body.style.overflow = "hidden";
+    }
+    else{
+      //단일 수정 함수
+    }
     setEditDisable(!editDisable);
   } 
 
+  //수정
+  const onClickEdit = (e) =>{
+
+  }
+
+  //반복 일정일 때 뜨는 모달
+  const handleRepeatModalOpen = () => {
+    if(isRepeatModalOpen){
+    document.body.style.overflow = "unset";
+    }
+    setIsRepeatModalOpen(!isRepeatModalOpen);
+  };
+
+  //삭제
+  const onClickDelete = () =>{
+      if(addFormState.repeated){
+        setRepeatMode("repeatDelete")
+        setIsRepeatModalOpen(!isRepeatModalOpen);
+        document.body.style.overflow = "hidden";
+      }
+      else{
+        //단일 삭제 함수
+      }
+  }
 
 
     return (
+      <>
       <ModalDesign 
         mode= "edit"
         newAddFormState ={newAddFormState}
@@ -166,8 +204,14 @@ const EditForm = () => {
         onClickCancel={onClickCancel}
         onClcikEditMode={onClcikEditMode}
         editDisable={editDisable}
-        
+        onClickDelete= {onClickDelete}
         />
+        <RepeatModal
+        isOpen={isRepeatModalOpen}
+        closeModal={handleRepeatModalOpen}
+        method={setRepeatMode}
+      ></RepeatModal>
+      </>
     )
 };
 

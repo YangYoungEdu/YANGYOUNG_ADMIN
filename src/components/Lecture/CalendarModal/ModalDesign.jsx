@@ -37,7 +37,8 @@ const ModalDesign = ({
 
   //edit
   onClcikEditMode,
-  editDisable
+  editDisable,
+  onClickDelete
 }) => {
   console.log("newFormState:", newAddFormState);
   const [onClicked, setOnClicked] = useState({
@@ -132,7 +133,7 @@ const ModalDesign = ({
                   <SubmitButton id="edit-btn" className="btn" onClick={onClcikEditMode}>
                     수정
                   </SubmitButton>
-                  <SubmitButton id="delete-btn" className="btn">
+                  <SubmitButton id="delete-btn" className="btn" onClick={onClickDelete}>
                     삭제
                   </SubmitButton>
                   </>
@@ -303,7 +304,7 @@ const ModalDesign = ({
                   disabled = {mode !== 'add' && editDisable}
                 >
                   <option value="일반">일반</option>
-                  <option value="특반">특강</option>
+                  <option value="특강">특강</option>
                 </select>
               </SelectWrapper>
             </DetailInfo>

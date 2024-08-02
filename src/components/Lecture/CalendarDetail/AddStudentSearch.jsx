@@ -449,7 +449,7 @@ const StyledButton = styled.button`
   border-radius: 5px;
   cursor: pointer;
   &:hover {
-    background-color: #479051;
+    background-color:${({ color }) => color==="black"?"#E0E0E0" :"#479051"};
   }
   font-size: 13px;
   font-weight: 400;
