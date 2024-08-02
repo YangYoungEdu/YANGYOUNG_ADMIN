@@ -3,6 +3,9 @@ import styled from "styled-components";
 import { MainDiv } from "../../style/CommonStyle";
 import StudentAdd from "../Student/StudentModal/StudentAdd";
 import StudentHide from "./StudentModal/StudentHide";
+import { isUnregisteredState } from "../../Atom";
+import { useRecoilState } from "recoil";
+import { getUnregisteredStudentRefreshAPI } from "../../API/StudentAPI";
 
 const TableMenus = ({
   isEditing,
@@ -13,17 +16,24 @@ const TableMenus = ({
 }) => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isHideModalOpen, setIsHideModalOpen] = useState(false);
+  const [isUnregistered, setIsUnregistered] =
+    useRecoilState(isUnregisteredState);
 
   const setEdit = () => {
     setIsEditing(true);
   };
 
-  const closeEdit = () =>{
+  const closeEdit = () => {
     setIsEditing(false);
-  }
+  };
 
   const goToSave = () => {
     setIsHidden(!isHidden);
+    window.location.reload();
+  };
+
+  const goToUnregistered = () => {
+    setIsUnregistered(!isUnregistered);
     window.location.reload();
   };
 
@@ -35,13 +45,22 @@ const TableMenus = ({
     setIsHideModalOpen(!isHideModalOpen);
   };
 
+  const handleRefresh = async () => {
+    getUnregisteredStudentRefreshAPI();
+  };
   return (
     <MainDiv>
       {/* 보관함 들어온 경우 */}
-      {isHidden && (
+      {isHidden && !isUnregistered && (
         <TitleDiv>
           <div />
           <StyledH1>학생보관함</StyledH1>
+        </TitleDiv>
+      )}
+      {isUnregistered && !isHidden && (
+        <TitleDiv>
+          <div />
+          <StyledH1>미등록 학생 조회</StyledH1>
         </TitleDiv>
       )}
       <TableMenusStyle>
@@ -50,45 +69,46 @@ const TableMenus = ({
           <div>전체선택</div>
         ) : (
           //편집 모드 아닌 경우
-          <div>총 {searchDataCount}개</div>
+          <div>총 {searchDataCount}명</div>
         )}
 
         {isEditing ? (
           // 편집 모드의 경우
           <EditModeButtons>
             <div onClick={closeEdit}>취소</div>
-            <EditButton
-              onClick={openHideModal}
-            >
-              퇴원처리
-            </EditButton>
-            {/* <EditButton
-              onClick={deleteStudent}
-              color="black"
-              background="#EFEFEF"
-            >
-              삭제
-            </EditButton>
-            <EditButton color="white" background="#15521D">
-              저장
-            </EditButton> */}
+            <EditButton onClick={openHideModal}>퇴원처리</EditButton>
           </EditModeButtons>
         ) : (
           // 편집 모드가 아닌 경우
           <SideMenus>
             <>
-              <div onClick={goToSave}>{isHidden? "학생목록":"보관함"}</div>
-              <div>|</div>
-              <div onClick={openAddModal}>등록</div>
-              <div>|</div>
+              {!isHidden && (
+                <>
+                  <div onClick={goToUnregistered}>
+                    {isUnregistered ? "학생목록" : "미등록 학생"}
+                  </div>
+                  <div>|</div>
+                </>
+              )}
+              {isUnregistered && (
+                <StyledButton onClick={handleRefresh}>동기화</StyledButton>
+              )}
+              <div onClick={goToSave}>
+                {isHidden ? "학생목록" : isUnregistered ? "" : "보관함"}
+              </div>{" "}
+              {!isUnregistered && <div>|</div>}
+              <div onClick={openAddModal}>{isUnregistered ? "" : "등록"}</div>
+              {!isUnregistered && <div>|</div>}
             </>
-            <div onClick={setEdit}>편집</div>
+            <div onClick={setEdit}>{isUnregistered ? "" : "편집"}</div>
           </SideMenus>
         )}
       </TableMenusStyle>
       {/* 모달창들 */}
       {isAddModalOpen && <StudentAdd setIsAddModalOpen={setIsAddModalOpen} />}
-      {isHideModalOpen && <StudentHide setIsHideModalOpen={setIsHideModalOpen} />}
+      {isHideModalOpen && (
+        <StudentHide setIsHideModalOpen={setIsHideModalOpen} />
+      )}
     </MainDiv>
   );
 };
@@ -126,7 +146,6 @@ const EditModeButtons = styled.div`
   flex-direction: row;
   gap: 10px;
   align-items: center;
-
 `;
 const EditButton = styled.button`
   width: 84px;
@@ -140,12 +159,23 @@ const EditButton = styled.button`
   font-weight: 400;
   text-align: center;
   color: black;
-line-height: 14px;
+  line-height: 14px;
 `;
 const SideMenus = styled.div`
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: center;
   gap: 10px;
+`;
+
+const StyledButton = styled.button`
+  padding: 5px 10px;
+  box-sizing: border-box;
+  border: 1px solid #e0e0e0;
+  background-color: white;
+  border-radius: 5px;
+  cursor: pointer;
 `;
 
 export default TableMenus;

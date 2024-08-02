@@ -12,6 +12,7 @@ import {
   deleteFileAPI,
 } from "../../../API/MaterialAPI";
 import { ColumnDiv } from "../../../style/CommonStyle";
+import { downloadFileAPI } from "../../../API/MaterialAPI";
 
 const LectureMaterial = ({ lecture, date }) => {
   const [materials, setMaterials] = useState([]);
@@ -87,6 +88,14 @@ const LectureMaterial = ({ lecture, date }) => {
     fileInputRef.current.click();
   };
 
+  const handleDownloadClick = (fileName) => {
+    return () => {
+      // const formattedDate = format(selectedDate, "yyyy-MM-dd");
+      downloadFileAPI(lecture, date, fileName);
+      console.log (lecture, date, fileName)
+    };
+  };
+
   return (
     <TaskWrapper>
       {materials.length > 0 &&
@@ -115,7 +124,7 @@ const LectureMaterial = ({ lecture, date }) => {
                 readOnly
               />
               {/* 다운로드 아이콘 */}
-              <Download />
+              <Download onClick={handleDownloadClick(selectedFiles[index].name)}/>
             </Wrapper>
           )}
         </TaskBox>
