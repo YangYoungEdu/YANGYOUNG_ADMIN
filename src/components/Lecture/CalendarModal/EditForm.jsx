@@ -217,6 +217,7 @@ const EditForm = () => {
         onClcikEditMode={onClcikEditMode}
         editDisable={editDisable}
         onClickDelete= {onClickDelete}
+        isAllEdit= {isAllEdit}
         />
         <RepeatModal
         isOpen={isRepeatModalOpen}

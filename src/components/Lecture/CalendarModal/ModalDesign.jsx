@@ -38,7 +38,8 @@ const ModalDesign = ({
   //edit
   onClcikEditMode,
   editDisable,
-  onClickDelete
+  onClickDelete,
+  isAllEdit
 }) => {
   console.log("newFormState:", newAddFormState);
   const [onClicked, setOnClicked] = useState({
@@ -76,18 +77,31 @@ const ModalDesign = ({
   // 컴포넌트가 마운트될 때 multidates를 리셋하고 curDate를 추가
   useEffect(() => {
     if (newAddFormState.lectureDate && mode==='edit') {
+      if(isAllEdit){ //반복 일정 수정
+
+        if(editDisable===false){
+          setmultiDates(newAddFormState.allLectureDate);
+          setStartDate(newAddFormState.lectureDate);
+        }
+        else{
+          const formattedDate = format(newAddFormState.lectureDate, "yyyy-MM-dd");
+          setmultiDates([formattedDate]);
+          setStartDate(newAddFormState.lectureDate);
+        }
+      }
+      else{
+        //단일 일정 수정
       const formattedDate = format(newAddFormState.lectureDate, "yyyy-MM-dd");
-      // multidates를 새롭게 설정 (리셋)하고 curDate를 추가
       setmultiDates([formattedDate]);
       setStartDate(newAddFormState.lectureDate); // DatePicker의 시작 날짜도 curDate로 설정
+      }
     }
     if (newAddFormState.curDate && mode ==='add'){
       const formattedDate = format(newAddFormState.curDate, "yyyy-MM-dd");
-      // multidates를 새롭게 설정 (리셋)하고 curDate를 추가
       setmultiDates([formattedDate]);
-      setStartDate(newAddFormState.lectureDate); // DatePicker의 시작 날짜도 curDate로 설정
+      setStartDate(newAddFormState.lectureDate);
     }
-  }, [newAddFormState.lectureDate, newAddFormState.curDate]);
+  }, [newAddFormState.lectureDate, newAddFormState.curDate, editDisable]);
 
   const handleChange = (date) => {
     console.log("받은 날자 확인", newAddFormState.lectureDate);
@@ -141,11 +155,11 @@ const ModalDesign = ({
                   :
                   (
                   <>
-                  <SubmitButton id="edit-btn" className="btn" >
-                  저장
-                  </SubmitButton>
                   <SubmitButton id="delete-btn" className="btn" onClick={onClcikEditMode}>
                     취소
+                  </SubmitButton>
+                  <SubmitButton id="edit-btn" className="btn" >
+                  저장
                   </SubmitButton>
                   </>
                   )}
