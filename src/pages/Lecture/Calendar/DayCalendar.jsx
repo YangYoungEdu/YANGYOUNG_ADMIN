@@ -32,7 +32,7 @@ export const times = [
 	'23:00', '23:15', '23:30', '23:45'
 ]
 
-const DayCalendar = ({ currentDate, lectureOfDay }) => {
+const DayCalendar = ({ currentDate, lectureOfDay, monthToday }) => {
   const [calendarState, setCalendarState] = useCalendarState();
   const { date } = calendarState;
 
@@ -133,7 +133,7 @@ const DayCalendar = ({ currentDate, lectureOfDay }) => {
               ))}
           </HourCol>
           {dates.map((a, i) => (
-              <WeeklyCol key={i} className="weekly-col"> {/* 일간 보기를 위한 컬럼 */}
+              <WeeklyCol key={i} className="weekly-col" monthToday={monthToday}> {/* 일간 보기를 위한 컬럼 */}
                   {a.map((b, j) => (
                       j > 0 && ( // 시간 데이터만 표시 (날짜 데이터 제외)
                           <DailyCell // WeeklyCell을 사용하는데, 필요하다면 DailyCell로 변경
@@ -199,7 +199,8 @@ const HourCell = styled.div`
 const WeeklyCol = styled.div`
   /* width: 120px; */
   /* margin-top: 6px; */
-  width: 1060px;
+  width: ${(props) => props.monthToday? "100%":"1060px"};
+  /* width: 1060px; */
   display: flex;
   flex-direction: column;
   /* justify-content: center; */

@@ -14,6 +14,7 @@ import { ReactComponent as LightX } from "../../../Assets/LightX.svg";
 import { format } from "date-fns";
 import { useRecoilState } from "recoil";
 import { monthlyModalOpen, monthToDay } from "../../../Atom.js";
+import DayCalendar from "../../../pages/Lecture/Calendar/DayCalendar.jsx";
 //보여주는 모달 디자인
 const MonthlyModal = ({
 }) => {
@@ -55,6 +56,9 @@ const MonthlyModal = ({
           </UpperDiv>
 
           <MiddleDiv>
+            <DayCalendar 
+              lectureOfDay={monthToDayData} 
+              monthToday={true}/>
             
           </MiddleDiv>
 
