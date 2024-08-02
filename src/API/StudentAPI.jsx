@@ -180,3 +180,39 @@ export const getStudentByLectureAPI = async (lectureId) => {
     console.error(error);
   }
 };
+
+export const getUnregisteredStudentAPI = async() => {
+  try {
+    const response = await axios.get(`${prod}student/unregistered`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
+    console.log (response.data);
+    return response.data;
+  } catch (error) {
+    if (error.response.status === 403) {
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
+    console.error(error);
+  }
+};
+
+export const getUnregisteredStudentRefreshAPI = async() => {
+  try {
+    const response = await axios.get(`${prod}student/unregistered/refresh`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    if (error.response.status === 403) {
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
+    console.error(error);
+  }
+};
+

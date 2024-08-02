@@ -63,26 +63,54 @@ export const getFilesAPI = async (lecture, date) => {
   }
 };
 
-// 강의자료 다운로드 API - 여러파일 다운로드 시 그냥 여러번 호출 해야 함(왜 안되는지 모르겠음)
-export const downloadFileAPI = async (lecture, date, fileName) => {
+export const downloadFileAPI = async (lectureId, lectureDate, fileName) => {
+  console.log("download api requests: ", lectureId, lectureDate, fileName);
   try {
     const response = await axios.get(`${prod}file/download`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
       params: {
-        lecture: lecture,
-        date: date,
+        lectureId: lectureId,
+        date: lectureDate,
         fileName: fileName,
       },
+      responseType: "blob",
     });
+
+    const fileBlob = new Blob([response.data], {
+      type: response.headers["content-type"],
+    });
+
+    const contentDisposition = response.headers["content-disposition"];
+    const downloadFileName = contentDisposition
+      ? contentDisposition.split("filename=")[1].replace(/"/g, "")
+      : fileName;
+
+    const fileURL = window.URL.createObjectURL(fileBlob);
+    const link = document.createElement("a");
+    link.href = fileURL;
+    link.setAttribute("download", downloadFileName);
+    document.body.appendChild(link);
+    link.click();
+
+    // 리소스 해제
+    link.remove();
+    window.URL.revokeObjectURL(fileURL);
+
+    console.log(response.data);
     return response.data;
   } catch (error) {
-    if(error.response.status === 403){
+    if (error.response && error.response.status === 403) {
       alert("로그인 후 이용해주세요.");
       window.location.href = "/";
+    } else {
+      console.error("파일 다운로드 실패:", error);
     }
-    console.error(error);
     throw error;
   }
 };
+
 
 // 강의자료 삭제 API
 export const deleteFileAPI = async (lecture, date, fileName) => {

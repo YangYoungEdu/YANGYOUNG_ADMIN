@@ -6,12 +6,14 @@ import {
   getAllStudentAPI,
   getHiddenStudentAPI,
   searchStudentAPI,
+  getUnregisteredStudentAPI,
 } from "../../API/StudentAPI";
 import {
   currentPageState,
   isHiddenState,
   selectedStudentState,
-  totalPageState
+  totalPageState,
+  isUnregisteredState,
 } from "../../Atom";
 import { MainDiv } from "../../style/CommonStyle";
 import { theme } from "../../style/theme";
@@ -35,19 +37,21 @@ const GenericTable = ({
   setSearchData,
   setSearchDataCount,
   searchDataCount,
-  searchKeyword
+  searchKeyword,
 }) => {
   const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
   const [totalPage, setTotalPage] = useRecoilState(totalPageState);
   const [selectedStudent, setSelectedStudent] =
     useRecoilState(selectedStudentState);
   const [isHidden, setIsHidden] = useRecoilState(isHiddenState);
+  const [isUnregistered, setIsUnregistered] =
+    useRecoilState(isUnregisteredState);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchTableData();
-  }, [currentPage, searchKeyword]);
+  }, [currentPage, searchKeyword, isUnregistered]);
 
   const fetchTableData = async () => {
     let response;
@@ -56,30 +60,40 @@ const GenericTable = ({
     const isSearchKeywordEmpty = Object.values(searchKeyword).every(
       (value) => value.length === 0
     );
-    if (isSearchKeywordEmpty) {
+    if (isUnregistered) {
+      console.log("미등록 학생 조회");
+      response = await getUnregisteredStudentAPI();
+    } else if (isSearchKeywordEmpty) {
       if (isHidden) {
         console.log("숨김 학생 조회");
         response = await getHiddenStudentAPI(currentPage);
-      }
-      if (!isHidden) {
+      } else {
         console.log("전체 학생 조회");
         response = await getAllStudentAPI(currentPage);
       }
-    }
-    if (!isSearchKeywordEmpty) {
+    } else {
       console.log("검색 학생 조회");
       const nameList = searchKeyword.nameList.join(",");
       const schoolList = searchKeyword.schoolList.join(",");
       const gradeList = searchKeyword.gradeList.join(",");
-      response = await searchStudentAPI(nameList, schoolList, gradeList, currentPage);
+      response = await searchStudentAPI(
+        nameList,
+        schoolList,
+        gradeList,
+        currentPage
+      );
     }
-
-    console.log(response.content);
-
-    setSearchData(response.content);
-    setTotalPage(response.totalPages);
-    setSearchDataCount(response.totalElements);
-    console.log(response.totalElements);
+    if (!isUnregistered) {
+      console.log(response.content);
+      setSearchData(response.content);
+      setTotalPage(response.totalPages);
+      setSearchDataCount(response.totalElements);
+      console.log(response.totalElements);
+    } else {
+      console.log(response);
+      setSearchData(response);
+      setSearchDataCount(response.length);
+    }
   };
 
   const handlePageChange = (pageNumber) => {
@@ -93,14 +107,14 @@ const GenericTable = ({
   };
 
   const handleCheckboxChange = (id) => {
-    console.log('id 확인', id);
+    console.log("id 확인", id);
     setSelectedStudent((prevSelectedStudent) => {
       if (prevSelectedStudent.includes(id)) {
-        console.log('있음');
+        console.log("있음");
         // 배열에서 해당 id를 제거
         return prevSelectedStudent.filter((studentId) => studentId !== id);
       } else {
-        console.log('없음');
+        console.log("없음");
         // 배열에 해당 id를 추가
         return [...prevSelectedStudent, id];
       }
@@ -159,13 +173,17 @@ const GenericTable = ({
                 })}
             </StyledTbody>
           </StyledTable>
-          <PaginationContainer>
-            <PaginationComponent
-              pageCount={totalPage}
-              currentPage={currentPage}
-              setCurrentPage={handlePageChange}
-            />
-          </PaginationContainer>
+          {!isUnregistered && (
+            <>
+              <PaginationContainer>
+                <PaginationComponent
+                  pageCount={totalPage}
+                  currentPage={currentPage}
+                  setCurrentPage={handlePageChange}
+                />
+              </PaginationContainer>
+            </>
+          )}
         </Container>
       </ThemeProvider>
     </MainDiv>
