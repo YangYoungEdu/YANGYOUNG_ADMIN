@@ -113,7 +113,16 @@ const ModalDesign = ({
         setmultiDates(multidates.filter((d) => d !== newDate));
       } else {
         // 새로운 날짜 추가
-        setmultiDates([...multidates, newDate]);
+        //반복일정 수정인 경우
+        if(isAllEdit||mode==='add'){
+          setmultiDates([...multidates, newDate]);  
+        }
+        else{
+          //단일 일정 수정인 경우 - 날짜를 하나만 받아옴
+          if(multidates<1){
+            setmultiDates([...multidates, newDate]);
+          }
+        }
       }
     }
   };

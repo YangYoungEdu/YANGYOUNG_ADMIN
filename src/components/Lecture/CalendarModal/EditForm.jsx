@@ -10,6 +10,7 @@ import { getCalendarData } from '../../../Atom.js';
 import { useRecoilState } from 'recoil';
 import ModalDesign from './ModalDesign.jsx';
 import RepeatModal from './RepeatModal.jsx';
+import { format } from 'date-fns';
 
 //edit 관련 상태관리
 const EditForm = () => {
@@ -171,10 +172,32 @@ const EditForm = () => {
     
   } 
 
+  //끝시간이 시작시간보다 빠른지 확인
+  const isEndTimeBeforeStartTime = (startTime, endTime) => {
+    const startTimeInMinutes = startTime.hour * 60 + startTime.minute;
+    const endTimeInMinutes = endTime.hour * 60 + endTime.minute;
+    return endTimeInMinutes < startTimeInMinutes;
+  };
+
   //수정
   const onClickEdit = async  (e) =>{
     console.log("반복 수정 여부 확인", isAllEdit);
     try{
+
+      // 시간 비교 및 예외 처리
+      if (isEndTimeBeforeStartTime(startTime, endTime)) {
+        alert('끝 시간이 시작 시간보다 빠를 수 없습니다.');
+        return; // 함수 종료
+      }
+
+      let limitMultidates;
+      if(multidates.length===0){
+        limitMultidates = [newAddFormState.lectureDate];
+      }
+      else{
+        limitMultidates =multidates;
+      } 
+
       const startTimeStr = serverformatTime(startTime.hour, startTime.minute);
       const endTimeStr = serverformatTime(endTime.hour, endTime.minute);
 
@@ -187,7 +210,7 @@ const EditForm = () => {
         room: newAddFormState.room,
         startTime: startTimeStr,
         endTime: endTimeStr,
-        lectureDates: multidates
+        lectureDates: limitMultidates
       }
 
       console.log("수정 보낼 데이터", data);
