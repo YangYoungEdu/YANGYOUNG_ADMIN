@@ -36,6 +36,11 @@ const ModalDesign = ({
   onClickAdd,
 
   //edit
+  onClcikEditMode,
+  editDisable,
+  onClickDelete,
+  isAllEdit,
+  onClickEdit
 }) => {
   console.log("newFormState:", newAddFormState);
   const [onClicked, setOnClicked] = useState({
@@ -73,18 +78,31 @@ const ModalDesign = ({
   // 컴포넌트가 마운트될 때 multidates를 리셋하고 curDate를 추가
   useEffect(() => {
     if (newAddFormState.lectureDate && mode==='edit') {
+      if(isAllEdit){ //반복 일정 수정
+
+        if(editDisable===false){
+          setmultiDates(newAddFormState.allLectureDate);
+          setStartDate(newAddFormState.lectureDate);
+        }
+        else{
+          const formattedDate = format(newAddFormState.lectureDate, "yyyy-MM-dd");
+          setmultiDates([formattedDate]);
+          setStartDate(newAddFormState.lectureDate);
+        }
+      }
+      else{
+        //단일 일정 수정
       const formattedDate = format(newAddFormState.lectureDate, "yyyy-MM-dd");
-      // multidates를 새롭게 설정 (리셋)하고 curDate를 추가
       setmultiDates([formattedDate]);
       setStartDate(newAddFormState.lectureDate); // DatePicker의 시작 날짜도 curDate로 설정
+      }
     }
     if (newAddFormState.curDate && mode ==='add'){
       const formattedDate = format(newAddFormState.curDate, "yyyy-MM-dd");
-      // multidates를 새롭게 설정 (리셋)하고 curDate를 추가
       setmultiDates([formattedDate]);
-      setStartDate(newAddFormState.lectureDate); // DatePicker의 시작 날짜도 curDate로 설정
+      setStartDate(newAddFormState.lectureDate);
     }
-  }, [newAddFormState.lectureDate, newAddFormState.curDate]);
+  }, [newAddFormState.lectureDate, newAddFormState.curDate, editDisable]);
 
   const handleChange = (date) => {
     console.log("받은 날자 확인", newAddFormState.lectureDate);
@@ -95,7 +113,16 @@ const ModalDesign = ({
         setmultiDates(multidates.filter((d) => d !== newDate));
       } else {
         // 새로운 날짜 추가
-        setmultiDates([...multidates, newDate]);
+        //반복일정 수정인 경우
+        if(isAllEdit||mode==='add'){
+          setmultiDates([...multidates, newDate]);  
+        }
+        else{
+          //단일 일정 수정인 경우 - 날짜를 하나만 받아옴
+          if(multidates<1){
+            setmultiDates([...multidates, newDate]);
+          }
+        }
       }
     }
   };
@@ -112,6 +139,7 @@ const ModalDesign = ({
               }
               onChange={onChangeNewAddFormState}
               placeholder="수업 이름을 적어주세요."
+              disabled = {mode !== 'add' && editDisable}
             />
 
             <ButtonContainer id="option-form">
@@ -123,16 +151,32 @@ const ModalDesign = ({
               ) : null}
               {mode === "edit" ? (
                 <>
-                  <SubmitButton id="edit-btn" className="btn">
+                {editDisable?
+                  (
+                  <>
+                  <SubmitButton id="edit-btn" className="btn" onClick={onClcikEditMode}>
                     수정
                   </SubmitButton>
-                  <SubmitButton id="delete-btn" className="btn">
+                  <SubmitButton id="delete-btn" className="btn" onClick={onClickDelete}>
                     삭제
                   </SubmitButton>
+                  </>
+                  )
+                  :
+                  (
+                  <>
+                  <SubmitButton id="delete-btn" className="btn" onClick={onClcikEditMode}>
+                    취소
+                  </SubmitButton>
+                  <SubmitButton id="edit-btn" className="btn" onClick={onClickEdit} >
+                  저장
+                  </SubmitButton>
+                  </>
+                  )}
                 </>
               ) : null}
 
-              <LightX id="cancel-btn" className="btn" onClick={onClickCancel} />
+              <LightX id="cancel-btn" className="btn" style={{cursor:"pointer"}} onClick={onClickCancel} />
             </ButtonContainer>
           </UpperDiv>
 
@@ -141,9 +185,10 @@ const ModalDesign = ({
             <DetailInfo1>
               <Left>
                 <Label className="label">수업 일자</Label>
-                <AddDatesOption onClick={handleDatePickerOpen}>
-                  날짜 추가
-                </AddDatesOption>
+                {mode==='add'||!editDisable?
+                  <AddDatesOption onClick={handleDatePickerOpen}>
+                    날짜 추가
+                  </AddDatesOption> : null}
               </Left>
               <Right id="date-picker-form">
                 {/* 선택된 날짜들은 datepicker 달력 노출 여부와 상관 없이 항상 보여야 함 */}
@@ -152,32 +197,35 @@ const ModalDesign = ({
                     multidates.map((date) => (
                       <DateItem key={date}>
                         {date}
+                        {mode==='add'||!editDisable?
                         <RemoveButton onClick={() => handleRemoveDate(date)}>
                           x
                         </RemoveButton>
+                        : null
+                        }
                       </DateItem>
                     ))}
                 </DateItemContainer>
                 {/* 날짜 추가 div를 누르면 date picker 나옴 */}
-                <div id="date-picker">
-                  {isDatePickerOpen && (
-                    <div>
-                      <DatePicker
-                        selected={startDate}
-                        onChange={(date) => {
-                          setStartDate(date);
-                          handleChange(date);
-                        }}
-                        onClickOutside={() => setStartDate(null)}
-                        selectsStart
-                        startDate={startDate}
-                        dateFormat="yyyy/MM/dd"
-                        inline
-                        highlightDates={multidates.map((d) => new Date(d))}
-                      />
-                    </div>
-                  )}
-                </div>
+                  <div id="date-picker">
+                    {isDatePickerOpen && (
+                      <div>
+                        <DatePicker
+                          selected={startDate}
+                          onChange={(date) => {
+                            setStartDate(date);
+                            handleChange(date);
+                          }}
+                          onClickOutside={() => setStartDate(null)}
+                          selectsStart
+                          startDate={startDate}
+                          dateFormat="yyyy/MM/dd"
+                          inline
+                          highlightDates={multidates.map((d) => new Date(d))}
+                        />
+                      </div>
+                    )}
+                  </div>
               </Right>
             </DetailInfo1>
 
@@ -203,6 +251,7 @@ const ModalDesign = ({
                   placeholder="시"
                   min="0"
                   max="23"
+                  disabled = {mode !== 'add' && editDisable}
                 />
                 :
                 <input
@@ -222,6 +271,7 @@ const ModalDesign = ({
                   min="0"
                   max="59"
                   step="1"
+                  disabled = {mode !== 'add' && editDisable}
                 />
                 -
                 <input
@@ -240,6 +290,7 @@ const ModalDesign = ({
                   placeholder="시"
                   min="0"
                   max="23"
+                  disabled = {mode !== 'add' && editDisable}
                 />
                 :
                 <input
@@ -259,12 +310,13 @@ const ModalDesign = ({
                   min="0"
                   max="59"
                   step="1"
+                  disabled = {mode !== 'add' && editDisable}
                 />
               </TimePicker>
             </DetailInfo>
             <DetailInfo id="lectureType-picker-form">
               <Label className="label">강의 타입</Label>
-              <SelectWrapper>
+              <SelectWrapper disabled= {mode !== 'add' && editDisable}>
                 <select
                   id="lectureType-select"
                   value={
@@ -273,9 +325,10 @@ const ModalDesign = ({
                       : newAddFormState.lectureType
                   }
                   onChange={onChangeNewAddFormState}
+                  disabled = {mode !== 'add' && editDisable}
                 >
                   <option value="일반">일반</option>
-                  <option value="특반">특강</option>
+                  <option value="특강">특강</option>
                 </select>
               </SelectWrapper>
             </DetailInfo>
@@ -290,6 +343,7 @@ const ModalDesign = ({
                 }
                 onChange={onChangeNewAddFormState}
                 placeholder="선생님 이름을 적어주세요."
+                disabled = {mode !== 'add' && editDisable}
               />
             </DetailInfo>
             <DetailInfo id="input-form">
@@ -301,6 +355,7 @@ const ModalDesign = ({
                 }
                 onChange={onChangeNewAddFormState}
                 placeholder="강의실을 적어주세요."
+                disabled = {mode !== 'add' && editDisable}
               />
             </DetailInfo>
           </MiddleDiv>
@@ -592,7 +647,8 @@ const SelectWrapper = styled.div`
   font-size: 14px;
   font-weight: 400;
   text-align: left;
-  cursor: pointer;
+  cursor: ${(props) => props.disabled? "default" : "pointer"};
+
 `;
 
 const ButtonWrapper = styled.div`

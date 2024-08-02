@@ -9,10 +9,10 @@ import { useAddFormState } from '../../../stores/addFormState.jsx';
 import { useUserData } from '../../../stores/userData.jsx';
 import AddGenericTable from '../CalendarDetail/AddGenericTable.jsx';
 import AddStudentSearch from '../CalendarDetail/AddStudentSearch.jsx';
-import MultiDatePicker from '../CalendarDetail/MultiDatePicker.jsx';
 import { getCalendarData, NewComponent } from '../../../Atom.js';
 import { useRecoilState } from 'recoil';
 import ModalDesign from './ModalDesign.jsx';
+import { format } from 'date-fns';
 
 //add 관련 상태관리
 const AddForm = () => {
@@ -73,10 +73,22 @@ const AddForm = () => {
     }
   }, [active, addFormState, mode]);
 
+  const validateTimeValue = (value, defaultValue, min, max) => {
+    if (value === '') return defaultValue; // 빈칸일 경우 기본값
+    const intValue = parseInt(value, 10);
+    if (isNaN(intValue)) return defaultValue; // NaN일 경우 기본값
+    return Math.max(min, Math.min(max, intValue)); // 유효 범위로 제한
+  };
+
   const onChangeNewAddFormState = (e) => {
     const { id, value } = e.target;
     console.log('밸류', value);
-    const intValue = parseInt(value, 10);
+    
+    const validatedValue = value === '' ? '0' : value; // 빈칸 처리
+  
+    const validateHour = (val) => validateTimeValue(val, 0, 0, 23);
+    const validateMinute = (val) => validateTimeValue(val, 0, 0, 59);
+  
     switch (id) {
       case 'input-name':
         setNewAddFormState({ ...newAddFormState, name: value });
@@ -96,32 +108,44 @@ const AddForm = () => {
       case 'start-hour':
         setNewAddFormState({
           ...newAddFormState,
-          startTime: { ...startTime, hour: intValue }
+          startTime: {
+            ...newAddFormState.startTime,
+            hour: validateHour(validatedValue)
+          }
         });
         break;
       case 'start-minute':
         setNewAddFormState({
           ...newAddFormState,
-          startTime: { ...startTime, minute: intValue }
+          startTime: {
+            ...newAddFormState.startTime,
+            minute: validateMinute(validatedValue)
+          }
         });
         break;
       case 'end-hour':
         setNewAddFormState({
           ...newAddFormState,
-          endTime: { ...endTime, hour: intValue }
+          endTime: {
+            ...newAddFormState.endTime,
+            hour: validateHour(validatedValue)
+          }
         });
         break;
       case 'end-minute':
         setNewAddFormState({
           ...newAddFormState,
-          endTime: { ...endTime, minute: intValue }
+          endTime: {
+            ...newAddFormState.endTime,
+            minute: validateMinute(validatedValue)
+          }
         });
         break;
-
       default:
         break;
     }
   };
+  
 
   // 학생 리스트 추가
   const handleCheckboxChange = (id) => {
@@ -145,17 +169,44 @@ const AddForm = () => {
     setAddFormState({ ...addFormState, active: false });
   };
 
+  //끝시간이 시작시간보다 빠른지 확인
+  const isEndTimeBeforeStartTime = (startTime, endTime) => {
+    const startTimeInMinutes = startTime.hour * 60 + startTime.minute;
+    const endTimeInMinutes = endTime.hour * 60 + endTime.minute;
+    return endTimeInMinutes < startTimeInMinutes;
+  };
+  
   const onClickAdd = async() => {
     try{
-      // 학생 리스트를 newAddFormState에 추가
-      const updatedFormState = {
-        ...newAddFormState,
-        studentList: selectedStudent,
-        lectureDateList: multidates,
-      };
+
+      const { startTime, endTime } = newAddFormState;
+
+      // 시간 비교 및 예외 처리
+      if (isEndTimeBeforeStartTime(startTime, endTime)) {
+        alert('끝 시간이 시작 시간보다 빠를 수 없습니다.');
+        return; // 함수 종료
+      }
+
+      let updatedFormState;
+      if(multidates.length===0){
+        const formattedDate = format(newAddFormState.curDate, "yyyy-MM-dd");
+        updatedFormState = {
+          ...newAddFormState,
+          studentList: selectedStudent,
+          lectureDateList: [formattedDate],
+        };
+      }
+      else{
+        // 학생 리스트를 newAddFormState에 추가
+        updatedFormState = {
+          ...newAddFormState,
+          studentList: selectedStudent,
+          lectureDateList: multidates,
+        };
+      }
 
       const newSchedule = await insertDateAPI(updatedFormState);
-
+ 
       setCalSchedule((schedule)=>[ ...schedule, newSchedule ]); 
       setAddFormState({ ...addFormState, active: false });
     }

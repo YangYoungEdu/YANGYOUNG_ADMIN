@@ -5,9 +5,9 @@ const local = process.env.REACT_APP_LOCAL_URL;
 const prod = process.env.REACT_APP_PROD_URL;
 
 // 강의자료 업로드 API
-export const uploadFilesAPI = async (fileList, lecture, date) => {
-  console.log ("업로드 리퀘스트: ", fileList, lecture, date);
-  if (!fileList || !lecture || !date) {
+export const uploadFilesAPI = async (fileList, lectureId, date) => {
+  console.log ("업로드 리퀘스트: ", fileList, lectureId, date);
+  if (!fileList || !lectureId || !date) {
     alert("Please fill in all fields.");
     return;
   }
@@ -16,8 +16,10 @@ export const uploadFilesAPI = async (fileList, lecture, date) => {
   for (let i = 0; i < fileList.length; i++) {
     formData.append("files", fileList[i]);
   }
-  formData.append("lecture", lecture);
+  formData.append("lecture", lectureId);
   formData.append("date", date);
+
+  console.log("데이터 형식",formData);
 
   try {
     const response = await axios.post(`${prod}file`, formData, {
@@ -26,7 +28,8 @@ export const uploadFilesAPI = async (fileList, lecture, date) => {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     });
-    console.log(response.data);
+    // console.log(response.data);
+    // return response.data; 
     alert("File upload completed.");
   } catch (error) {
     if(error.response.status === 403){
@@ -124,12 +127,12 @@ export const deleteFileAPI = async (lecture, date, fileName) => {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
       params: {
-        lecture: lecture,
+        lectureId: lecture,
         date: date,
         fileName: fileName,
       },
     });
-    console.log(response.data);
+    console.log("파일 삭제",response.data);
     alert("File deleted.");
   } catch (error) {
     if(error.response.status === 403){

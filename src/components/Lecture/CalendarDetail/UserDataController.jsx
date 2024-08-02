@@ -1,4 +1,4 @@
-import { patchDateLecture, patchDragNDrop, patchLecture, postLecture } from "../../../API/LectureAPI";
+import { deleteLecture, patchDateLecture, patchDragNDrop, patchLecture, postLecture } from "../../../API/LectureAPI";
 
 	//서버에 시간 보내는 형식 변경
 export const serverformatTime = (hour, minute) => {
@@ -61,6 +61,7 @@ export const insertDateAPI = async(addFormState) => {
 
 		console.log("post 보내는 데이터 확인", data);
 		const response =await postLecture(data);
+		console.log("post 서버로부터 받는 데이터 확인", response);
 
 		return response;
 	}
@@ -87,38 +88,13 @@ export const DragNDropPatchAPI = async (data) =>{
 // ------- 위에는 수정함
 
 //일정 데이터 patch -id로 구분 필요
-export const editDateAPI = async (addFormState, beforeEdit, schedule) => {
+export const editDateAPI = async (data) => {
 	try{
-		const { id, lectureCode, name, lectureType, teacher, room, startTime, endTime , lectureDate} = addFormState;
 
-		// 이전 할일을 지우고
-		const newSchedule = deleteDate(beforeEdit.id, schedule);
-
-		// 새 할일을 추가하는데
-		const index = isConflict(lectureDate, startTime, endTime, newSchedule);
-			
-		//날짜 형식 변경
-		const newDateForm = lectureDate.toLocaleDateString("en-CA");
-
-		const startTimeStr = serverformatTime(startTime.hour, startTime.minute);
-		const endTimeStr = serverformatTime(endTime.hour, endTime.minute);
-
-		const data ={
-			id: id,
-			name: name,
-			teacher: teacher,
-			room: room,
-			startTime: startTimeStr,
-			endTime:endTimeStr,
-			newLecturerDate: newDateForm,
-			allUpdate: false
-		}
-
-		// console.log('수정할 데이터', data);
 		const response =await patchLecture(data);
-		// console.log('수정한 데이터', response);
 
-		return [ ...newSchedule.slice(0, index), response, ...newSchedule.slice(index) ];
+		return response;
+
 	}
 	catch(err){
 		console.error(err);
@@ -136,3 +112,14 @@ export const deleteDate = (id, schedule) => {
 	);
 };
 
+export const deleteLectureAPI = async(lectureId, isAllDeleted, schedule) =>{
+	try{
+		const response = await deleteLecture(lectureId, isAllDeleted);
+		console.log("식제", response);
+		const updateData = deleteDate(lectureId,schedule );
+		return updateData;
+	}
+	catch(err){
+		console.error(err);
+	}
+}
