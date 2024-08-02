@@ -1,4 +1,4 @@
-import { patchDateLecture, patchDragNDrop, patchLecture, postLecture } from "../../../API/LectureAPI";
+import { deleteLecture, patchDateLecture, patchDragNDrop, patchLecture, postLecture } from "../../../API/LectureAPI";
 
 	//서버에 시간 보내는 형식 변경
 export const serverformatTime = (hour, minute) => {
@@ -137,3 +137,14 @@ export const deleteDate = (id, schedule) => {
 	);
 };
 
+export const deleteLectureAPI = async(lectureId, isAllDeleted, schedule) =>{
+	try{
+		const response = await deleteLecture(lectureId, isAllDeleted);
+		console.log("식제", response);
+		const updateData = deleteDate(lectureId,schedule );
+		return updateData;
+	}
+	catch(err){
+		console.error(err);
+	}
+}

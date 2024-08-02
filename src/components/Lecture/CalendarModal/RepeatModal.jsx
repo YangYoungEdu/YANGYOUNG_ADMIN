@@ -1,15 +1,34 @@
 import React, { useState } from "react";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
+import { getCalendarData } from "../../../Atom";
+import { deleteLectureAPI } from "../CalendarDetail/UserDataController";
 
-function RepeatModal({ isOpen, closeModal, method }) {
+function RepeatModal({ isOpen, closeModal, method , onClickCancel, lectureId}) {
+  const [calSchedule, setCalSchedule] = useRecoilState(getCalendarData);
   const title = method === "repeatEdit" ? "반복 일정 수정" : "반복 일정 삭제";
 
+  console.log("모달 id", lectureId);
   // 라디오 버튼의 상태를 관리하기 위한 useState 훅
   const [Option, setOption] = useState("single");
 
   const handleRadioChange = (e) => {
     setOption(e.target.value);
   };
+
+  //삭제
+  const onClickDeleteBtn = async (e) =>{
+    if(Option ==="single"){
+      const response = await deleteLectureAPI(lectureId, false, calSchedule)
+      setCalSchedule(response);
+    }
+    else{
+      const response = await deleteLectureAPI(lectureId, true, calSchedule)
+      setCalSchedule(response);
+    }
+    onClickCancel();
+    closeModal();
+  }
 
   return (
     <Background style={{ display: isOpen ? "block" : "none" }}>
@@ -41,7 +60,9 @@ function RepeatModal({ isOpen, closeModal, method }) {
 
         <BtnContainer>
           <CloseBtn onClick={closeModal}>취소</CloseBtn>
-          <AddButton>{method ==='repeatEdit'?"확인" :"삭제"}</AddButton>
+          {method ==='repeatEdit'? 
+            <AddButton>확인</AddButton> :
+            <AddButton onClick={onClickDeleteBtn}>삭제</AddButton> } 
         </BtnContainer>
       </Container>
     </Background>

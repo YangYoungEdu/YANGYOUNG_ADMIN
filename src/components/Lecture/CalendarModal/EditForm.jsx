@@ -3,13 +3,9 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import styled from 'styled-components';
 // import '../../style/css/app.css';
-import { deleteDate, editDate, insertDateAPI } from '../CalendarDetail/UserDataController.jsx';
+import { deleteDate, deleteLectureAPI, editDate, insertDateAPI } from '../CalendarDetail/UserDataController.jsx';
 // store
 import { useAddFormState } from '../../../stores/addFormState.jsx';
-import { useUserData } from '../../../stores/userData.jsx';
-import AddGenericTable from '../CalendarDetail/AddGenericTable.jsx';
-import AddStudentSearch from '../CalendarDetail/AddStudentSearch.jsx';
-import MultiDatePicker from '../CalendarDetail/MultiDatePicker.jsx';
 import { getCalendarData } from '../../../Atom.js';
 import { useRecoilState } from 'recoil';
 import ModalDesign from './ModalDesign.jsx';
@@ -25,6 +21,7 @@ const EditForm = () => {
   const [isRepeatModalOpen, setIsRepeatModalOpen] = useState(false);
   //반복 일정시 모달창 모드
   const [repeatMode, setRepeatMode] =useState("repeatEdit");
+  const [calSchedule, setCalSchedule] = useRecoilState(getCalendarData);
 
   const [newAddFormState, setNewAddFormState] = useState({
     id: null,
@@ -175,7 +172,7 @@ const EditForm = () => {
   };
 
   //삭제
-  const onClickDelete = () =>{
+  const onClickDelete = async() =>{
       if(addFormState.repeated){
         setRepeatMode("repeatDelete")
         setIsRepeatModalOpen(!isRepeatModalOpen);
@@ -183,6 +180,8 @@ const EditForm = () => {
       }
       else{
         //단일 삭제 함수
+        const response = await deleteLectureAPI(newAddFormState.id, false, calSchedule)
+        setCalSchedule(response);
       }
   }
 
@@ -210,6 +209,8 @@ const EditForm = () => {
         isOpen={isRepeatModalOpen}
         closeModal={handleRepeatModalOpen}
         method={setRepeatMode}
+        onClickCancel={onClickCancel}
+        lectureId ={newAddFormState.id}
       ></RepeatModal>
       </>
     )
