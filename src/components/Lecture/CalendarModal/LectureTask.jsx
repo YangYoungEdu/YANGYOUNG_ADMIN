@@ -12,9 +12,11 @@ const LectureTask = ({id}) => {
   const [isDeleted, setIsDeleted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  console.log("과제 있나요?",tasks);
+
   useEffect(() => {
     getLectureTaskAPI(id).then((res) => {
-      setTasks(res);
+      setTasks(res.data);
     });
   }, [id, isUploaded, isDeleted]);
 
