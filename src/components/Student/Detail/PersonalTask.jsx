@@ -124,9 +124,11 @@ const PersonalTask = ({ studentTask, studentLecture }) => {
                 <Box key={task.id}>
                   <TopInfo>
                     <Title>{task.content || ""}</Title>
-                    <DetailBox background={"#E9F2EB"}>
-                      {task.lectureName || ""}
-                    </DetailBox>
+                    {task.taskType !== "개인 과제" && (
+                      <DetailBox background={"#E9F2EB"}>
+                        {task.lectureName}
+                      </DetailBox>
+                    )}
                     <DetailBox background={"#FFF4DE"}>
                       {task.taskType || ""}
                     </DetailBox>
