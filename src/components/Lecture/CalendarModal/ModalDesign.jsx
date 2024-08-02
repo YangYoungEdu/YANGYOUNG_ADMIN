@@ -114,6 +114,7 @@ const ModalDesign = ({
               }
               onChange={onChangeNewAddFormState}
               placeholder="수업 이름을 적어주세요."
+              disabled = {mode !== 'add' && editDisable}
             />
 
             <ButtonContainer id="option-form">

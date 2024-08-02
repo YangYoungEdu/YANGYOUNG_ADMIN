@@ -74,11 +74,24 @@ const EditForm = () => {
     }
   }, [active, addFormState, mode, editDisable]);
 
+  const validateTimeValue = (value, defaultValue, min, max) => {
+    if (value === '') return defaultValue; // 빈칸일 경우 기본값
+    const intValue = parseInt(value, 10);
+    if (isNaN(intValue)) return defaultValue; // NaN일 경우 기본값
+    return Math.max(min, Math.min(max, intValue)); // 유효 범위로 제한
+  };
+  
 
   const onChangeNewAddFormState = (e) => {
     const { id, value } = e.target;
     console.log('밸류', value);
+
+    const validatedValue = value === '' ? '0' : value; 
     const intValue = parseInt(value, 10);
+
+    const validateHour = (val) => validateTimeValue(val, 0, 0, 23);
+    const validateMinute = (val) => validateTimeValue(val, 0, 0, 59);
+
     switch (id) {
       case 'input-name':
         setNewAddFormState({ ...newAddFormState, name: value });
@@ -98,25 +111,25 @@ const EditForm = () => {
       case 'start-hour':
         setNewAddFormState({
           ...newAddFormState,
-          startTime: { ...startTime, hour: intValue }
+          startTime: { ...startTime, hour: validateHour(validatedValue) }
         });
         break;
       case 'start-minute':
         setNewAddFormState({
           ...newAddFormState,
-          startTime: { ...startTime, minute: intValue }
+          startTime: { ...startTime, minute: validateHour(validatedValue) }
         });
         break;
       case 'end-hour':
         setNewAddFormState({
           ...newAddFormState,
-          endTime: { ...endTime, hour: intValue }
+          endTime: { ...endTime, hour: validateHour(validatedValue) }
         });
         break;
       case 'end-minute':
         setNewAddFormState({
           ...newAddFormState,
-          endTime: { ...endTime, minute: intValue }
+          endTime: { ...endTime, minute: validateHour(validatedValue) }
         });
         break;
 
