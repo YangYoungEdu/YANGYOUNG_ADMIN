@@ -37,6 +37,7 @@ const EditForm = () => {
     allLectureDate: [],
     repeated: false
   });
+  const {startTime, endTime } = newAddFormState;
 
   // 학생 선택
   const [searchData, setSearchData] = useState([]);
@@ -71,7 +72,58 @@ const EditForm = () => {
       });
       
     }
-  }, [active, addFormState, mode]);
+  }, [active, addFormState, mode, editDisable]);
+
+
+  const onChangeNewAddFormState = (e) => {
+    const { id, value } = e.target;
+    console.log('밸류', value);
+    const intValue = parseInt(value, 10);
+    switch (id) {
+      case 'input-name':
+        setNewAddFormState({ ...newAddFormState, name: value });
+        break;
+      case 'lectureType-select':
+        setNewAddFormState({ ...newAddFormState, lectureType: value });
+        break;
+      case 'input-room':
+        setNewAddFormState({ ...newAddFormState, room: value });
+        break;
+      case 'teacher-select':
+        setNewAddFormState({
+          ...newAddFormState,
+          teacher: value
+        });
+        break;
+      case 'start-hour':
+        setNewAddFormState({
+          ...newAddFormState,
+          startTime: { ...startTime, hour: intValue }
+        });
+        break;
+      case 'start-minute':
+        setNewAddFormState({
+          ...newAddFormState,
+          startTime: { ...startTime, minute: intValue }
+        });
+        break;
+      case 'end-hour':
+        setNewAddFormState({
+          ...newAddFormState,
+          endTime: { ...endTime, hour: intValue }
+        });
+        break;
+      case 'end-minute':
+        setNewAddFormState({
+          ...newAddFormState,
+          endTime: { ...endTime, minute: intValue }
+        });
+        break;
+
+      default:
+        break;
+    }
+  };
 
   const onClickCancel = (e) => {
     // e.stopPropagation();
@@ -89,6 +141,7 @@ const EditForm = () => {
       <ModalDesign 
         mode= "edit"
         newAddFormState ={newAddFormState}
+        onChangeNewAddFormState ={onChangeNewAddFormState}
         setNewAddFormState ={setNewAddFormState}
         multidates ={multidates}
         setmultiDates ={setmultiDates}
