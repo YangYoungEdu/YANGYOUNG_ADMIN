@@ -58,7 +58,9 @@ const MonthlyModal = ({
           <MiddleDiv>
             <DayCalendar 
               lectureOfDay={monthToDayData} 
-              monthToday={true}/>
+              monthToday={true}
+              monthTodayDate = {monthToDayData[0].lectureDate}
+              />
             
           </MiddleDiv>
 

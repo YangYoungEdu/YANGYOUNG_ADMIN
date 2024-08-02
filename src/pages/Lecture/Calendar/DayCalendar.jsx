@@ -32,7 +32,7 @@ export const times = [
 	'23:00', '23:15', '23:30', '23:45'
 ]
 
-const DayCalendar = ({ currentDate, lectureOfDay, monthToday }) => {
+const DayCalendar = ({ currentDate, lectureOfDay, monthToday, monthTodayDate }) => {
   const [calendarState, setCalendarState] = useCalendarState();
   const { date } = calendarState;
 
@@ -74,12 +74,23 @@ const DayCalendar = ({ currentDate, lectureOfDay, monthToday }) => {
   }, [lectureOfDay, schedule]); 
 
   const getFirstAndLastDate = () => {
+    if(monthToday){
+      const monthdate = new Date(monthTodayDate);
+      // 단일 날짜를 반환하도록 수정된 함수
+      const year = monthdate.getFullYear();
+      const month = monthdate.getMonth();
+      const day = monthdate.getDate();
+      const firstDate = new Date(year, month, day); // 현재 선택된 날짜
+      return { firstDate, lastDate: firstDate }; // firstDate와 lastDate가 동일
+    }
+    else{
       // 단일 날짜를 반환하도록 수정된 함수
       const year = date.getFullYear();
       const month = date.getMonth();
       const day = date.getDate();
       const firstDate = new Date(year, month, day); // 현재 선택된 날짜
       return { firstDate, lastDate: firstDate }; // firstDate와 lastDate가 동일
+    }
   };
 
   const makeCalendar = (currentDate) => {
