@@ -220,7 +220,7 @@ export const patchDragNDrop = async (data) => {
 // 강의 정보 삭제
 export const deleteLecture = async (lectureId,isAllDeleted ) => {
   try {
-    const response = await axios.patch(`${prod}lecture/${lectureId}`,{
+    const response = await axios.delete(`${prod}lecture/${lectureId}`,{
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },

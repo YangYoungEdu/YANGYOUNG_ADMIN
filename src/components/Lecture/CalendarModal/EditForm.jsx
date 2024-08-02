@@ -247,6 +247,7 @@ const EditForm = () => {
         //단일 삭제 함수
         const response = await deleteLectureAPI(newAddFormState.id, false, calSchedule)
         setCalSchedule(response);
+        onClickCancel();
       }
   }
 
