@@ -147,7 +147,7 @@ const EditForm = () => {
 
   //수정 편집 모드
   const onClcikEditMode = (e) =>{
-    if(addFormState.repeated){
+    if(addFormState.repeated&&editDisable){
       setRepeatMode("repeatEdit")
       setIsRepeatModalOpen(!isRepeatModalOpen);
       document.body.style.overflow = "hidden";
