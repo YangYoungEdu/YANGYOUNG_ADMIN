@@ -238,3 +238,22 @@ export const deleteLecture = async (lectureId,isAllDeleted ) => {
     console.error(error);
   }
 };
+
+// 강의 수강 학생 수정
+export const patchLectureStudent = async (data) => {
+  try {
+    const response = await axios.patch(`${prod}lecture/student`, data,{
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    if (error.response.status === 403) {
+      alert("로그인 후 이용해주세요.");
+      window.location.href = "/";
+    }
+    console.error(error);
+  }
+};
