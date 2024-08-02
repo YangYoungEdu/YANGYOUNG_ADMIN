@@ -1,0 +1,169 @@
+.react-calendar {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 100%;
+    border: none;
+}
+
+.react-calendar__navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 130px;
+    margin-bottom: 48px;
+    padding-left: 4.65%;
+    border: none;
+    white-space: nowrap;
+}
+
+.react-calendar__navigation button {
+    display: flex;
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 16px;
+
+}
+
+.react-calendar__navigation__arrow {
+    width: 15px;
+    height: 15px;
+    gap: 3px;
+    cursor: pointer;
+}
+
+.react-calendar__navigation button:disabled {
+    color: #ccc;
+}
+
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+    color: #000;
+}
+
+.react-calendar__navigation__prev2-button,
+.react-calendar__navigation__next2-button {
+    display: none !important;
+}
+
+
+.react-calendar__navigation__label {
+    display: flex;
+    order: -1;
+}
+
+.react-calendar__navigation__label>span {
+    font-weight: 700;
+    font-size: 16px;
+
+}
+
+.react-calendar__month-view__weekdays {
+    display: flex;
+    text-align: center;
+    text-transform: uppercase;
+    font: inherit;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    width: 100%;
+    padding-left: 5.58%;
+    margin-bottom: 10px;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+    font-size: 16px;
+    font-weight: 400;
+    color: #555555;
+    box-sizing: border-box;
+}
+
+.react-calendar__month-view__days {
+    width: 100%;
+    height: 200px;
+    display: flex;
+}
+
+.react-calendar__month-view__days__day {
+    width: 8.11%;
+}
+
+.react-calendar__tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 400;
+    color: #000000;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.react-calendar__month-view__days__day--neighboringMonth,
+.react-calendar__decade-view__years__year--neighboringDecade,
+.react-calendar__century-view__decades__decade--neighboringCentury {
+    color: transparent;
+    /* 텍스트 색상을 투명하게 */
+    background-color: transparent;
+    /* 배경 색상도 투명하게 */
+    pointer-events: none;
+    /* 클릭 이벤트 차단 */
+    visibility: hidden;
+    /* 텍스트 숨기기 */
+}
+
+.react-calendar__tile:disabled {
+    color: #ababab;
+}
+
+.react-calendar__tile--now {
+    background: none;
+    border-radius: 100%;
+    color: #333;
+    font-weight: bold;
+}
+
+.react-calendar__tile--active {
+    display: flex;
+}
+
+.react-calendar--selectRange .react-calendar__tile--hover {
+    background-color: black;
+}
+
+abbr {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 35px;
+}
+
+.react-calendar__month-view__days__day abbr:hover,
+.react-calendar__month-view__days__day abbr:focus,
+.react-calendar__month-view__days__day abbr:active,
+.react-calendar__tile--noew abbr,
+.selected-date abbr {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #15521D;
+    font-size: 16px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    color: white;
+}
+
+abbr[title] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    width: 14px;
+    height: 19px;
+    border-radius: 50%;
+    color: #555555;
+    text-decoration: none;
+    cursor: default;
+}
