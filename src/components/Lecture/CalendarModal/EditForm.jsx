@@ -3,7 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import styled from 'styled-components';
 // import '../../style/css/app.css';
-import { deleteDate, deleteLectureAPI, editDate, insertDateAPI } from '../CalendarDetail/UserDataController.jsx';
+import { deleteDate, deleteLectureAPI, editDate, editDateAPI, insertDateAPI, serverformatTime } from '../CalendarDetail/UserDataController.jsx';
 // store
 import { useAddFormState } from '../../../stores/addFormState.jsx';
 import { getCalendarData } from '../../../Atom.js';
@@ -172,8 +172,37 @@ const EditForm = () => {
   } 
 
   //수정
-  const onClickEdit = (e) =>{
+  const onClickEdit = async  (e) =>{
+    console.log("반복 수정 여부 확인", isAllEdit);
+    try{
+      const startTimeStr = serverformatTime(startTime.hour, startTime.minute);
+      const endTimeStr = serverformatTime(endTime.hour, endTime.minute);
 
+      const data ={
+        isAllUpdate: isAllEdit,
+        id: newAddFormState.id,
+        name: newAddFormState.name,
+        lectureType:newAddFormState.lectureType,
+        teacher:  newAddFormState.teacher,
+        room: newAddFormState.room,
+        startTime: startTimeStr,
+        endTime: endTimeStr,
+        lectureDates: multidates
+      }
+
+      console.log("수정 보낼 데이터", data);
+
+    const response = await editDateAPI(data);
+
+    console.log("수정 잘됐는지 확인", response);
+    const updatedSchedule = calSchedule.filter(item => item.id !== newAddFormState.id);
+    const newSchedule = [...updatedSchedule, response];
+    setCalSchedule(newSchedule);
+    onClickCancel();
+    }
+    catch(err){
+      console.error(err);
+    }
   }
 
   //반복 일정일 때 뜨는 모달
@@ -218,6 +247,7 @@ const EditForm = () => {
         editDisable={editDisable}
         onClickDelete= {onClickDelete}
         isAllEdit= {isAllEdit}
+        onClickEdit={onClickEdit}
         />
         <RepeatModal
         isOpen={isRepeatModalOpen}

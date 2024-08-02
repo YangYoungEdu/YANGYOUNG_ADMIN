@@ -39,7 +39,8 @@ const ModalDesign = ({
   onClcikEditMode,
   editDisable,
   onClickDelete,
-  isAllEdit
+  isAllEdit,
+  onClickEdit
 }) => {
   console.log("newFormState:", newAddFormState);
   const [onClicked, setOnClicked] = useState({
@@ -158,7 +159,7 @@ const ModalDesign = ({
                   <SubmitButton id="delete-btn" className="btn" onClick={onClcikEditMode}>
                     취소
                   </SubmitButton>
-                  <SubmitButton id="edit-btn" className="btn" >
+                  <SubmitButton id="edit-btn" className="btn" onClick={onClickEdit} >
                   저장
                   </SubmitButton>
                   </>
