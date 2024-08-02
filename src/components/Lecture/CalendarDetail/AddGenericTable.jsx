@@ -186,7 +186,6 @@ const StyledTbody = styled.tbody`
 `;
 
 const PaginationContainer = styled.div`
-  margin-bottom: 147px;
 `;
 
 const CheckboxContainer = styled.label`
