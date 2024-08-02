@@ -19,18 +19,9 @@ const LectureMaterial = ({ lecture, date }) => {
   const [isUploaded, setIsUploaded] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
   const fileInputRef = useRef(null);
+  
+  console.log("수업자료 날짜", materials)
 
-  useEffect(() => {
-    const fetchMaterials = async () => {
-      try {
-        const res = await getFilesAPI(lecture, date);
-        setMaterials(res);
-      } catch (error) {
-        console.error("Error fetching files:", error);
-      }
-    };
-    fetchMaterials();
-  }, [lecture, date, isUploaded, isDeleted]);
   useEffect(() => {
     const fetchMaterials = async () => {
       try {
@@ -45,12 +36,9 @@ const LectureMaterial = ({ lecture, date }) => {
 
   const uploadMaterials = async () => {
     try {
-      await uploadFilesAPI(selectedFiles, lecture, date);
+      console.log("selectedFiles", selectedFiles);
       await uploadFilesAPI(selectedFiles, lecture, date);
       setIsUploaded(true);
-      setSelectedFiles([]);
-      setAddBoxes([]); // Clear add boxes after upload
-      fileInputRef.current.value = null; // Reset file input
       setSelectedFiles([]);
       setAddBoxes([]); // Clear add boxes after upload
       fileInputRef.current.value = null; // Reset file input
@@ -59,9 +47,9 @@ const LectureMaterial = ({ lecture, date }) => {
     }
   };
 
-  const deleteMaterial = async (fileName) => {
+  const deleteMaterial = async (fileName, fimeDate) => {
     try {
-      await deleteFileAPI(lecture, date, fileName);
+      await deleteFileAPI(lecture, fimeDate, fileName);
       setIsDeleted(true);
     } catch (error) {
       console.error("Error deleting file:", error);
@@ -80,6 +68,8 @@ const LectureMaterial = ({ lecture, date }) => {
         ...prevBoxes,
         ...Array(files.length).fill({}),
       ]);
+      console.log("selectedFiles", selectedFiles);
+      console.log("addBoxes", addBoxes);
     }
   };
 
@@ -108,7 +98,7 @@ const LectureMaterial = ({ lecture, date }) => {
               </TaskTitleWrapper>
               <TaskDate>{formateDateMD(material.date)}</TaskDate>
             </TaskContentWrapper>
-            <DeleteIcon onClick={() => deleteMaterial(material.name)} />
+            <DeleteIcon onClick={() => deleteMaterial(material.name, material.date)} />
           </TaskBox>
         ))}
 
