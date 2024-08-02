@@ -170,8 +170,23 @@ const AddForm = () => {
     setAddFormState({ ...addFormState, active: false });
   };
 
+  //끝시간이 시작시간보다 빠른지 확인
+  const isEndTimeBeforeStartTime = (startTime, endTime) => {
+    const startTimeInMinutes = startTime.hour * 60 + startTime.minute;
+    const endTimeInMinutes = endTime.hour * 60 + endTime.minute;
+    return endTimeInMinutes < startTimeInMinutes;
+  };
+  
   const onClickAdd = async() => {
     try{
+
+      const { startTime, endTime } = newAddFormState;
+
+      // 시간 비교 및 예외 처리
+      if (isEndTimeBeforeStartTime(startTime, endTime)) {
+        alert('끝 시간이 시작 시간보다 빠를 수 없습니다.');
+        return; // 함수 종료
+      }
 
       let updatedFormState;
       if(multidates.length===0){
