@@ -4,7 +4,7 @@ import { useAddFormState } from '../../../stores/addFormState';
 import { useDragAndDrop } from '../../../stores/dragAndDrop';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
-import { getCalendarData } from '../../../Atom';
+import { getCalendarData, monthlyModalOpen, monthToDay } from '../../../Atom';
 import { format } from 'date-fns';
 
 const isValidDate = (date, currentDate) => {
@@ -32,8 +32,10 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick, currentDate }) => {
   const [addFormState, setAddFormState] = useAddFormState();
   const { active } = addFormState;
 	
-	const [calSchedule, setCalSchedule] = useRecoilState(getCalendarData
-  );
+	const [calSchedule, setCalSchedule] = useRecoilState(getCalendarData);
+  const [isMonthlyOpen, setIsMonthlyOpen] = useRecoilState(monthlyModalOpen);
+  const [monthToDayData, setMonthToDayData] = useRecoilState(monthToDay);
+
   const [dragAndDrop, setDragAndDrop] = useDragAndDrop();
   const [curDateStr, setCurDateStr] = useState("");
   const [isCurrentMonth, setIsCurrentMonth] = useState(true);
@@ -87,26 +89,9 @@ const MonthlyCell = ({ date, schedule, isSelected, onClick, currentDate }) => {
 	//일정 클릭 후 수정
 	const onClickSchedule = (e, schedule) => {
 		e.stopPropagation();
-		const { id, name, room,lectureType, teacher, curDate, startTime, endTime,lectureDate,allLectureDate ,studentList, repeated } = schedule;
-    if (!active) { // 리사이징 중일 때 클릭 방지
-      setAddFormState({
-          ...addFormState,
-          id: id,
-          active: true,
-          mode: 'edit',
-          name: name,
-          room:room,
-          lectureType:lectureType,
-          teacher:teacher,
-          curDate: curDate,
-          startTime: {...startTime},
-          endTime: {...endTime},
-          studentList: studentList,
-          lectureDate: lectureDate,
-          allLectureDate: allLectureDate,
-          repeated: repeated
-      });
-    }
+    console.log("월간 일정 데이터", schedule);
+    setIsMonthlyOpen(true);
+    setMonthToDayData(schedule);
   };
 
   // 선생님별로 일정을 그룹화

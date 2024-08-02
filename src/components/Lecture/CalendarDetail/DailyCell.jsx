@@ -17,7 +17,7 @@ const DailyCell = (props) => {
     const { active } = addFormState;
 
     const [calSchedule, setCalSchedule] = useRecoilState(getCalendarData);
-    // const [userData, setUserData] = useUserData();
+    console.log("월간", schedule);
 
     const [dragAndDrop, setDragAndDrop] = useDragAndDrop();
     const [isResizing, setIsResizing] = useState(false); // 리사이징 상태 추가
