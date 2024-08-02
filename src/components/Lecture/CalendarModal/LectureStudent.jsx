@@ -5,6 +5,9 @@ import { ReactComponent as Plus } from "../../../Assets/Plus.svg";
 import { getStudentByLectureAPI } from "../../../API/StudentAPI";
 import AddStudentSearch from "../CalendarDetail/AddStudentSearch.jsx";
 import AddGenericTable from "../CalendarDetail/AddGenericTable.jsx";
+import { patchLectureStudent } from "../../../API/LectureAPI.jsx";
+import { useRecoilState } from "recoil";
+import { getCalendarData } from "../../../Atom.js";
 
 const LectureStudent = ({
   id,
@@ -20,6 +23,7 @@ const LectureStudent = ({
   const [searchDataCount, setSearchDataCount] = useState(0);
   const [selectedStudent, setSelectedStudent] = useState([]);
   const [active, setActive] = useState(false);
+  const [calSchedule, setCalSchedule] = useRecoilState(getCalendarData);
 
   useEffect(() => {
     if (id) {
@@ -31,7 +35,7 @@ const LectureStudent = ({
       });
       if (students) console.log("students: ", students);
     }
-  }, [id]);
+  }, [id, calSchedule]);
 
   const handleAddStudentClick = () => {
     setShowAddStudent(!showAddStudent);
@@ -53,6 +57,25 @@ const LectureStudent = ({
 
     setNewAddFormState({ ...newAddFormState, studentList: selectedStudent });
   };
+
+  //학생 수정
+  const onClickStudent = async () =>{
+    try{
+
+      const data ={
+        lectureId: id,
+        studentIdList: selectedStudent
+      }
+      const response  =await patchLectureStudent(data);
+
+      const updatedSchedule = calSchedule.filter(item => item.id !==id);
+      const newSchedule = [...updatedSchedule, response];
+      setCalSchedule(newSchedule);
+    }
+    catch(err){
+      console.error(err);
+    }
+  }
 
   return (
     <LectureStudentWrapper>
@@ -87,7 +110,7 @@ const LectureStudent = ({
             active={active}
             setSelectedStudent={setSelectedStudent}
           />
-          <UploadButton>변경 사항 저장</UploadButton>
+          <UploadButton onClick={onClickStudent}>변경 사항 저장</UploadButton>
         </Container>
       )}
     </LectureStudentWrapper>
