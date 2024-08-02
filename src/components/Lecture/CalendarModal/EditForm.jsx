@@ -208,7 +208,7 @@ const EditForm = () => {
         <RepeatModal
         isOpen={isRepeatModalOpen}
         closeModal={handleRepeatModalOpen}
-        method={setRepeatMode}
+        method={repeatMode}
         onClickCancel={onClickCancel}
         lectureId ={newAddFormState.id}
       ></RepeatModal>
