@@ -18,6 +18,10 @@ const TableMenus = ({
     setIsEditing(true);
   };
 
+  const closeEdit = () =>{
+    setIsEditing(false);
+  }
+
   const goToSave = () => {
     setIsHidden(!isHidden);
     window.location.reload();
@@ -52,6 +56,7 @@ const TableMenus = ({
         {isEditing ? (
           // 편집 모드의 경우
           <EditModeButtons>
+            <div onClick={closeEdit}>취소</div>
             <EditButton
               onClick={openHideModal}
             >
@@ -72,7 +77,7 @@ const TableMenus = ({
           // 편집 모드가 아닌 경우
           <SideMenus>
             <>
-              <div onClick={goToSave}>보관함</div>
+              <div onClick={goToSave}>{isHidden? "학생목록":"보관함"}</div>
               <div>|</div>
               <div onClick={openAddModal}>등록</div>
               <div>|</div>
@@ -120,6 +125,8 @@ const EditModeButtons = styled.div`
   display: flex;
   flex-direction: row;
   gap: 10px;
+  align-items: center;
+
 `;
 const EditButton = styled.button`
   width: 84px;

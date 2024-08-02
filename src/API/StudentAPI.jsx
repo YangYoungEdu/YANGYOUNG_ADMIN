@@ -2,7 +2,7 @@ import axios from "axios";
 
 const server = process.env.REACT_APP_DEV_URL;
 const local = process.env.REACT_APP_LOCAL_URL;
-const prod = REACT_APP_PROD_URL;
+const prod = process.env.REACT_APP_PROD_URL;
 
 const accessToken = localStorage.getItem("accessToken");
 
@@ -11,7 +11,7 @@ export const getAllStudentAPI = async (page = 1, size = 10) => {
   try {
     const response = await axios.get(`${prod}student`, {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
       params: {
         page,
@@ -34,7 +34,7 @@ export const getHiddenStudentAPI = async (page = 1, size = 10) => {
   try {
     const response = await axios.get(`${prod}student/hidden`, {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
       params: {
         page,
@@ -57,7 +57,7 @@ export const searchStudentAPI = async (nameList, schoolList, gradeList, currentP
   try {
     const response = await axios.get(`${prod}student/search`, {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
       params: {
         nameList: nameList,
@@ -83,7 +83,7 @@ export const getOneStudentAPI = async (id) => {
   try {
     const response = await axios.get(`${prod}student/${id}`, {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     });
     return response.data;
@@ -101,7 +101,7 @@ export const patchStudentAPI = async (data) => {
   try {
     const response = await axios.patch(`${prod}student`, data, {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     });
     console.log(data);
@@ -123,7 +123,7 @@ export const deleteStudentAPI = async (idList) => {
 
     const response = await axios.delete(`${prod}student?${queryString}`, {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     });
     console.log(response.data);
@@ -148,7 +148,7 @@ export const hideStudentAPI = async (idList) => {
       studentIdList,
       {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       }
     );
@@ -168,7 +168,7 @@ export const getStudentByLectureAPI = async (lectureId) => {
   try {
     const response = await axios.get(`${prod}student/lecture/${lectureId}`, {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     });
     return response.data;

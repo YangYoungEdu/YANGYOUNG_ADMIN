@@ -2,7 +2,7 @@ import axios from "axios";
 
 const server = process.env.REACT_APP_DEV_URL;
 const local = process.env.REACT_APP_LOCAL_URL;
-const prod = REACT_APP_PROD_URL;
+const prod = process.env.REACT_APP_PROD_URL;
 
 //과제 등록
 export const addTaskAPI = async (data) => {

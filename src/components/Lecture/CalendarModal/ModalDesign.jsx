@@ -100,8 +100,8 @@ const ModalDesign = ({
     }
   };
   return (
-    <Panel id="panel">
-      <StyledAddForm id="add-form">
+    <Panel id="panel" onClick={onClickCancel} >
+      <StyledAddForm id="add-form" onClick={(e)=>e.stopPropagation()}>
         <TopDiv>
           {/* 강의제목, 저장 버튼, 닫기 버튼 */}
           <UpperDiv id="input-form">
@@ -403,6 +403,7 @@ const Panel = styled.div`
   right: 0;
   bottom: 0;
   z-index: 50;
+  width: 100%;
 `;
 
 const StyledAddForm = styled.div`
