@@ -127,18 +127,22 @@ export const deleteTaskAPI = async (taskId) => {
 
 export const patchTaskProgressAPI = async (studentId, taskId, taskProgress) => {
   try {
-    const response = await axios.patch(`${prod}task/student/progress`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      },
-      params: {
+    console.log("studentId: ", studentId, "taskId: ", taskId, taskProgress);
+    const response = await axios.patch(
+      `${prod}task/student/progress`,
+      {
         studentId: studentId,
         taskId: taskId,
         taskProgress: taskProgress,
       },
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      }
+    );
     console.log(response.data);
-    alert("과제가 삭제되었습니다.");
+    alert("과제 상태가 변경되었습니다.");
   } catch (error) {
     if (error.response.status === 403) {
       alert("로그인 후 이용해주세요.");

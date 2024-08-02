@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { ReactComponent as Plus } from "../../../Assets/Plus.svg";
 import { ReactComponent as File } from "../../../Assets/File.svg";
+import { ReactComponent as Download } from "../../../Assets/DownloadIcon.svg";
 import { ReactComponent as Delete } from "../../../Assets/Delete.svg";
 import { ReactComponent as Remove } from "../../../Assets/Remove.svg"; // Add a remove icon
 import { formateDateMD } from "../../../util/Util";
@@ -106,12 +107,15 @@ const LectureMaterial = ({ lecture, date }) => {
         <TaskBox key={index}>
           {selectedFiles[index] && (
             <Wrapper>
+              <RemoveIcon onClick={() => handleRemoveFile(index)} />
+
               <FileUploadInput
                 type="text"
                 value={selectedFiles[index].name}
                 readOnly
               />
-              <RemoveIcon onClick={() => handleRemoveFile(index)} />
+              {/* 다운로드 아이콘 */}
+              <Download />
             </Wrapper>
           )}
         </TaskBox>
@@ -166,6 +170,7 @@ const Wrapper = styled.div`
   flex-direction: row;
   width: 100%;
   align-items: center;
+  gap: 5px;
   justify-content: space-between;
 `;
 const TaskContentWrapper = styled(ColumnDiv)`

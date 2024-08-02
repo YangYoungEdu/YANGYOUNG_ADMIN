@@ -6,8 +6,8 @@ import {
 } from "../../../API/AttendanceAPI";
 import { RowDiv } from "../../../style/CommonStyle";
 
-const LectureAttendance = ({id, date}) => {
-  console.log ("출결: ", id, date);
+const LectureAttendance = ({ id, date }) => {
+  console.log("출결: ", id, date);
   const [attendances, setAttendances] = useState([]);
   const [isUpdated, setIsUpdated] = useState(false);
 
@@ -107,9 +107,7 @@ const LectureAttendance = ({id, date}) => {
           ))}
         </tbody>
       </AttendanceTable>
-      <UploadButton onClick={updateAttendance}>
-        저장 사항 변경
-      </UploadButton>
+      <UploadButton onClick={updateAttendance}>변경 사항 저장</UploadButton>
     </TableWrapper>
   );
 };
@@ -225,15 +223,16 @@ const TaskBox = styled(RowDiv)`
 const UploadButton = styled(TaskBox)`
   box-sizing: border-box;
   background-color: #95c25c;
-
-  padding: 10px;
+  padding: 5px 10px;
   cursor: pointer;
   border-radius: 10px;
   margin-top: 10px;
-  width: 50%;
+  width: 100px;
+  white-space: nowrap;
 
   color: white;
   font-size: 20px;
+  font-size: 13px;
 `;
 
 export default LectureAttendance;
