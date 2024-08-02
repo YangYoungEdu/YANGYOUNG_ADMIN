@@ -34,7 +34,7 @@ const PaginationContainer = styled.div`
     justify-content: center;
     list-style: none;
     padding: 0;
-    margin-bottom:147px;
+    /* margin-bottom:147px; */
     gap: 17.64px;
   }
 

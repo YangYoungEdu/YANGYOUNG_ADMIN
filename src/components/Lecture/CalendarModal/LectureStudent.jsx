@@ -6,7 +6,13 @@ import { getStudentByLectureAPI } from "../../../API/StudentAPI";
 import AddStudentSearch from "../CalendarDetail/AddStudentSearch.jsx";
 import AddGenericTable from "../CalendarDetail/AddGenericTable.jsx";
 
-const LectureStudent = ({ id, searchKeyword,setSearchKeyword,newAddFormState , setNewAddFormState}) => {
+const LectureStudent = ({
+  id,
+  searchKeyword,
+  setSearchKeyword,
+  newAddFormState,
+  setNewAddFormState,
+}) => {
   const [students, setStudents] = useState([]);
   const [showAddStudent, setShowAddStudent] = useState(false);
   // const [searchKeyword, setSearchKeyword] = useState("");
@@ -21,7 +27,7 @@ const LectureStudent = ({ id, searchKeyword,setSearchKeyword,newAddFormState , s
         setStudents(res);
         console.log("이미 추가된 학생", res);
 
-        setSelectedStudent(res.map(student => student.id));
+        setSelectedStudent(res.map((student) => student.id));
       });
       if (students) console.log("students: ", students);
     }
@@ -32,14 +38,14 @@ const LectureStudent = ({ id, searchKeyword,setSearchKeyword,newAddFormState , s
   };
 
   const handleCheckboxChange = (id) => {
-    console.log('id 확인', id);
+    console.log("id 확인", id);
     setSelectedStudent((prevSelectedStudent) => {
       if (prevSelectedStudent.includes(id)) {
-        console.log('있음');
+        console.log("있음");
         // 배열에서 해당 id를 제거
         return prevSelectedStudent.filter((studentId) => studentId !== id);
       } else {
-        console.log('없음');
+        console.log("없음");
         // 배열에 해당 id를 추가
         return [...prevSelectedStudent, id];
       }
@@ -65,7 +71,7 @@ const LectureStudent = ({ id, searchKeyword,setSearchKeyword,newAddFormState , s
       <StudentPlusIcon onClick={handleAddStudentClick} />
       <Line />
       {showAddStudent && (
-        <>
+        <Container>
           <AddStudentSearch
             searchKeyword={searchKeyword}
             setSearchKeyword={setSearchKeyword}
@@ -81,21 +87,28 @@ const LectureStudent = ({ id, searchKeyword,setSearchKeyword,newAddFormState , s
             active={active}
             setSelectedStudent={setSelectedStudent}
           />
-        </>
+          <UploadButton>변경 사항 저장</UploadButton>
+        </Container>
       )}
     </LectureStudentWrapper>
   );
 };
 
-
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 100px;
+`;
 const LectureStudentWrapper = styled(ColumnDiv)`
-width: 100%;
+  width: 100%;
   /* overflow: auto; */
 `;
 
 const StudentWrapper = styled(RowDiv)`
-width: 100%;
-align-items: center;
+  width: 100%;
+  align-items: center;
   justify-content: flex-start;
   padding-left: 8%;
   margin: 9px 0;
@@ -133,4 +146,19 @@ const StudentPlusIcon = styled(PlusIcon)`
   margin: 10px 0px 10px 0px;
 `;
 
+const UploadButton = styled.div`
+  text-align: center;
+  box-sizing: border-box;
+  background-color: #95c25c;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 10px;
+  margin-top: 10px;
+  width: 100px;
+  white-space: nowrap;
+
+  color: white;
+  font-size: 20px;
+  font-size: 13px;
+`;
 export default LectureStudent;
