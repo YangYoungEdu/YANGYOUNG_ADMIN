@@ -49,3 +49,15 @@ export const getCalendarData = atom({
   default: [],
   effects_UNSTABLE: [persistAtom]
 });
+
+export const monthlyModalOpen = atom({
+  key: "monthlyModalOpen",
+  default: false,
+  effects_UNSTABLE: [persistAtom]
+});
+
+export const monthToDay = atom({
+  key: "monthToDay",
+  default: [],
+  effects_UNSTABLE: [persistAtom]
+});

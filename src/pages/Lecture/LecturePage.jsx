@@ -16,6 +16,7 @@ import MonthCalendar from "./Calendar/MonthCalendar";
 import { useRecoilState } from "recoil";
 import { getCalendarData } from "../../Atom.js";
 import CalendarModal from "../../components/Lecture/CalendarModal/CalendarModal.jsx";
+import MonthlyModal from "../../components/Lecture/CalendarModal/MonthlyModal.jsx";
 // import CalendarModal from "../../components/Lecture/CalendarDetail/CalendarModal.jsx";
 
 const LecturePage = () => {
@@ -107,6 +108,7 @@ const LecturePage = () => {
           {/* 캘린더 */}
           {renderCalendar()}
         </RowDiv>
+        <MonthlyModal/>
         <CalendarModal/>
       </ColumnDiv>
     </ThemeProvider>
