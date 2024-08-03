@@ -22,7 +22,7 @@ export const uploadFilesAPI = async (fileList, lectureId, date) => {
   console.log("데이터 형식",formData);
 
   try {
-    const response = await axios.post(`${local}file`, formData, {
+    const response = await axios.post(`${prod}file`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
