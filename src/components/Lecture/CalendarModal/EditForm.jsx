@@ -122,7 +122,7 @@ const EditForm = () => {
       case 'start-minute':
         setNewAddFormState({
           ...newAddFormState,
-          startTime: { ...startTime, minute: validateHour(validatedValue) }
+          startTime: { ...startTime, minute: validateMinute(validatedValue) }
         });
         break;
       case 'end-hour':
@@ -134,7 +134,7 @@ const EditForm = () => {
       case 'end-minute':
         setNewAddFormState({
           ...newAddFormState,
-          endTime: { ...endTime, minute: validateHour(validatedValue) }
+          endTime: { ...endTime, minute: validateMinute(validatedValue) }
         });
         break;
 
