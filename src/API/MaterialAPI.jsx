@@ -14,23 +14,23 @@ export const uploadFilesAPI = async (fileList, lectureId, date) => {
 
   const formData = new FormData();
   for (let i = 0; i < fileList.length; i++) {
-    formData.append("files", fileList[i]);
+    formData.append("fileList", fileList[i]);
   }
-  formData.append("lecture", lectureId);
+  formData.append("lectureId", lectureId);
   formData.append("date", date);
 
   console.log("데이터 형식",formData);
 
   try {
-    const response = await axios.post(`${prod}file`, formData, {
+    const response = await axios.post(`${local}file`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     });
-    // console.log(response.data);
-    // return response.data; 
+    console.log(response.data);
     alert("File upload completed.");
+    return response.data; 
   } catch (error) {
     if(error.response.status === 403){
       alert("로그인 후 이용해주세요.");
