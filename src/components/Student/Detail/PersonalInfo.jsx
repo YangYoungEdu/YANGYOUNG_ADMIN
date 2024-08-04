@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { getOneStudentAPI, patchStudentAPI } from "../../../API/StudentAPI";
+import { getPhotosAPI } from "../../../API/MaterialAPI";
 
 const PersonalInfo = () => {
   const [studentInfo, setStudentInfo] = useState({});
   const [tmpStudentInfo, setTmpStudentInfo] = useState({});
   const [isEditing, setIsEditing] = useState(false);
+  const [photos, setPhotos] = useState(null);
 
   const { id } = useParams();
 
@@ -21,7 +23,18 @@ const PersonalInfo = () => {
         console.error(error);
       }
     };
+    const getPhotos = async () => {
+      try {
+        const response = await getPhotosAPI(id, studentInfo.name);
+        const base64Image = response;
+        setPhotos(`data:image/png;base64,${base64Image}`);
+        console.log(response);
+      } catch (error) {
+        console.error(error);
+      }
+    };
     getOneStudent();
+    getPhotos();
   }, [id]);
 
   const handleChange = (e) => {
@@ -55,6 +68,7 @@ const PersonalInfo = () => {
       {/* 이름, 학교 */}
       <UpperArea>
         <NamePart>
+          {photos && <img src={photos} alt="student" />}
           <Name>{studentInfo.name}</Name>
           <Grade>{studentInfo.grade}</Grade>
         </NamePart>

@@ -6,7 +6,7 @@ const prod = process.env.REACT_APP_PROD_URL;
 
 // 강의자료 업로드 API
 export const uploadFilesAPI = async (fileList, lectureId, date) => {
-  console.log ("업로드 리퀘스트: ", fileList, lectureId, date);
+  console.log("업로드 리퀘스트: ", fileList, lectureId, date);
   if (!fileList || !lectureId || !date) {
     alert("Please fill in all fields.");
     return;
@@ -19,7 +19,7 @@ export const uploadFilesAPI = async (fileList, lectureId, date) => {
   formData.append("lectureId", lectureId);
   formData.append("date", date);
 
-  console.log("데이터 형식",formData);
+  console.log("데이터 형식", formData);
 
   try {
     const response = await axios.post(`${prod}file`, formData, {
@@ -30,9 +30,9 @@ export const uploadFilesAPI = async (fileList, lectureId, date) => {
     });
     console.log(response.data);
     alert("File upload completed.");
-    return response.data; 
+    return response.data;
   } catch (error) {
-    if(error.response.status === 403){
+    if (error.response.status === 403) {
       alert("로그인 후 이용해주세요.");
       window.location.href = "/";
     }
@@ -57,7 +57,7 @@ export const getFilesAPI = async (lecture, date) => {
     });
     return response.data;
   } catch (error) {
-    if(error.response.status === 403){
+    if (error.response.status === 403) {
       alert("로그인 후 이용해주세요.");
       window.location.href = "/";
     }
@@ -114,7 +114,6 @@ export const downloadFileAPI = async (lectureId, lectureDate, fileName) => {
   }
 };
 
-
 // 강의자료 삭제 API
 export const deleteFileAPI = async (lecture, date, fileName) => {
   console.log("lecture:", lecture);
@@ -132,14 +131,56 @@ export const deleteFileAPI = async (lecture, date, fileName) => {
         fileName: fileName,
       },
     });
-    console.log("파일 삭제",response.data);
+    console.log("파일 삭제", response.data);
     alert("File deleted.");
   } catch (error) {
-    if(error.response.status === 403){
+    if (error.response.status === 403) {
       alert("로그인 후 이용해주세요.");
       window.location.href = "/";
     }
     console.error(error);
     throw error;
+  }
+};
+
+// 사진 조회 API
+export const getPhotosAPI = async (studentId, studentName) => {
+  console.log("studentId:", studentId);
+  console.log("studentName:", studentName);
+
+  try {
+    const response = await axios.get(`${prod}file/img`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+      params: {
+        studentId: 22200488,
+        studentName: "윤성현",
+      },
+    });
+    console.log(response.data);
+    return response.data;
+    // const base64Image = extractBase64Image(response.data);
+    // return base64Image;
+  } catch (error) {
+    // if (error.response.status === 403) {
+    //   alert("로그인 후 이용해주세요.");
+    //   window.location.href = "/";
+    // }
+    console.error(error);
+    throw error;
+  }
+};
+
+// Helper function to extract Base64 image data from HTML string
+const extractBase64Image = (htmlString) => {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlString, "text/html");
+  const imgElement = doc.querySelector("img");
+
+  if (imgElement && imgElement.src) {
+    return imgElement.src;
+  } else {
+    throw new Error("Base64 image data not found in HTML response.");
   }
 };
